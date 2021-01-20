@@ -35,31 +35,37 @@ META_CONTENTS = read_file(META_PATH)
 
 def load_long_description():
     """Load long description from file README.rst."""
-    read_me = path.join(PKG_DIR, 'README.rst')
-    return read_file(read_me)
+    def changes():
+        changelog = path.join(PKG_DIR, 'CHANGELOG.rst')
+        pat = r"(\d+.\d.\d \(.*?\)\r?\n.*?)\r?\n\r?\n\r?\n----\r?\n\r?\n\r?\n"
+        result = re.search(pat, read_file(changelog), re.S)
 
-    # TODO:
+        if result:
+            return result.group(1)
+        else:
+            return ''
+
     try:
         read_me = path.join(PKG_DIR, 'README.rst')
-        changes = path.join(PKG_DIR, 'CHANGELOG.rst')
         authors = path.join(PKG_DIR, 'AUTHORS.rst')
+##
+
+# It offers a simple and elegant way to interact with airSlate within your Python applications.
+        title = f"{PKG_NAME}: {find_meta('description')}\n"
+        head = '=' * len(title) + '\n'
 
         contents = (
-                "================================================================\n"  # noqa
-                "airslate: Official Python client library for the airSlate API v1\n"  # noqa
-                "================================================================\n"  # noqa
-                + read_file(read_me).split('.. teaser-begin')[1]
-                + "\n\n"
-                + "Release Information\n"
-                + "===================\n\n"
-                + re.search(
-            r"(\d+.\d.\d \(.*?\)\r?\n.*?)\r?\n\r?\n\r?\n----\r?\n\r?\n\r?\n",  # noqa: E501
-            read_file(changes),
-            re.S,
-        ).group(1)
-                + "\n\n`Full changelog "
-                + f"<{find_meta('url')}/blob/master/CHANGELOG.rst>`_.\n\n"
-                + read_file(authors)
+            head
+            + format(title.strip(' .'))
+            + head
+            + read_file(read_me).split('.. teaser-begin')[1]
+            + "\n\n"
+            + "Release Information\n"
+            + "===================\n\n"
+            + changes()
+            + "\n\n`Full changelog "
+            + f"<{find_meta('url')}/blob/master/CHANGELOG.rst>`_.\n\n"
+            + read_file(authors)
         )
 
         return contents
