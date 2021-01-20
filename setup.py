@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate Inc.
+# Copyright (c) 2021 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -35,6 +35,10 @@ META_CONTENTS = read_file(META_PATH)
 
 def load_long_description():
     """Load long description from file README.rst."""
+    read_me = path.join(PKG_DIR, 'README.rst')
+    return read_file(read_me)
+
+    # TODO:
     try:
         read_me = path.join(PKG_DIR, 'README.rst')
         changes = path.join(PKG_DIR, 'CHANGELOG.rst')
