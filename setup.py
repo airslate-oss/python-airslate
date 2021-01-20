@@ -48,9 +48,7 @@ def load_long_description():
     try:
         read_me = path.join(PKG_DIR, 'README.rst')
         authors = path.join(PKG_DIR, 'AUTHORS.rst')
-##
 
-# It offers a simple and elegant way to interact with airSlate within your Python applications.
         title = f"{PKG_NAME}: {find_meta('description')}\n"
         head = '=' * len(title) + '\n'
 
