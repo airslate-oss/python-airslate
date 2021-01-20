@@ -18,7 +18,12 @@
 /*.egg-info
 /build
 /dist
+/htmlcov
 
 # Python cache.
 *.py[cod]
 __pycache__
+
+# Ignore codecoverage stuff.
+.coverage
+coverage.xml

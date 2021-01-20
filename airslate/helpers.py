@@ -23,8 +23,8 @@ def merge(*objects):
     {'a': 4, 'b': 2, 'c': 3}
     """
     result = {}
-    # pylint: disable=expression-not-assigned
-    [result.update(obj) for obj in objects]
+    for obj in objects:
+        result.update(obj)
 
     return result
 

@@ -7,7 +7,8 @@
 
 import pytest
 
-from airslate.helpers import merge
+from airslate import API_VERSION
+from airslate.helpers import merge, resolve_endpoint
 
 
 @pytest.mark.parametrize(
@@ -20,3 +21,14 @@ from airslate.helpers import merge
     ])
 def test_merge(provided, expected):
     assert merge(*provided) == expected
+
+
+@pytest.mark.parametrize(
+    'provided,expected',
+    [
+        ('addons-token', f'/{API_VERSION}/addons-token'),
+        ('/////addons-token', f'/{API_VERSION}/addons-token'),
+        ('/addons-token', f'/{API_VERSION}/addons-token'),
+    ])
+def test_resolve_endpoint(provided, expected):
+    assert resolve_endpoint(provided) == expected
