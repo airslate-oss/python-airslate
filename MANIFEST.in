@@ -1,0 +1,26 @@
+# This file is part of the airslate.
+#
+# Copyright (c) 2021 airSlate Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+# Include all files matching any of the listed patterns.
+include AUTHORS.rst README.rst CHANGELOG.rst LICENSE
+
+# The contents of the directory tree tests will first be added to the sdist.
+# Many OS distributions prefers provide an ability run the tests
+# during the package installation.
+recursive-include tests *.py
+
+# All files in the sdist with a .pyc, .pyo, or .pyd extension will be removed
+# from the sdist.
+global-exclude *.py[cod]
+
+# Documentation
+include docs/Makefile docs/docutils.conf
+recursive-include docs *.png
+recursive-include docs *.svg
+recursive-include docs *.py
+recursive-include docs *.rst
+prune docs/_build

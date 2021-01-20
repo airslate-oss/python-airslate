@@ -1,4 +1,4 @@
-# This file is part of the Jsonify.
+# This file is part of the airslate.
 #
 # Copyright (c) 2021 airSlate Inc.
 #
@@ -13,4 +13,5 @@
 # https://help.github.com/articles/ignoring-files/#create-a-global-gitignore
 
 # Python cache.
+*.py[cod]
 __pycache__

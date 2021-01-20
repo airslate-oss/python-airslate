@@ -1,0 +1,7 @@
+check-wheel-contents
+flake8
+pylint
+pytest
+pytest-cov
+twine
+wheel
