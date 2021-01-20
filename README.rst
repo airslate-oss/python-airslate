@@ -2,5 +2,10 @@
 airslate
 ========
 
-Official Python client library for the airSlate API v1.
-**Work In Progress. Do not use in production environments**
+.. teaser-begin
+
+Official Python client library for the `airSlate <https://www.airslate.com>`_
+API v1.
+
+.. teaser-end
+
