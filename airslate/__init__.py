@@ -10,6 +10,10 @@
 This module tracks the version of the package as well as the base
 package info used by various functions within airslate package.
 
+Classes:
+
+    Client
+
 Misc variables:
 
     __copyright__
