@@ -1,8 +1,10 @@
 
-**Get access token for an installed addon:**
+Get access token for an installed addon
+---------------------------------------
 
 .. code-block:: python
 
+   import json
    from airslate.client import Client
 
    client = Client()
@@ -13,4 +15,19 @@
 
    identity = client.addons.access_token(org_uid, client_id, client_secret)
 
-   print(identity)
+   print(json.dumps(identity, indent=2))
+
+
+**Output:**
+
+.. code-block:: json
+
+   {
+     "meta": {
+       "token_type": "Bearer",
+       "expires": "1800",
+       "access_token": "6yWAkqNQaebbJUN14sen7e43ABiDpt1LlqHDkXekZjTH23ubYl8o9ae6osKynsgo",
+       "refresh_token": "",
+       "domain": "serghei"
+     }
+   }
