@@ -14,8 +14,10 @@
 
 ``airslate`` is a Python client library for the `airSlate <https://www.airslate.com>`_ API v1.
 
-It offers a simple and elegant way to interact with airSlate API within your
-Python applications.
+This Python client library has been designed to quickly and easily implement
+the airSlate REST API. It offers a simple and elegant way to interact with
+airSlate API resources within your Python applications. Sign up for our API here:
+https://developers.airslate.com
 
 .. teaser-end
 
