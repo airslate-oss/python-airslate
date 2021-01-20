@@ -1,0 +1,128 @@
+# This file is part of the airslate.
+#
+# Copyright (c) 2021 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - 'v[0-9]+.[0-9]+.x'
+      - 'feature/**'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+  pull_request:
+    branches:
+      - master
+      - 'v[0-9]+.[0-9]+.x'
+env:
+  PYTHON: python
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    name: Python ${{ matrix.python }} on ${{ matrix.os }}
+
+    # The maximum number of minutes to let a workflow run
+    # before GitHub automatically cancels it. Default: 360
+    timeout-minutes: 30
+
+    strategy:
+      # When set to true, GitHub cancels
+      # all in-progress jobs if any matrix job fails.
+      fail-fast: false
+
+      matrix:
+        python: [ '3.7', '3.8', '3.9', '3.10.0-alpha.4' ]
+        os: [ ubuntu-20.04, macos-latest, windows-2019 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Makefile selftest
+        run: make help
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Minimal load test
+        run: |
+          case ${{ runner.os }} in
+            Windows*)
+              source .venv/Scripts/activate ;;
+            *)
+              source .venv/bin/activate ;;
+          esac
+
+          python -c "import airslate; print(airslate.__version__)"
+
+      - name: Run unit tests with coverage
+        run: make test-ccov
+
+      - name: Upload code coverage report
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          flags: unittests
+          fail_ci_if_error: true
+
+      - name: Success Reporting
+        if: success()
+        run: git log --format=fuller -5
+
+  lint:
+    runs-on: ubuntu-20.04
+    name: Code linting
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: make init
+
+      - name: Code linting
+        run: make lint
+
+  package:
+    runs-on: ubuntu-20.04
+    name: Build & verify package
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: make init
+
+      - name: Testing package distribution and installation
+        run: make test-dist
