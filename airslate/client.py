@@ -11,7 +11,7 @@ from types import ModuleType
 
 import requests
 
-from . import resources
+from . import resources, __version__, __url__
 from .helpers import merge
 
 RESOURCE_CLASSES = {}
@@ -28,12 +28,12 @@ class Client:
     """airSlate API client class."""
 
     DEFAULT_CONTENT_TYPE = 'application/vnd.api+json; charset=utf8'
+    USER_AGENT = f'airslate/{__version__} ({__url__})'
 
     DEFAULT_OPTIONS = {
         'base_url': 'https://api.airslate.com',
     }
 
-    API_OPTIONS = {}
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
     QUERY_OPTIONS = {'limit', 'offset', 'sync'}
     REQUEST_OPTIONS = {
@@ -79,7 +79,8 @@ class Client:
 
         headers = merge(
             {'Content-Type': self.DEFAULT_CONTENT_TYPE},
-            opts.pop('headers', {})  # TODO: Add user agent
+            {'User-Agent': self.USER_AGENT},
+            opts.pop('headers', {})
         )
 
         return self.request('post', path, data=body, headers=headers, **opts)
