@@ -14,7 +14,10 @@
 
 # Directories to ignore (do not add trailing '/'s, they skip symlinks).
 /.pytest_cache
+/.venv
 /*.egg-info
+/build
+/dist
 
 # Python cache.
 *.py[cod]
