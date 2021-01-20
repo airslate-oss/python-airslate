@@ -5,6 +5,11 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+"""Helpers used by various functions within airslate package."""
+
+from . import API_VERSION
+
+
 def merge(*objects):
     """Merge one or more objects into a new object.
 
@@ -18,6 +23,12 @@ def merge(*objects):
     {'a': 4, 'b': 2, 'c': 3}
     """
     result = {}
+    # pylint: disable=expression-not-assigned
     [result.update(obj) for obj in objects]
 
     return result
+
+
+def resolve_endpoint(path: str):
+    """Resolve resource endpoint taking into account API version."""
+    return '/%s/%s' % (API_VERSION, path.lstrip('/'))

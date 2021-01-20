@@ -5,7 +5,8 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+"""The top-level module for airslate resources."""
+
 from . import (  # noqa: F401
     addons,
-    base_resource,
 )

@@ -26,8 +26,10 @@ Misc variables:
 
 """
 
+API_VERSION = 'v1'
+
 __copyright__ = 'Copyright (c) 2021 airSlate, Inc.'
-__version__ = '0.0.1a1'
+__version__ = '0.0.1a1.dev1'
 __license__ = 'Apache 2.0'
 __author__ = 'airSlate'
 __author_email__ = 'dev-support@airslate.com'

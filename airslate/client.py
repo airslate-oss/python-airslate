@@ -5,6 +5,8 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+"""Client module for airslate package."""
+
 import json
 import string
 from types import ModuleType
@@ -13,15 +15,6 @@ import requests
 
 from . import resources, __version__, __url__
 from .helpers import merge
-
-RESOURCE_CLASSES = {}
-for name, module in resources.__dict__.items():
-    class_name = string.capwords(name, '_').replace('_', '')
-    if class_name == 'BaseResource':
-        continue
-
-    if isinstance(module, ModuleType) and class_name in module.__dict__:
-        RESOURCE_CLASSES[name] = module.__dict__[class_name]
 
 
 class Client:
@@ -52,11 +45,7 @@ class Client:
         self.session = session or requests.Session()
         self.options = merge(self.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
-
-        # Initializes each resource, injecting this client object
-        # into the constructor.
-        for resource, cls in RESOURCE_CLASSES.items():
-            setattr(self, resource, cls(self))
+        self._init_resources()
 
     def request(self, method, path, **options):
         """Dispatches a request to the airSlate API."""
@@ -84,6 +73,17 @@ class Client:
         )
 
         return self.request('post', path, data=body, headers=headers, **opts)
+
+    def _init_resources(self):
+        """Initializes each resource and injecting client object into it."""
+        resource_classes = {}
+        for name, module in resources.__dict__.items():
+            klass = string.capwords(name, '_').replace('_', '')
+            if isinstance(module, ModuleType) and klass in module.__dict__:
+                resource_classes[name] = module.__dict__[klass]
+
+        for name, cls in resource_classes.items():
+            setattr(self, name, cls(self))
 
     def _parse_parameter_options(self, options):
         """Select all unknown options.
