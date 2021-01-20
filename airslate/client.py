@@ -60,7 +60,7 @@ class Client:
 
     def request(self, method, path, **options):
         """Dispatches a request to the airSlate API."""
-        options = self._merge_options(options)
+        options = self._merge(options)
         url = options['base_url'] + path
         request_options = self._parse_request_options(options)
 
@@ -118,7 +118,7 @@ class Client:
 
         Selects the provided keys (or everything except the provided keys) out
         of an options object."""
-        options = self._merge_options(options)
+        options = self._merge(options)
         result = {}
 
         for key in options:
@@ -127,7 +127,7 @@ class Client:
 
         return result
 
-    def _merge_options(self, *objects):
+    def _merge(self, *objects):
         """Merge option objects with the client's object.
 
         Merges one or more options objects with client's options and returns a
