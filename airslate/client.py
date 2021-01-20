@@ -70,19 +70,19 @@ class Client:
 
         return response
 
-    def post(self, path, data, **options):
+    def post(self, path, data, **opts):
         """Parses POST request options and dispatches a request."""
-        parameter_options = self._parse_parameter_options(options)
+        parameter_options = self._parse_parameter_options(opts)
 
         # values in the data body takes precedence
         body = merge(parameter_options, data)
 
         headers = merge(
             {'Content-Type': self.DEFAULT_CONTENT_TYPE},
-            options.pop('headers', {})  # TODO: Add user agent
+            opts.pop('headers', {})  # TODO: Add user agent
         )
 
-        return self.request('post', path, data=body, headers=headers, **options)
+        return self.request('post', path, data=body, headers=headers, **opts)
 
     def _parse_parameter_options(self, options):
         """Select all unknown options.

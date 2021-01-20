@@ -24,5 +24,3 @@ class Addons(BaseResource):
         })
 
         return response.json() or {}
-
-
