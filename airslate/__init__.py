@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate Inc.
+# Copyright (c) 2021 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -22,8 +22,8 @@ Misc variables:
 
 """
 
-__copyright__ = 'Copyright (c) 2021 airSlate Inc.'
-__version__ = '0.0.1.alpha1'
+__copyright__ = 'Copyright (c) 2021 airSlate, Inc.'
+__version__ = '0.0.1a1'
 __license__ = 'Apache 2.0'
 __author__ = 'Serghei Iakovlev'
 __author_email__ = 'egrep@protonmail.ch'
