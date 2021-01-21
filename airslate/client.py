@@ -9,12 +9,13 @@
 
 import json
 import string
+import time
 from types import ModuleType
 
 import requests
 
-from . import resources, __version__, __url__
-from .helpers import merge
+from airslate import exceptions, resources, __version__, __url__
+from airslate.helpers import merge
 
 
 class Client:
@@ -25,6 +26,8 @@ class Client:
 
     DEFAULT_OPTIONS = {
         'base_url': 'https://api.airslate.com',
+        'timeout': 5.0,
+        'max_retries': 5,
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
@@ -40,12 +43,17 @@ class Client:
 
     ALL_OPTIONS = (CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS)
 
+    RETRY_DELAY = 1.0
+    RETRY_BACKOFF = 2.0
+
     def __init__(self, session=None, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
         self.session = session or requests.Session()
         self.options = merge(self.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
+
         self._init_resources()
+        self._init_statuses()
 
     def request(self, method, path, **options):
         """Dispatches a request to the airSlate API."""
@@ -53,11 +61,27 @@ class Client:
         url = options['base_url'] + path
         request_options = self._parse_request_options(options)
 
-        response = getattr(self.session, method)(
-            url, **request_options
-        )
+        retry_count = 0
+        while True:
+            try:
+                response = getattr(self.session, method)(
+                    url, **request_options
+                )
 
-        return response
+                if response.status_code in self.statuses:
+                    raise self.statuses[response.status_code](response)
+
+                # Any unhandled 5xx is a server error
+                if 500 <= response.status_code < 600:
+                    raise exceptions.InternalServerError(response)
+
+                return response
+            except exceptions.RetryError as exc:
+                if retry_count < options['max_retries']:
+                    self._handle_retry_error(exc, retry_count)
+                    retry_count += 1
+                else:
+                    raise exc
 
     def post(self, path, data, **opts):
         """Parses POST request options and dispatches a request."""
@@ -84,6 +108,20 @@ class Client:
 
         for name, cls in resource_classes.items():
             setattr(self, name, cls(self))
+
+    def _init_statuses(self):
+        """Create a mapping of status codes to classes."""
+        self.statuses = {}
+        for cls in exceptions.__dict__.values():
+            if isinstance(cls, type) and issubclass(cls, exceptions.Error):
+                self.statuses[cls().status] = cls
+
+    def _handle_retry_error(self, exc, retry_count):
+        """Sleep based on the type of :class:`RetryError`"""
+        if isinstance(exc, exceptions.RetryError) and exc.retry_after:
+            time.sleep(exc.retry_after)
+        else:
+            time.sleep(self.RETRY_DELAY * (self.RETRY_BACKOFF ** retry_count))
 
     def _parse_parameter_options(self, options):
         """Select all unknown options.
