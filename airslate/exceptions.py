@@ -9,7 +9,7 @@
 
 
 class Error(Exception):
-    """Base class for exceptions in airslate package."""
+    """Base class for errors in airslate package."""
 
     def __init__(self, message=None, status=None, response=None):
         try:
@@ -17,7 +17,7 @@ class Error(Exception):
                 json = response.json()
                 messages = [error['message'] for error in json['errors']]
                 message = message + ': ' + '; '.join(messages)
-        except (ValueError, TypeError):
+        except ValueError:
             pass
 
         super().__init__(message)
@@ -25,6 +25,15 @@ class Error(Exception):
         self.status = status
         self.response = response
         self.message = message
+
+
+class BadRequest(Error):
+    def __init__(self, response=None):
+        super().__init__(
+            message='Bad Request',
+            status=400,
+            response=response
+        )
 
 
 class RetryError(Error):

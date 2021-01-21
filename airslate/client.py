@@ -102,9 +102,9 @@ class Client:
         """Initializes each resource and injecting client object into it."""
         resource_classes = {}
         for name, module in resources.__dict__.items():
-            klass = string.capwords(name, '_').replace('_', '')
-            if isinstance(module, ModuleType) and klass in module.__dict__:
-                resource_classes[name] = module.__dict__[klass]
+            cls = string.capwords(name, '_').replace('_', '')
+            if isinstance(module, ModuleType) and cls in module.__dict__:
+                resource_classes[name] = module.__dict__[cls]
 
         for name, cls in resource_classes.items():
             setattr(self, name, cls(self))
