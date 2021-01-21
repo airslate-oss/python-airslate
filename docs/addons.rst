@@ -1,3 +1,10 @@
+===============
+Addons resource
+===============
+
+
+Methods
+=======
 
 Get access token for an installed addon
 ---------------------------------------
