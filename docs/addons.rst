@@ -35,6 +35,6 @@ Get access token for an installed addon
        "expires": "1800",
        "access_token": "6yWAkqNQaebbJUN14sen7e43ABiDpt1LlqHDkXekZjTH23ubYl8o9ae6osKynsgo",
        "refresh_token": "",
-       "domain": "serghei"
+       "domain": "testorg"
      }
    }

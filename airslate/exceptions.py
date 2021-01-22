@@ -11,6 +11,7 @@ Classes:
 
     Error
     BadRequest
+    Unauthorized
     RetryError
     RateLimitError
 
@@ -21,6 +22,12 @@ class Error(Exception):
     """Base class for errors in airslate package."""
 
     def __init__(self, message=None, status=None, response=None):
+        super().__init__(message)
+
+        self.status = status
+        self.response = response
+        self.errors = dict(())
+
         try:
             if response:
                 json = response.json()
@@ -31,6 +38,7 @@ class Error(Exception):
                 #     }
                 #
                 if 'errors' in json:
+                    self.errors = json['errors']
                     messages = []
                     for error in json['errors']:
                         # The case for:
@@ -68,26 +76,39 @@ class Error(Exception):
                 #     }
                 #
                 elif 'title' in json:
+                    self.errors = json
                     message = message + ': ' + json['title']
         except ValueError:
             pass
 
-        super().__init__(message)
-
-        self.status = status
-        self.response = response
         self.message = message
 
 
 class BadRequest(Error):
     """Error raised for all kinds of bad requests.
 
-    Raise if the client sends something to the server cannot handle."""
+    Raise if the client sends something to the server cannot handle.
+    """
 
     def __init__(self, response=None):
         super().__init__(
             message='Bad Request',
             status=400,
+            response=response
+        )
+
+
+class Unauthorized(Error):
+    """Error raised for credentials issues on authentication stage.
+
+    It indicates that the request has not been applied because it lacks valid
+    authentication credentials for the target resource.
+    """
+
+    def __init__(self, response=None):
+        super().__init__(
+            message='Unauthorized',
+            status=401,
             response=response
         )
 
