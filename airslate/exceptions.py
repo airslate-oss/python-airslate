@@ -24,8 +24,31 @@ class Error(Exception):
         try:
             if response:
                 json = response.json()
-                messages = [error['message'] for error in json['errors']]
-                message = message + ': ' + '; '.join(messages)
+
+                # The case for:
+                #     {
+                #         "errors": [
+                #             {
+                #                 "title": "",
+                #                 "code": "",
+                #                 "source": "",
+                #             }
+                #         ]
+                #     }
+                #
+                if 'errors' in json:
+                    messages = [error['title'] for error in json['errors']]
+                    message = message + ': ' + '; '.join(messages)
+
+                # The case for:
+                #     {
+                #         "title": "",
+                #         "code": "",
+                #         "source": "",
+                #     }
+                #
+                if 'title' in json:
+                    message = message + ': ' + json['title']
         except ValueError:
             pass
 
