@@ -5,7 +5,16 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Helper routines and classes to work exceptions."""
+"""Standard exception hierarchy for airslate.
+
+Classes:
+
+    Error
+    BadRequest
+    RetryError
+    RateLimitError
+
+"""
 
 
 class Error(Exception):
@@ -28,6 +37,10 @@ class Error(Exception):
 
 
 class BadRequest(Error):
+    """Error raised for all kinds of bad requests.
+
+    Raise if the client sends something to the server cannot handle."""
+
     def __init__(self, response=None):
         super().__init__(
             message='Bad Request',
@@ -49,7 +62,11 @@ class RetryError(Error):
 
 
 class RateLimitError(RetryError):
-    """Error raised for exceeding rate limit."""
+    """Error raised for exceeding rate limit.
+
+    The server is limiting the rate at which this client receives responses,
+    and this request exceeds that rate.
+    """
 
     def __init__(self, response=None):
         message = ("Exceeded airSlate's Rate Limit. "
