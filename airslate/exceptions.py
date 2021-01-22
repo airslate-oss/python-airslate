@@ -27,17 +27,38 @@ class Error(Exception):
 
                 # The case for:
                 #     {
-                #         "errors": [
-                #             {
-                #                 "title": "",
-                #                 "code": "",
-                #                 "source": "",
-                #             }
-                #         ]
+                #         "errors": [ { ... }, { ... } ]
                 #     }
                 #
                 if 'errors' in json:
-                    messages = [error['title'] for error in json['errors']]
+                    messages = []
+                    for error in json['errors']:
+                        # The case for:
+                        #     {
+                        #         "errors": [
+                        #             {
+                        #                 "title": "",
+                        #                 "code": "",
+                        #                 "source": "",
+                        #             }
+                        #         ]
+                        #     }
+                        #
+                        if 'title' in error:
+                            messages.append(error['title'])
+                        # The case for:
+                        #     {
+                        #         "errors": [
+                        #             {
+                        #                 "status": "",
+                        #                 "detail": "",
+                        #             }
+                        #         ]
+                        #     }
+                        #
+                        elif 'detail' in error:
+                            messages.append(error['detail'])
+
                     message = message + ': ' + '; '.join(messages)
                 # The case for:
                 #     {
