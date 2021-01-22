@@ -39,7 +39,6 @@ class Error(Exception):
                 if 'errors' in json:
                     messages = [error['title'] for error in json['errors']]
                     message = message + ': ' + '; '.join(messages)
-
                 # The case for:
                 #     {
                 #         "title": "",
@@ -47,7 +46,7 @@ class Error(Exception):
                 #         "source": "",
                 #     }
                 #
-                if 'title' in json:
+                elif 'title' in json:
                     message = message + ': ' + json['title']
         except ValueError:
             pass
