@@ -34,7 +34,7 @@ def test_rate_limit(client):
         headers={'Retry-After': '0.42'},
     )
 
-    with pytest.raises(exceptions.RateLimitError) as excinfo:
+    with pytest.raises(exceptions.RateLimitError) as exc_info:
         client.post(
             '/v1/addon-token',
             {},
@@ -42,4 +42,25 @@ def test_rate_limit(client):
             timeout=0.1,
         )
 
-    assert excinfo.value.retry_after == 0.42
+    assert exc_info.value.retry_after == 0.42
+
+
+@responses.activate
+@pytest.mark.parametrize('status', [500, 503, 505])
+def test_internal_server_error(status, client):
+    responses.add(
+        POST,
+        f'{client.base_url}/v1/addon-token',
+        status=status,
+        body='{}',
+    )
+
+    with pytest.raises(exceptions.InternalServerError) as exc_info:
+        client.post(
+            '/v1/addon-token',
+            {},
+            max_retries=1,
+            timeout=0.1,
+        )
+
+    assert exc_info.value.status == status

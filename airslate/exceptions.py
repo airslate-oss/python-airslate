@@ -154,8 +154,8 @@ class InternalServerError(RetryError):
 
     def __init__(self, response=None):
         status = 500
-        if response:
-            status = response.status
+        if response is not None:
+            status = response.status_code
 
         super().__init__(
             message='Internal Server Error',
