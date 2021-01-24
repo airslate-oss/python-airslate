@@ -17,6 +17,13 @@ For example:
    # per-client
    client.options['max_retries'] = 2
 
+   # per-request
+   client.post(
+       '/v1/addon-token',
+       {},
+       max_retries=2,
+   )
+
 Available options
 -----------------
 

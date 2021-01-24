@@ -69,11 +69,13 @@ class Client:
                 )
 
                 if response.status_code in self.statuses:
-                    raise self.statuses[response.status_code](response)
+                    raise self.statuses[response.status_code](
+                        response=response
+                    )
 
                 # Any unhandled 5xx is a server error
                 if 500 <= response.status_code < 600:
-                    raise exceptions.InternalServerError(response)
+                    raise exceptions.InternalServerError(response=response)
 
                 return response
             except exceptions.RetryError as exc:

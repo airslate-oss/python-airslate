@@ -29,7 +29,7 @@ class Error(Exception):
         self.errors = dict(())
 
         try:
-            if response:
+            if response is not None:
                 json = response.json()
 
                 # The case for:
@@ -142,7 +142,7 @@ class RateLimitError(RetryError):
             response=response,
         )
 
-        if response:
+        if response is not None:
             self.retry_after = float(response.headers['Retry-After'])
 
 
@@ -154,8 +154,8 @@ class InternalServerError(RetryError):
 
     def __init__(self, response=None):
         status = 500
-        if response:
-            status = response.status
+        if response is not None:
+            status = response.status_code
 
         super().__init__(
             message='Internal Server Error',
