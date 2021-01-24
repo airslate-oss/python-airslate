@@ -29,7 +29,7 @@ class Error(Exception):
         self.errors = dict(())
 
         try:
-            if response:
+            if response is not None:
                 json = response.json()
 
                 # The case for:
@@ -142,7 +142,7 @@ class RateLimitError(RetryError):
             response=response,
         )
 
-        if response:
+        if response is not None:
             self.retry_after = float(response.headers['Retry-After'])
 
 
