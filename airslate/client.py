@@ -27,7 +27,7 @@ class Client:
     DEFAULT_OPTIONS = {
         'base_url': 'https://api.airslate.com',
         'timeout': 5.0,
-        'max_retries': 5,
+        'max_retries': 3,
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
@@ -43,8 +43,8 @@ class Client:
 
     ALL_OPTIONS = (CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS)
 
-    RETRY_DELAY = 1.0
-    RETRY_BACKOFF = 2.0
+    BACKOFF_FACTOR = 1.0
+    RETRY_DELAY = 2.0
 
     def __init__(self, session=None, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
@@ -119,11 +119,19 @@ class Client:
                 self.statuses[cls().status] = cls
 
     def _handle_retry_error(self, exc, retry_count):
-        """Sleep based on the type of :class:`RetryError`"""
+        """Sleep based on the type of :class:`RetryError`."""
         if isinstance(exc, exceptions.RetryError) and exc.retry_after:
             time.sleep(exc.retry_after)
         else:
-            time.sleep(self.RETRY_DELAY * (self.RETRY_BACKOFF ** retry_count))
+            backoff_factor = self.BACKOFF_FACTOR
+            retry_delay = self.RETRY_DELAY
+
+            # Prevent incorrect configuration to avoid hammering API servers
+            if backoff_factor <= 0.0:
+                backoff_factor = 1.0
+            if retry_delay <= 0.0:
+                retry_delay = 2.0
+            time.sleep(backoff_factor * (retry_delay ** retry_count))
 
     def _parse_parameter_options(self, options):
         """Select all unknown options.
