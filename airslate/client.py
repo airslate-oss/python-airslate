@@ -21,13 +21,22 @@ from airslate.helpers import merge
 class Client:
     """airSlate API client class."""
 
-    DEFAULT_CONTENT_TYPE = 'application/vnd.api+json; charset=utf8'
+    CONTENT_TYPE_JSON_API = 'application/vnd.api+json; charset=utf8'
+    CONTENT_TYPE_JSON = 'application/json; charset=utf8'
+
     USER_AGENT = f'airslate/{__version__} ({__url__})'
 
     DEFAULT_OPTIONS = {
         'base_url': 'https://api.airslate.com',
         'timeout': 5.0,
         'max_retries': 3,
+    }
+
+    DEFAULT_HEADERS = {
+        'User-Agent': USER_AGENT,
+        # json:api specific headers
+        'Content-Type': CONTENT_TYPE_JSON_API,
+        'Accept': CONTENT_TYPE_JSON + ' , ' + CONTENT_TYPE_JSON_API
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
@@ -55,10 +64,10 @@ class Client:
         self._init_resources()
         self._init_statuses()
 
-    def request(self, method, path, **options):
+    def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
         options = self._merge(options)
-        url = options['base_url'] + path
+        url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
         request_options = self._parse_request_options(options)
 
         retry_count = 0
@@ -92,11 +101,8 @@ class Client:
         # values in the data body takes precedence
         body = merge(parameter_options, data)
 
-        headers = merge(
-            {'Content-Type': self.DEFAULT_CONTENT_TYPE},
-            {'User-Agent': self.USER_AGENT},
-            opts.pop('headers', {})
-        )
+        # values in the data opts['headers'] takes precedence
+        headers = merge(self.DEFAULT_HEADERS, opts.pop('headers', {}))
 
         return self.request('post', path, data=body, headers=headers, **opts)
 
@@ -120,7 +126,8 @@ class Client:
 
     def _handle_retry_error(self, exc, retry_count):
         """Sleep based on the type of :class:`RetryError`."""
-        if isinstance(exc, exceptions.RetryError) and exc.retry_after:
+        if isinstance(exc, exceptions.RetryError) and \
+                exc.retry_after is not None:
             time.sleep(exc.retry_after)
         else:
             backoff_factor = self.BACKOFF_FACTOR
