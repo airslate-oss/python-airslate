@@ -7,6 +7,7 @@
 
 import responses
 from responses import POST
+from airslate.client import Client
 
 
 @responses.activate
@@ -49,3 +50,22 @@ def test_overriding_headers(client):
 
     assert headers['key1'] == 'value3'
     assert headers['key2'] == 'value2'
+
+
+def test_custom_options():
+    client = Client()
+    assert client.options == {
+        'base_url': 'https://api.airslate.com',
+        'max_retries': 3,
+        'timeout': 5.0,
+    }
+
+    client = Client(foo='1', bar='2', baz='3')
+    assert client.options == {
+        'bar': '2',
+        'base_url': 'https://api.airslate.com',
+        'baz': '3',
+        'foo': '1',
+        'max_retries': 3,
+        'timeout': 5.0,
+    }
