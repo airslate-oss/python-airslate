@@ -24,7 +24,6 @@ Get access token for an installed addon
 
    print(json.dumps(identity, indent=2))
 
-
 **Output:**
 
 .. code-block:: json
