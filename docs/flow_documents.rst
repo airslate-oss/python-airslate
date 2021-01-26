@@ -9,6 +9,10 @@ Methods
 Get supported documents for given flow
 --------------------------------------
 
+.. note::
+
+   To obtain ``token`` refer to ``airslate.addons.access_token()`` function.
+
 .. code-block:: python
 
    import json
