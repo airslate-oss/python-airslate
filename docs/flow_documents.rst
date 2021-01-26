@@ -32,7 +32,9 @@ Get supported documents for given flow
 
    print(json.dumps(documents, indent=2))
 
-**Output:**
+.. raw:: html
+
+   <details><summary>Output</summary>
 
 .. code-block::
 
