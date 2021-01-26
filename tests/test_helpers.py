@@ -8,19 +8,7 @@
 import pytest
 
 from airslate import API_VERSION
-from airslate.helpers import merge, resolve_endpoint
-
-
-@pytest.mark.parametrize(
-    'provided,expected',
-    [
-        ([{'a': 42}, {'foo': 'bar'}], {'a': 42, 'foo': 'bar'}),
-        ([{'a': 42}, {'foo': 'bar', 'a': 17}], {'a': 17, 'foo': 'bar'}),
-        ([{'a': 17, 'foo': 'bar'}], {'a': 17, 'foo': 'bar'}),
-        ([{'a': 1}, {'b': 2}, {'c': 3}, {'a': 4}], {'a': 4, 'b': 2, 'c': 3}),
-    ])
-def test_merge(provided, expected):
-    assert merge(*provided) == expected
+from airslate.helpers import resolve_endpoint
 
 
 @pytest.mark.parametrize(
