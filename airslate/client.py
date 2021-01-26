@@ -15,7 +15,7 @@ from types import ModuleType
 import requests
 
 from airslate import exceptions, resources, __version__, __url__
-from airslate.helpers import merge
+from asdicts.dict import merge
 
 
 class Client:
