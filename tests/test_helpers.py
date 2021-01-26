@@ -8,7 +8,7 @@
 import pytest
 
 from airslate import API_VERSION
-from airslate.helpers import resolve_endpoint
+from airslate import resolve_endpoint
 
 
 @pytest.mark.parametrize(

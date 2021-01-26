@@ -22,7 +22,7 @@ def test_default_headers(client):
 
     assert headers['key'] == 'value'
     assert headers['User-Agent'] == client.USER_AGENT
-    assert headers['Content-Type'] == 'application/vnd.api+json; charset=utf8'
+    assert headers['Content-Type'] == 'application/vnd.api+json'
 
 
 @responses.activate
@@ -30,11 +30,15 @@ def test_request_headers(client):
     url = f'{client.base_url}/v1/addon-token'
     responses.add(POST, url, status=200, body='{}')
 
-    client.post('/v1/addon-token', {}, headers={'User-Agent': 'Test'})
+    client.post('/v1/addon-token', {}, headers={
+        'User-Agent': 'Test',
+        'Content-Type': 'text/plain;charset=UTF-8'
+    })
+
     headers = responses.calls[0].request.headers
 
     assert headers['User-Agent'] == 'Test'
-    assert headers['Content-Type'] == 'application/vnd.api+json; charset=utf8'
+    assert headers['Content-Type'] == 'text/plain;charset=UTF-8'
 
 
 @responses.activate
