@@ -14,7 +14,7 @@ Get supported documents for given flow
    from airslate.client import Client
 
    client = Client(
-       token='1nLgn1ZbpNpghbaFTeSaIuL5418qn7IIfrsHg1kwPUZqbFxW9DJrOjVJwkHYBnU8',
+       token='6yWAkqNQaebbJUN14sen7e43ABiDpt1LlqHDkXekZjTH23ubYl8o9ae6osKynsgo',
    )
 
    flow_id = '04415300-0000-0000-0000BA29'
