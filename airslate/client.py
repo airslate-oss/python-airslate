@@ -13,9 +13,9 @@ import time
 from types import ModuleType
 
 import requests
+from asdicts.dict import merge, intersect_keys
 
 from airslate import exceptions, resources, __version__, __url__
-from asdicts.dict import merge
 
 
 class Client:
@@ -57,7 +57,7 @@ class Client:
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
-    QUERY_OPTIONS = {'limit', 'offset', 'sync'}
+    QUERY_OPTIONS = {'include'}
     REQUEST_OPTIONS = {
         'headers',
         'params',
@@ -77,6 +77,10 @@ class Client:
         self.session = session or requests.Session()
         self.options = merge(self.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
+
+        token = options.pop('token', None)
+        if token is not None:
+            self.headers['Authorization'] = f'Bearer {token}'
 
         self._init_resources()
         self._init_statuses()
@@ -111,17 +115,35 @@ class Client:
                 else:
                     raise exc
 
-    def post(self, path, data, **opts):
+    def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""
-        parameter_options = self._parse_parameter_options(opts)
+        parameter_options = self._parse_parameter_options(options)
 
         # values in the data body takes precedence
         body = merge(parameter_options, data)
 
-        # values in the data opts['headers'] takes precedence
-        headers = merge(self.DEFAULT_HEADERS, opts.pop('headers', {}))
+        # values in the data options['headers'] takes precedence
+        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
 
-        return self.request('post', path, data=body, headers=headers, **opts)
+        return self.request('post', path, data=body, headers=headers,
+                            **options)
+
+    def get(self, path, query, **options):
+        """Parses GET request options and dispatches a request."""
+        query_options = self._parse_query_options(options)
+        parameter_options = self._parse_parameter_options(options)
+
+        # query takes precedence
+        query = merge(query_options, parameter_options, query)
+
+        # values in the data options['headers'] takes precedence
+        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
+
+        # `Content-Type` HTTP header should be set only for PUT and POST
+        del headers['Content-Type']
+
+        return self.request('get', path, params=query, headers=headers,
+                            **options)
 
     def _init_resources(self):
         """Initializes each resource and injecting client object into it."""
@@ -161,15 +183,24 @@ class Client:
         """Select all unknown options.
 
         Select all unknown options (not query string, API, or request
-        options)"""
-        return self._select_options(options, self.ALL_OPTIONS, invert=True)
+        options).
+        """
+        options = self._merge(options)
+        return intersect_keys(options, self.ALL_OPTIONS, invert=True)
+
+    def _parse_query_options(self, options):
+        """Select query string options out of the provided options object."""
+        options = self._merge(options)
+        return intersect_keys(options, self.QUERY_OPTIONS)
 
     def _parse_request_options(self, options):
         """Select request options out of the provided options object.
 
         Select and formats options to be passed to the 'requests' library's
-        request methods."""
-        request_options = self._select_options(options, self.REQUEST_OPTIONS)
+        request methods.
+        """
+        options = self._merge(options)
+        request_options = intersect_keys(options, self.REQUEST_OPTIONS)
 
         if 'params' in request_options:
             params = request_options['params']
@@ -185,20 +216,6 @@ class Client:
         request_options['headers'] = headers
 
         return request_options
-
-    def _select_options(self, options, keys, invert=False):
-        """Select the provided keys out of an options object.
-
-        Selects the provided keys (or everything except the provided keys) out
-        of an options object."""
-        options = self._merge(options)
-        result = {}
-
-        for key in options:
-            if (invert and key not in keys) or (not invert and key in keys):
-                result[key] = options[key]
-
-        return result
 
     def _merge(self, *objects):
         """Merge option objects with the client's object.

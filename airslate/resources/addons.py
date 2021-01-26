@@ -20,10 +20,17 @@ class Addons:  # pylint: disable=too-few-public-methods
         """Get access token for an addon installed in an organization."""
         url = resolve_endpoint('addon-token')
 
-        response = self.client.post(url, {
+        headers = {
+            # This is not JSON:API request
+            'Content-Type': self.client.CONTENT_TYPE_JSON
+        }
+
+        data = {
             'client_id': client_id,
             'client_secret': client_secret,
             'organization_id': org_uid,
-        })
+        }
+
+        response = self.client.post(url, data, headers=headers)
 
         return response.json() or {}
