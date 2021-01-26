@@ -21,8 +21,8 @@ from asdicts.dict import merge
 class Client:
     """airSlate API client class."""
 
-    CONTENT_TYPE_JSON_API = 'application/vnd.api+json; charset=utf8'
-    CONTENT_TYPE_JSON = 'application/json; charset=utf8'
+    CONTENT_TYPE_JSON_API = 'application/vnd.api+json'
+    CONTENT_TYPE_JSON = 'application/json'
 
     USER_AGENT = f'airslate/{__version__} ({__url__})'
 
@@ -33,10 +33,27 @@ class Client:
     }
 
     DEFAULT_HEADERS = {
+        # Default 'User-Agent' header. Usually should be replaced
+        # with a more specific value.
         'User-Agent': USER_AGENT,
-        # json:api specific headers
+
+        # From the JSON:API docs:
+        #
+        # Clients MUST send all JSON:API data in request documents with
+        # the header 'Content-Type: application/vnd.api+json' without any
+        # media type parameters.
         'Content-Type': CONTENT_TYPE_JSON_API,
-        'Accept': CONTENT_TYPE_JSON + ' , ' + CONTENT_TYPE_JSON_API
+
+        # From the JSON:API docs:
+        #
+        # Servers MUST respond with a '406 Not Acceptable' status code if
+        # a request’s 'Accept' header contains the JSON:API media type and
+        # all instances of that media type are modified with media type
+        # parameters.
+        #
+        # The client may pass a list of media type parameters to the server.
+        # The server finds out that a valid parameter is included.
+        'Accept': CONTENT_TYPE_JSON_API + ', ' + CONTENT_TYPE_JSON
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
