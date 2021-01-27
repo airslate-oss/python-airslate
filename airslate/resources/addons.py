@@ -16,7 +16,7 @@ class Addons:  # pylint: disable=too-few-public-methods
     def __init__(self, client):
         self.client = client
 
-    def access_token(self, client_id: str, client_secret: str, org_uid: str):
+    def access_token(self, org_id: str, client_id: str, client_secret: str):
         """Get access token for an addon installed in an organization."""
         url = resolve_endpoint('addon-token')
 
@@ -28,7 +28,7 @@ class Addons:  # pylint: disable=too-few-public-methods
         data = {
             'client_id': client_id,
             'client_secret': client_secret,
-            'organization_id': org_uid,
+            'organization_id': org_id,
         }
 
         response = self.client.post(url, data, headers=headers)
