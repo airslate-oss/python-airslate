@@ -15,20 +15,19 @@ Get supported documents for given flow
 
 .. code-block:: python
 
+   import os
    import json
    from airslate.client import Client
 
+   org_id = '057C5000-0000-0000-0000D981'
+   flow_id = '04415300-0000-0000-0000BA29'
+
    client = Client(
-       token='6yWAkqNQaebbJUN14sen7e43ABiDpt1LlqHDkXekZjTH23ubYl8o9ae6osKynsgo',
-       headers={
-           'Organization-Id': '057C5000-0000-0000-0000D981'
-       }
+       token=os.getenv('API_TOKEN'),
+       headers={'Organization-Id': org_id}
    )
 
-   documents = client.flow_documents.collection(
-       '04415300-0000-0000-0000BA29',  # Flow ID
-       query={'include': 'fields'},    # URL param
-   )
+   documents = client.flow_documents.collection(flow_id, include='fields')
 
    print(json.dumps(documents, indent=2))
 

@@ -56,6 +56,13 @@ def test_overriding_headers(client):
     assert headers['key2'] == 'value2'
 
 
+@responses.activate
+def test_auth_header():
+    client = Client(token='secret')
+
+    assert client.headers['Authorization'] == 'Bearer secret'
+
+
 def test_custom_options():
     client = Client()
     assert client.options == {
