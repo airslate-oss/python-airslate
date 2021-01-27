@@ -22,6 +22,7 @@ class FlowDocuments:  # pylint: disable=too-few-public-methods
             f'addons/slates/{flow_id}/documents'
         )
 
+        options['query'] = options.pop('query', {})
         response = self.client.get(url, **options)
 
         return response.json() or {}

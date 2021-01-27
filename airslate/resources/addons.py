@@ -21,7 +21,7 @@ class Addons:  # pylint: disable=too-few-public-methods
         url = resolve_endpoint('addon-token')
 
         headers = {
-            # This is not JSON:API request
+            # This is not a JSON:API request
             'Content-Type': self.client.CONTENT_TYPE_JSON
         }
 
