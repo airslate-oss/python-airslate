@@ -31,6 +31,4 @@ class Addons:  # pylint: disable=too-few-public-methods
             'organization_id': org_id,
         }
 
-        response = self.client.post(url, data, headers=headers)
-
-        return response.json() or {}
+        return self.client.post(url, data, headers=headers, full_response=True)

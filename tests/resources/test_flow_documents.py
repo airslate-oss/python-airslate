@@ -17,7 +17,7 @@ def test_access_token(client):
         GET,
         f'{client.base_url}/v1/addons/slates/{flow_id}/documents',
         status=200,
-        body='{}'
+        json={'data': {}}
     )
 
     resp = client.flow_documents.collection(flow_id, include='fields')

@@ -27,9 +27,18 @@ class Client:
     USER_AGENT = f'airslate/{__version__} ({__url__})'
 
     DEFAULT_OPTIONS = {
+        # API endpoint base URL to connect to.
         'base_url': 'https://api.airslate.com',
+
+        # The time stop waiting for a response after a given number of seconds.
         'timeout': 5.0,
+
+        # The number to times to retry if API rate limit is reached or a
+        # server error occurs.
         'max_retries': 3,
+
+        # Return the entire JSON response or just ``data`` section.
+        'full_response': False,
     }
 
     DEFAULT_HEADERS = {
@@ -87,7 +96,7 @@ class Client:
 
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
-        options = self._merge(options)
+        options = self._merge_options(options)
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
         request_options = self._parse_request_options(options)
 
@@ -107,13 +116,14 @@ class Client:
                 if 500 <= response.status_code < 600:
                     raise exceptions.InternalServerError(response=response)
 
-                return response
+                if options['full_response']:
+                    return response.json()
+                return response.json()['data']
             except exceptions.RetryError as exc:
-                if retry_count < options['max_retries']:
-                    self._handle_retry_error(exc, retry_count)
-                    retry_count += 1
-                else:
+                if retry_count == options['max_retries']:
                     raise exc
+                self._handle_retry_error(exc, retry_count)
+                retry_count += 1
 
     def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""
@@ -185,12 +195,12 @@ class Client:
         Select all unknown options (not query string, API, or request
         options).
         """
-        options = self._merge(options)
+        options = self._merge_options(options)
         return intersect_keys(options, self.ALL_OPTIONS, invert=True)
 
     def _parse_query_options(self, options):
         """Select query string options out of the provided options object."""
-        options = self._merge(options)
+        options = self._merge_options(options)
         return intersect_keys(options, self.QUERY_OPTIONS)
 
     def _parse_request_options(self, options):
@@ -199,7 +209,7 @@ class Client:
         Select and formats options to be passed to the 'requests' library's
         request methods.
         """
-        options = self._merge(options)
+        options = self._merge_options(options)
         request_options = intersect_keys(options, self.REQUEST_OPTIONS)
 
         if 'params' in request_options:
@@ -217,7 +227,7 @@ class Client:
 
         return request_options
 
-    def _merge(self, *objects):
+    def _merge_options(self, *objects):
         """Merge option objects with the client's object.
 
         Merges one or more options objects with client's options and returns a

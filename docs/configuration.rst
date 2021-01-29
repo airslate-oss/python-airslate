@@ -24,10 +24,11 @@ Available options
 -----------------
 
 - ``base_url`` (default: "https://api.airslate.com"): API endpoint base URL to connect to.
-- ``timeout`` (default: 5.0): stop waiting for a response after a given number of seconds
-  with the ``timeout`` option. It is not a time limit on the entire response download; rather,
-  an exception is raised if the server has not issued a response for ``timeout`` seconds
-  (more precisely, if no bytes have been received on the underlying socket for ``timeout`` seconds).
-- ``max_retries`` (default: 3): number to times to retry if API rate limit is reached or a
+- ``timeout`` (default: 5.0): The time stop waiting for a response after a given number of seconds.
+  It is not a time limit on the entire response download; rather, an exception is raised if the
+  server has not issued a response for ``timeout`` seconds (more precisely, if no bytes have been
+  received on the underlying socket for ``timeout`` seconds).
+- ``max_retries`` (default: 3): The number to times to retry if API rate limit is reached or a
   server error occurs. Rate limit retries delay until the rate limit expires, server errors
   exponentially backoff starting with a 1 second delay.
+- ``full_response`` (default: False): Return the entire JSON response or just ``data`` section.
