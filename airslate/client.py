@@ -12,84 +12,39 @@ import string
 import time
 from types import ModuleType
 
-import requests
 from asdicts.dict import merge, intersect_keys
 
-from airslate import exceptions, resources, __version__, __url__
+from airslate import exceptions, resources, constants, session
+
+
+def _sleep(exc, retry_count):
+    """Sleep based on the type of :class:`RetryError`."""
+    if isinstance(exc, exceptions.RetryError) and exc.retry_after is not None:
+        time.sleep(exc.retry_after)
+        return
+
+    backoff_factor = constants.BACKOFF_FACTOR
+    retry_delay = constants.RETRY_DELAY
+
+    # Prevent incorrect configuration to avoid hammering API servers
+    if backoff_factor <= 0.0:
+        backoff_factor = 1.0
+    if retry_delay <= 0.0:
+        retry_delay = 2.0
+    time.sleep(backoff_factor * (retry_delay ** retry_count))
 
 
 class Client:
     """airSlate API client class."""
 
-    CONTENT_TYPE_JSON_API = 'application/vnd.api+json'
-    CONTENT_TYPE_JSON = 'application/json'
-
-    USER_AGENT = f'airslate/{__version__} ({__url__})'
-
-    DEFAULT_OPTIONS = {
-        # API endpoint base URL to connect to.
-        'base_url': 'https://api.airslate.com',
-
-        # The time stop waiting for a response after a given number of seconds.
-        'timeout': 5.0,
-
-        # The number to times to retry if API rate limit is reached or a
-        # server error occurs.
-        'max_retries': 3,
-
-        # Return the entire JSON response or just ``data`` section.
-        'full_response': False,
-    }
-
-    DEFAULT_HEADERS = {
-        # Default 'User-Agent' header. Usually should be replaced
-        # with a more specific value.
-        'User-Agent': USER_AGENT,
-
-        # From the JSON:API docs:
-        #
-        # Clients MUST send all JSON:API data in request documents with
-        # the header 'Content-Type: application/vnd.api+json' without any
-        # media type parameters.
-        'Content-Type': CONTENT_TYPE_JSON_API,
-
-        # From the JSON:API docs:
-        #
-        # Servers MUST respond with a '406 Not Acceptable' status code if
-        # a request’s 'Accept' header contains the JSON:API media type and
-        # all instances of that media type are modified with media type
-        # parameters.
-        #
-        # The client may pass a list of media type parameters to the server.
-        # The server finds out that a valid parameter is included.
-        'Accept': CONTENT_TYPE_JSON_API + ', ' + CONTENT_TYPE_JSON
-    }
-
-    CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
-    QUERY_OPTIONS = {'include'}
-    REQUEST_OPTIONS = {
-        'headers',
-        'params',
-        'data',
-        'files',
-        'verify',
-        'timeout',
-    }
-
-    ALL_OPTIONS = (CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS)
-
-    BACKOFF_FACTOR = 1.0
-    RETRY_DELAY = 2.0
-
-    def __init__(self, session=None, **options):
+    def __init__(self, sess=None, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
-        self.session = session or requests.Session()
-        self.options = merge(self.DEFAULT_OPTIONS, options)
+        self.session = session.factory(sess)
+        self.options = merge(constants.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
 
-        token = options.pop('token', None)
-        if token is not None:
-            self.headers['Authorization'] = f'Bearer {token}'
+        if 'token' in options:
+            self.headers['Authorization'] = f'Bearer {options.pop("token")}'
 
         self._init_resources()
         self._init_statuses()
@@ -122,7 +77,7 @@ class Client:
             except exceptions.RetryError as exc:
                 if retry_count == options['max_retries']:
                     raise exc
-                self._handle_retry_error(exc, retry_count)
+                _sleep(exc, retry_count)
                 retry_count += 1
 
     def post(self, path, data, **options):
@@ -133,7 +88,7 @@ class Client:
         body = merge(parameter_options, data)
 
         # values in the data options['headers'] takes precedence
-        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
+        headers = merge(constants.DEFAULT_HEADERS, options.pop('headers', {}))
 
         return self.request('post', path, data=body, headers=headers,
                             **options)
@@ -147,7 +102,7 @@ class Client:
         query = merge(query_options, parameter_options, query)
 
         # values in the data options['headers'] takes precedence
-        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
+        headers = merge(constants.DEFAULT_HEADERS, options.pop('headers', {}))
 
         # `Content-Type` HTTP header should be set only for PUT and POST
         del headers['Content-Type']
@@ -173,22 +128,6 @@ class Client:
             if isinstance(cls, type) and issubclass(cls, exceptions.Error):
                 self.statuses[cls().status] = cls
 
-    def _handle_retry_error(self, exc, retry_count):
-        """Sleep based on the type of :class:`RetryError`."""
-        if isinstance(exc, exceptions.RetryError) and \
-                exc.retry_after is not None:
-            time.sleep(exc.retry_after)
-        else:
-            backoff_factor = self.BACKOFF_FACTOR
-            retry_delay = self.RETRY_DELAY
-
-            # Prevent incorrect configuration to avoid hammering API servers
-            if backoff_factor <= 0.0:
-                backoff_factor = 1.0
-            if retry_delay <= 0.0:
-                retry_delay = 2.0
-            time.sleep(backoff_factor * (retry_delay ** retry_count))
-
     def _parse_parameter_options(self, options):
         """Select all unknown options.
 
@@ -196,12 +135,12 @@ class Client:
         options).
         """
         options = self._merge_options(options)
-        return intersect_keys(options, self.ALL_OPTIONS, invert=True)
+        return intersect_keys(options, constants.ALL_OPTIONS, invert=True)
 
     def _parse_query_options(self, options):
         """Select query string options out of the provided options object."""
         options = self._merge_options(options)
-        return intersect_keys(options, self.QUERY_OPTIONS)
+        return intersect_keys(options, constants.QUERY_OPTIONS)
 
     def _parse_request_options(self, options):
         """Select request options out of the provided options object.
@@ -210,7 +149,7 @@ class Client:
         request methods.
         """
         options = self._merge_options(options)
-        request_options = intersect_keys(options, self.REQUEST_OPTIONS)
+        request_options = intersect_keys(options, constants.REQUEST_OPTIONS)
 
         if 'params' in request_options:
             params = request_options['params']

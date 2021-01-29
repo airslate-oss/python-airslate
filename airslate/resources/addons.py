@@ -7,7 +7,7 @@
 
 """Addons module for airslate package."""
 
-from airslate import resolve_endpoint
+from airslate import resolve_endpoint, constants
 
 
 class Addons:  # pylint: disable=too-few-public-methods
@@ -22,7 +22,7 @@ class Addons:  # pylint: disable=too-few-public-methods
 
         headers = {
             # This is not a JSON:API request
-            'Content-Type': self.client.CONTENT_TYPE_JSON
+            'Content-Type': constants.CONTENT_TYPE_JSON
         }
 
         data = {
