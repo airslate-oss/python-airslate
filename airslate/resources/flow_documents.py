@@ -23,6 +23,4 @@ class FlowDocuments:  # pylint: disable=too-few-public-methods
         )
 
         options['query'] = options.pop('query', {})
-        response = self.client.get(url, **options)
-
-        return response.json() or {}
+        return self.client.get(url, **options)
