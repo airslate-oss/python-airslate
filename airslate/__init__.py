@@ -8,16 +8,7 @@
 """The top-level module for airslate package.
 
 This module tracks the version of the package as well as the base
-package info and helpers used by various functions within airslate
-package.
-
-Classes:
-
-    Client
-
-Functions:
-
-    resolve_endpoint(path: str) -> str
+package info used by various functions within airslate package.
 
 Misc variables:
 
@@ -31,23 +22,10 @@ Misc variables:
 
 """
 
-API_VERSION = 'v1'
-
 __copyright__ = 'Copyright (c) 2021 airSlate, Inc.'
-__version__ = '0.0.1a1.dev1'
+__version__ = '0.0.1a1.dev2'
 __license__ = 'Apache 2.0'
 __author__ = 'airSlate'
 __author_email__ = 'dev-support@airslate.com'
 __url__ = 'https://github.com/airslate-oss/python-airslate'
 __description__ = 'Official Python client library for the airSlate API v1'
-
-
-def resolve_endpoint(path: str) -> str:
-    """Resolve resource endpoint taking into account API version.
-
-    >>> resolve_endpoint('/addon-token')
-    /v1/addon-token
-    >>> resolve_endpoint('addons/slates/0/documents')
-    /v1/addons/slates/0/documents
-    """
-    return '/%s/%s' % (API_VERSION, path.lstrip('/'))

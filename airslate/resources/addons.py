@@ -7,10 +7,11 @@
 
 """Addons module for airslate package."""
 
-from airslate import resolve_endpoint, constants
+from airslate import constants
+from . import BaseResource
 
 
-class Addons:  # pylint: disable=too-few-public-methods
+class Addons(BaseResource):
     """Addons resource."""
 
     def __init__(self, client):
@@ -18,7 +19,7 @@ class Addons:  # pylint: disable=too-few-public-methods
 
     def access_token(self, org_id: str, client_id: str, client_secret: str):
         """Get access token for an addon installed in an organization."""
-        url = resolve_endpoint('addon-token')
+        url = self.resolve_endpoint('addon-token')
 
         headers = {
             # This is not a JSON:API request
@@ -32,3 +33,19 @@ class Addons:  # pylint: disable=too-few-public-methods
         }
 
         return self.client.post(url, data, headers=headers, full_response=True)
+
+
+class FlowDocuments(BaseResource):
+    """Addons flow documents resource."""
+
+    def __init__(self, client):
+        self.client = client
+
+    def collection(self, flow_id, **options):
+        """Get supported documents for given flow."""
+        url = self.resolve_endpoint(
+            f'addons/slates/{flow_id}/documents'
+        )
+
+        options['query'] = options.pop('query', {})
+        return self.client.get(url, **options)
