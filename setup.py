@@ -139,7 +139,8 @@ CLASSIFIERS = [
 
 # Dependencies that are downloaded by pip on installation and why
 INSTALL_REQUIRES = [
-    'requests >= 2.20.0, == 2.*',  # Interact with airSlate HTTP API
+    'requests>=2.20.0,==2.*',  # Interact with airSlate HTTP API
+    'urllib3>=1.21.1,<1.27',   # Out HTTP client for Python
 
 ]
 

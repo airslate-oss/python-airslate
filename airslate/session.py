@@ -11,8 +11,7 @@ import warnings
 
 from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.packages import urllib3
-from requests.packages.urllib3.util.retry import Retry
+from urllib3.util.retry import Retry
 
 from airslate import __version__, __url__
 
@@ -64,7 +63,7 @@ def create_retry(max_retries=3, backoff_factor=1.0):
     with warnings.catch_warnings():
         warnings.filterwarnings('error')
         try:
-            urllib3.Retry(method_whitelist={})
+            Retry(method_whitelist={})
         except (DeprecationWarning, TypeError):
             retry_methods_param = 'allowed_methods'
         else:
