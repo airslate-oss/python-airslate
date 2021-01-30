@@ -135,8 +135,6 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3 :: Only',
-
-    'Software Development :: Libraries :: Python Modules'
 ]
 
 # Dependencies that are downloaded by pip on installation and why

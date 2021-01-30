@@ -8,13 +8,15 @@
 """Client module for airslate package."""
 
 import json
-import string
 import time
-from types import ModuleType
 
 from asdicts.dict import merge, intersect_keys
 
-from airslate import exceptions, resources, constants, session
+from . import exceptions, constants, session
+from .resources.addons import (
+    Addons,
+    FlowDocuments
+)
 
 
 def _sleep(exc, retry_count):
@@ -46,8 +48,11 @@ class Client:
         if 'token' in options:
             self.headers['Authorization'] = f'Bearer {options.pop("token")}'
 
-        self._init_resources()
         self._init_statuses()
+
+        # Initialize each resource and injecting client object into it
+        self.addons = Addons(self)
+        self.flow_documents = FlowDocuments(self)
 
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
@@ -109,17 +114,6 @@ class Client:
 
         return self.request('get', path, params=query, headers=headers,
                             **options)
-
-    def _init_resources(self):
-        """Initializes each resource and injecting client object into it."""
-        resource_classes = {}
-        for name, module in resources.__dict__.items():
-            cls = string.capwords(name, '_').replace('_', '')
-            if isinstance(module, ModuleType) and cls in module.__dict__:
-                resource_classes[name] = module.__dict__[cls]
-
-        for name, cls in resource_classes.items():
-            setattr(self, name, cls(self))
 
     def _init_statuses(self):
         """Create a mapping of status codes to classes."""
