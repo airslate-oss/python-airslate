@@ -13,9 +13,16 @@ from .constants import USER_AGENT
 
 
 def factory(session=None) -> Session:
-    """Create :class:`requests.Session` object."""
+    """Create :class:`requests.Session` object.
+
+    Creates a session object that can be used by multiple
+    :class:`airslate.client.Client` instances.
+    """
     session = session or Session()
     assert isinstance(session, Session)
 
+    # Setting the default 'User-Agent' header. Can be overridden using
+    # ``headers`` client option.
     session.headers['User-Agent'] = USER_AGENT
+
     return session

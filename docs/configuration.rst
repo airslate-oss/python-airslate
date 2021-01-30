@@ -5,14 +5,14 @@ Configuration
 Client Options
 ==============
 
-Various options can be set globally on the ``Client.DEFAULT_OPTIONS`` object,
+Various options can be set globally on the ``constants.DEFAULT_OPTIONS`` object,
 per-client on ``client.options``, or per-request as additional named arguments.
 For example:
 
 .. code-block:: python
 
    # global
-   airslate.Client.DEFAULT_OPTIONS['max_retries'] = 5
+   airslate.constants.DEFAULT_OPTIONS['max_retries'] = 5
 
    # per-client
    client.options['max_retries'] = 5
