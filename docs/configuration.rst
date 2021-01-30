@@ -11,14 +11,18 @@ For example:
 
 .. code-block:: python
 
+   from airslate.client import Client
+
+
    # global
-   airslate.constants.DEFAULT_OPTIONS['max_retries'] = 5
+   airslate.constants.DEFAULT_OPTIONS['timeout'] = 10.0
 
    # per-client
-   client.options['max_retries'] = 5
+   client = Client(timeout=10.0)
+   client.options['timeout'] = 10.0
 
    # per-request
-   client.post('/v1/addon-token', {}, max_retries=5)
+   client.post('/v1/addon-token', {}, timeout=10.0)
 
 Available options
 -----------------
@@ -28,7 +32,11 @@ Available options
   It is not a time limit on the entire response download; rather, an exception is raised if the
   server has not issued a response for ``timeout`` seconds (more precisely, if no bytes have been
   received on the underlying socket for ``timeout`` seconds).
+- ``full_response`` (default: False): Return the entire JSON response or just ``data`` section.
+
+
+The following options can be set only globally or per-client:
+
 - ``max_retries`` (default: 3): The number to times to retry if API rate limit is reached or a
   server error occurs. Rate limit retries delay until the rate limit expires, server errors
   exponentially backoff starting with a 1 second delay.
-- ``full_response`` (default: False): Return the entire JSON response or just ``data`` section.

@@ -7,22 +7,91 @@
 
 """Session module for airslate package."""
 
+import warnings
+
 from requests import Session
+from requests.adapters import HTTPAdapter
+from requests.packages import urllib3
+from requests.packages.urllib3.util.retry import Retry
 
-from .constants import USER_AGENT
+from airslate import __version__, __url__
+
+# Default 'User-Agent' header. Usually should be replaced
+# with a more specific value.
+USER_AGENT = f'airslate/{__version__} ({__url__})'
 
 
-def factory(session=None) -> Session:
+def create_retry(max_retries=3, backoff_factor=1.0):
+    """Create default HTTP adapter based on retry policy."""
+
+    status_forcelist = frozenset({
+        408,  # Request Timeout
+        429,  # Too Many Requests
+        500,  # Internal Server Error
+        502,  # Bad Gateway
+        503,  # Service Unavailable
+        504,  # Gateway Timeout
+    })
+
+    method_whitelist = frozenset({
+        'DELETE',
+        'GET',
+        'HEAD',
+        'OPTIONS',
+        'PUT',
+        'POST',
+    })
+
+    # Prevent incorrect configuration to avoid hammering API servers
+    backoff_factor = abs(float(backoff_factor))
+    if backoff_factor == 0.0:
+        backoff_factor = 1.0
+
+    max_retries = int(max_retries)
+
+    retry_kwargs = dict(
+        total=max_retries,
+        read=max_retries,
+        connect=max_retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+
+    # urllib3 1.26.0 started issuing a DeprecationWarning for using the
+    # 'method_whitelist' init parameter of Retry and announced its removal in
+    # version 2.0. The replacement parameter is 'allowed_methods'.
+    # Find out which init parameter to use:
+    with warnings.catch_warnings():
+        warnings.filterwarnings('error')
+        try:
+            urllib3.Retry(method_whitelist={})
+        except (DeprecationWarning, TypeError):
+            retry_methods_param = 'allowed_methods'
+        else:
+            retry_methods_param = 'method_whitelist'
+
+    retry_kwargs[retry_methods_param] = method_whitelist
+
+    return Retry(**retry_kwargs)
+
+
+def factory(max_retries=3, backoff_factor=1.0):
     """Create :class:`requests.Session` object.
 
     Creates a session object that can be used by multiple
     :class:`airslate.client.Client` instances.
     """
-    session = session or Session()
+    session = Session()
     assert isinstance(session, Session)
 
     # Setting the default 'User-Agent' header. Can be overridden using
     # ``headers`` client option.
     session.headers['User-Agent'] = USER_AGENT
+
+    retry_strategy = create_retry(max_retries, backoff_factor)
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
 
     return session

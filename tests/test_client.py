@@ -8,8 +8,8 @@
 import responses
 from responses import POST
 
-from airslate import constants
 from airslate.client import Client
+from airslate.session import USER_AGENT
 
 
 @responses.activate
@@ -24,7 +24,7 @@ def test_default_headers(client):
     headers = responses.calls[0].request.headers
 
     assert headers['key'] == 'value'
-    assert headers['User-Agent'] == constants.USER_AGENT
+    assert headers['User-Agent'] == USER_AGENT
     assert headers['Content-Type'] == 'application/vnd.api+json'
 
 
