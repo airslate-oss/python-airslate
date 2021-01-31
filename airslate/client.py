@@ -10,13 +10,10 @@
 import json
 
 from asdicts.dict import merge, intersect_keys
-from requests.exceptions import RetryError, RequestException, ConnectionError
+from requests.exceptions import ConnectionError, RetryError, RequestException
 
 from . import exceptions, constants, session
-from .resources.addons import (
-    Addons,
-    FlowDocuments
-)
+from .resources.addons import Addons, FlowDocuments
 
 
 class Client:
