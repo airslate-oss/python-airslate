@@ -14,13 +14,14 @@ from requests.exceptions import ConnectionError, RetryError, RequestException
 
 from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
+from .constants import (
+    CONTENT_TYPE_JSON_API,
+    CONTENT_TYPE_JSON
+)
 
 
 class Client:
     """airSlate API client class."""
-
-    CONTENT_TYPE_JSON_API = 'application/vnd.api+json'
-    CONTENT_TYPE_JSON = 'application/json'
 
     DEFAULT_HEADERS = {
         # From the JSON:API docs:
@@ -59,7 +60,10 @@ class Client:
         # delay.
         'max_retries': 3,
 
-        # Return the entire JSON response or just ``data`` section.
+        # Return the entire JSON response or just ``data`` section. Note, this
+        # option should only be modified for direct calls of the client's
+        # methods (e.g. ``client.get()``, ``client.post()``, etc). Resource
+        # classes can depend on the default value of this option.
         'full_response': False,
     }
 
@@ -175,8 +179,7 @@ class Client:
     def _parse_parameter_options(self, options):
         """Select all unknown options.
 
-        Select all unknown options (not query string, API, or request
-        options).
+        Select all unknown options (not query string, API, or request options).
         """
         options = self._merge_options(options)
         return intersect_keys(options, self.ALL_OPTIONS, invert=True)

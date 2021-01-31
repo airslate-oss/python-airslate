@@ -8,7 +8,7 @@
 import responses
 from responses import POST
 
-from airslate import Client
+from airslate.client import Client
 from airslate.session import USER_AGENT
 
 

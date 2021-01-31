@@ -11,7 +11,7 @@ For example:
 
 .. code-block:: python
 
-   from airslate import Client
+   from airslate.client import Client
 
 
    # global
@@ -33,7 +33,9 @@ Available options
   server has not issued a response for ``timeout`` seconds (more precisely, if no bytes have been
   received on the underlying socket for ``timeout`` seconds).
 - ``full_response`` (default: False): Return the entire JSON response or just ``data`` section.
-
+  This option should only be modified for direct calls of the client's methods
+  (e.g. ``client.get()``, ``client.post()``, etc). Resource classes can depend on the default
+  value of this option.
 
 The following options can be set only globally:
 

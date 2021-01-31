@@ -9,7 +9,7 @@ Get access token for an installed addon
 .. code-block:: python
 
    import json
-   from airslate import Client
+   from airslate.client import Client
 
    client = Client()
 
