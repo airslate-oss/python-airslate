@@ -99,6 +99,8 @@ class Client:
         """Dispatches a request to the airSlate API."""
         options = self._merge_options(options)
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
+
+        # Select and formats options to be passed to the request
         request_options = self._parse_request_options(options)
 
         try:
@@ -137,26 +139,31 @@ class Client:
 
     def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""
+        # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
 
-        # values in the data body takes precedence
+        # Values in the ``data`` takes precedence.
         body = merge(parameter_options, data)
 
-        # values in the data options['headers'] takes precedence
+        # Values in the ``options['headers']`` takes precedence.
         headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
 
         return self.request('post', path, data=body, headers=headers,
                             **options)
 
-    def get(self, path, query, **options):
+    def get(self, path, query=None, **options):
         """Parses GET request options and dispatches a request."""
+        # Select query string options.
         query_options = self._parse_query_options(options)
+
+        # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
 
-        # query takes precedence
-        query = merge(query_options, parameter_options, query)
+        # Values in the ``query`` takes precedence.
+        _query = {} if query is None else query
+        query = merge(query_options, parameter_options, _query)
 
-        # values in the data options['headers'] takes precedence
+        # Values in the ``options['headers']`` takes precedence.
         headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
 
         # `Content-Type` HTTP header should be set only for PUT and POST
@@ -176,12 +183,27 @@ class Client:
         """Select all unknown options.
 
         Select all unknown options (not query string, API, or request options).
+
+        >>> self._parse_parameter_options({})
+        {}
+        >>> self._parse_parameter_options({'foo': 'bar'})
+        {'foo': 'bar'}
+        >>> self._parse_parameter_options({'timeout': 1.0})
+        {}
         """
         options = self._merge_options(options)
         return intersect_keys(options, self.ALL_OPTIONS, invert=True)
 
     def _parse_query_options(self, options):
-        """Select query string options out of the provided options object."""
+        """Select query string options out of the provided options object.
+
+        >>> self._parse_query_options({})
+        {}
+        >>> self._parse_query_options({'foo': 'bar'})
+        {}
+        >>> self._parse_query_options({'include': 'fields'})
+        {'include': 'fields'}
+        """
         options = self._merge_options(options)
         return intersect_keys(options, self.QUERY_OPTIONS)
 
@@ -190,6 +212,17 @@ class Client:
 
         Select and formats options to be passed to the 'requests' library's
         request methods.
+
+        >>> self._parse_request_options({})
+        {'timeout': 5.0, 'headers': {}}
+        >>> self._parse_request_options({'timeout': 10.0})
+        {'timeout': 10.0, 'headers': {}}
+        >>> self._parse_request_options({'params': {'foo': True}})
+        {'timeout': 5.0, 'params': {'foo': 'true'}, 'headers': {}}
+        >>> self._parse_request_options({'data': {'foo': 'bar'}})
+        {'timeout': 5.0, 'data': '{"foo": "bar"}', 'headers': {}}
+        >>> self._parse_request_options({'headers': {'x-header': 'value'}})
+        {'timeout': 5.0, 'headers': {'x-header': 'value'}}
         """
         options = self._merge_options(options)
         request_options = intersect_keys(options, self.REQUEST_OPTIONS)
@@ -197,10 +230,14 @@ class Client:
         if 'params' in request_options:
             params = request_options['params']
             for key in params:
-                if isinstance(params[key], bool):
+                # json.dumps(None) -> 'null'
+                # json.dumps(True) -> 'true'
+                if isinstance(params[key], bool) or params[key] is None:
                     params[key] = json.dumps(params[key])
 
         if 'data' in request_options:
+            # Serialize ``options['data']`` to JSON, requests doesn't do this
+            # automatically.
             request_options['data'] = json.dumps(request_options['data'])
 
         headers = self.headers.copy()

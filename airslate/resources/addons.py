@@ -46,5 +46,4 @@ class FlowDocuments(BaseResource):
             f'addons/slates/{flow_id}/documents'
         )
 
-        options['query'] = options.pop('query', {})
         return self.client.get(url, **options)
