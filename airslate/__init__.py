@@ -10,6 +10,10 @@
 This module tracks the version of the package as well as the base
 package info used by various functions within airslate package.
 
+Classes:
+
+    Client
+
 Misc variables:
 
     __copyright__
@@ -21,6 +25,8 @@ Misc variables:
     __description__
 
 """
+
+from .client import Client  # noqa: F401
 
 __copyright__ = 'Copyright (c) 2021 airSlate, Inc.'
 __version__ = '0.0.1a1.dev2'

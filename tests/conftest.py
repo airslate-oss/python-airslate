@@ -7,7 +7,7 @@
 
 import pytest
 
-from airslate.client import Client
+from airslate import Client
 
 
 class TestClient(Client):

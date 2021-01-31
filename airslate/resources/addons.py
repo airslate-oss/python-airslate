@@ -7,7 +7,7 @@
 
 """Addons module for airslate package."""
 
-from airslate import constants
+from airslate.client import Client
 from . import BaseResource
 
 
@@ -23,7 +23,7 @@ class Addons(BaseResource):
 
         headers = {
             # This is not a JSON:API request
-            'Content-Type': constants.CONTENT_TYPE_JSON
+            'Content-Type': Client.CONTENT_TYPE_JSON
         }
 
         data = {

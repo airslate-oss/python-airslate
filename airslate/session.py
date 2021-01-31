@@ -46,7 +46,7 @@ def create_retry(max_retries=3, backoff_factor=1.0):
     if backoff_factor == 0.0:
         backoff_factor = 1.0
 
-    max_retries = int(max_retries)
+    max_retries = abs(int(max_retries))
 
     retry_kwargs = dict(
         total=max_retries,
