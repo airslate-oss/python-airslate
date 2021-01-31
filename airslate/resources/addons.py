@@ -7,7 +7,6 @@
 
 """Addons module for airslate package."""
 
-from airslate import constants
 from . import BaseResource
 
 
@@ -23,7 +22,7 @@ class Addons(BaseResource):
 
         headers = {
             # This is not a JSON:API request
-            'Content-Type': constants.CONTENT_TYPE_JSON
+            'Content-Type': 'application/json'
         }
 
         data = {
@@ -47,5 +46,4 @@ class FlowDocuments(BaseResource):
             f'addons/slates/{flow_id}/documents'
         )
 
-        options['query'] = options.pop('query', {})
         return self.client.get(url, **options)

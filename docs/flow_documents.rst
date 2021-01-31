@@ -3,9 +3,6 @@ Flow documents
 ==============
 
 
-Methods
-=======
-
 Get supported documents for given flow
 --------------------------------------
 

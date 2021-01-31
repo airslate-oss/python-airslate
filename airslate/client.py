@@ -12,16 +12,75 @@ import json
 from asdicts.dict import merge, intersect_keys
 from requests.exceptions import ConnectionError, RetryError, RequestException
 
-from . import exceptions, constants, session
+from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
 
 
 class Client:
     """airSlate API client class."""
 
+    DEFAULT_HEADERS = {
+        # From the JSON:API docs:
+        #
+        # Clients MUST send all JSON:API data in request documents with
+        # the header 'Content-Type: application/vnd.api+json' without any
+        # media type parameters.
+        'Content-Type': 'application/vnd.api+json',
+
+        # From the JSON:API docs:
+        #
+        # Servers MUST respond with a '406 Not Acceptable' status code if
+        # a request’s 'Accept' header contains the JSON:API media type and
+        # all instances of that media type are modified with media type
+        # parameters.
+        #
+        # The client may pass a list of media type parameters to the server.
+        # The server finds out that a valid parameter is included.
+        'Accept': 'application/vnd.api+json, application/json'
+    }
+
+    DEFAULT_OPTIONS = {
+        # API endpoint base URL to connect to.
+        'base_url': 'https://api.airslate.com',
+
+        # The time stop waiting for a response after a given number of seconds.
+        # It is not a time limit on the entire response download; rather, an
+        # exception is raised if the server has not issued a response for
+        # ``timeout`` seconds (more precisely, if no bytes have been received
+        # on the underlying socket for ``timeout`` seconds).
+        'timeout': 5.0,
+
+        # The number to times to retry if API rate limit is reached or a
+        # server error occurs. Rate limit retries delay until the rate limit
+        # expires, server errors exponentially backoff starting with a 1 second
+        # delay.
+        'max_retries': 3,
+
+        # Return the entire JSON response or just ``data`` section. Note, this
+        # option should only be modified for direct calls of the client's
+        # methods (e.g. ``client.get()``, ``client.post()``, etc). Resource
+        # classes can depend on the default value of this option.
+        'full_response': False,
+    }
+
+    CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
+
+    QUERY_OPTIONS = {'include'}
+
+    REQUEST_OPTIONS = {
+        'headers',
+        'params',
+        'data',
+        'files',
+        'verify',
+        'timeout',
+    }
+
+    ALL_OPTIONS = (CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS)
+
     def __init__(self, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
-        self.options = merge(constants.DEFAULT_OPTIONS, options)
+        self.options = merge(self.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
         self.session = session.factory(
             max_retries=self.options['max_retries'],
@@ -40,6 +99,8 @@ class Client:
         """Dispatches a request to the airSlate API."""
         options = self._merge_options(options)
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
+
+        # Select and formats options to be passed to the request
         request_options = self._parse_request_options(options)
 
         try:
@@ -78,27 +139,32 @@ class Client:
 
     def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""
+        # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
 
-        # values in the data body takes precedence
+        # Values in the ``data`` takes precedence.
         body = merge(parameter_options, data)
 
-        # values in the data options['headers'] takes precedence
-        headers = merge(constants.DEFAULT_HEADERS, options.pop('headers', {}))
+        # Values in the ``options['headers']`` takes precedence.
+        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
 
         return self.request('post', path, data=body, headers=headers,
                             **options)
 
-    def get(self, path, query, **options):
+    def get(self, path, query=None, **options):
         """Parses GET request options and dispatches a request."""
+        # Select query string options.
         query_options = self._parse_query_options(options)
+
+        # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
 
-        # query takes precedence
-        query = merge(query_options, parameter_options, query)
+        # Values in the ``query`` takes precedence.
+        _query = {} if query is None else query
+        query = merge(query_options, parameter_options, _query)
 
-        # values in the data options['headers'] takes precedence
-        headers = merge(constants.DEFAULT_HEADERS, options.pop('headers', {}))
+        # Values in the ``options['headers']`` takes precedence.
+        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
 
         # `Content-Type` HTTP header should be set only for PUT and POST
         del headers['Content-Type']
@@ -116,33 +182,62 @@ class Client:
     def _parse_parameter_options(self, options):
         """Select all unknown options.
 
-        Select all unknown options (not query string, API, or request
-        options).
+        Select all unknown options (not query string, API, or request options).
+
+        >>> self._parse_parameter_options({})
+        {}
+        >>> self._parse_parameter_options({'foo': 'bar'})
+        {'foo': 'bar'}
+        >>> self._parse_parameter_options({'timeout': 1.0})
+        {}
         """
         options = self._merge_options(options)
-        return intersect_keys(options, constants.ALL_OPTIONS, invert=True)
+        return intersect_keys(options, self.ALL_OPTIONS, invert=True)
 
     def _parse_query_options(self, options):
-        """Select query string options out of the provided options object."""
+        """Select query string options out of the provided options object.
+
+        >>> self._parse_query_options({})
+        {}
+        >>> self._parse_query_options({'foo': 'bar'})
+        {}
+        >>> self._parse_query_options({'include': 'fields'})
+        {'include': 'fields'}
+        """
         options = self._merge_options(options)
-        return intersect_keys(options, constants.QUERY_OPTIONS)
+        return intersect_keys(options, self.QUERY_OPTIONS)
 
     def _parse_request_options(self, options):
         """Select request options out of the provided options object.
 
         Select and formats options to be passed to the 'requests' library's
         request methods.
+
+        >>> self._parse_request_options({})
+        {'timeout': 5.0, 'headers': {}}
+        >>> self._parse_request_options({'timeout': 10.0})
+        {'timeout': 10.0, 'headers': {}}
+        >>> self._parse_request_options({'params': {'foo': True}})
+        {'timeout': 5.0, 'params': {'foo': 'true'}, 'headers': {}}
+        >>> self._parse_request_options({'data': {'foo': 'bar'}})
+        {'timeout': 5.0, 'data': '{"foo": "bar"}', 'headers': {}}
+        >>> self._parse_request_options({'headers': {'x-header': 'value'}})
+        {'timeout': 5.0, 'headers': {'x-header': 'value'}}
         """
         options = self._merge_options(options)
-        request_options = intersect_keys(options, constants.REQUEST_OPTIONS)
+        request_options = intersect_keys(options, self.REQUEST_OPTIONS)
 
         if 'params' in request_options:
             params = request_options['params']
             for key in params:
-                if isinstance(params[key], bool):
+                # json.dumps(None) -> 'null'
+                # json.dumps(True) -> 'true'
+                if isinstance(params[key], bool) or params[key] is None:
                     params[key] = json.dumps(params[key])
 
         if 'data' in request_options:
+            # Serialize ``options['data']`` to JSON, requests doesn't do this
+            # automatically.
             request_options['data'] = json.dumps(request_options['data'])
 
         headers = self.headers.copy()

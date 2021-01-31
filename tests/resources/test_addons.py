@@ -10,8 +10,6 @@ import json
 import responses
 from responses import POST
 
-from airslate import constants
-
 
 @responses.activate
 def test_access_token(client):
@@ -38,5 +36,5 @@ def test_access_token(client):
     body = responses.calls[0].request.body
 
     assert json.loads(body) == data
-    assert headers['Content-Type'] == constants.CONTENT_TYPE_JSON
+    assert headers['Content-Type'] == 'application/json'
     assert isinstance(resp, dict)
