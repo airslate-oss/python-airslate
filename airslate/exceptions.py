@@ -130,13 +130,16 @@ class InternalServerError(Error):
     The server has encountered a situation it doesn't know how to handle.
     """
 
-    def __init__(self, response=None):
+    def __init__(self, message=None, response=None):
         status = 500
         if response is not None:
             status = response.status_code
 
+        if message is None:
+            message = 'Internal Server Error'
+
         super().__init__(
-            message='Internal Server Error',
+            message=message,
             status=status,
             response=response,
         )

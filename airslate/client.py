@@ -10,7 +10,7 @@
 import json
 
 from asdicts.dict import merge, intersect_keys
-from requests.exceptions import RetryError, RequestException
+from requests.exceptions import RetryError, RequestException, ConnectionError
 
 from . import exceptions, constants, session
 from .resources.addons import (
@@ -64,6 +64,15 @@ class Client:
             raise exceptions.RetryError(
                 message='Exceeded API Rate Limit',
                 response=retry_exc.response
+            )
+        except ConnectionError as conn_exc:
+            message = ('A connection attempt failed because the ' +
+                       'connected party did not properly respond ' +
+                       'after a period of time, or established connection ' +
+                       'failed because connected host has failed to respond.')
+            raise exceptions.InternalServerError(
+                message=message,
+                response=conn_exc.response,
             )
         except RequestException as req_exc:
             raise exceptions.InternalServerError(
