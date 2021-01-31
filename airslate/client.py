@@ -8,9 +8,9 @@
 """Client module for airslate package."""
 
 import json
+import requests
 
 from asdicts.dict import merge, intersect_keys
-from requests.exceptions import ConnectionError, RetryError, RequestException
 
 from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
@@ -115,15 +115,20 @@ class Client:
             if 500 <= response.status_code < 600:
                 raise exceptions.InternalServerError(response=response)
 
+            response_data = response.json()
             if options['full_response']:
-                return response.json()
-            return response.json()['data']
-        except RetryError as retry_exc:
-            raise exceptions.RetryError(
+                return response_data
+
+            if 'data' not in response_data:
+                raise exceptions.MissingData()
+
+            return response_data['data']
+        except requests.exceptions.RetryError as retry_exc:
+            raise exceptions.RetryApiError(
                 message='Exceeded API Rate Limit',
                 response=retry_exc.response
             )
-        except ConnectionError as conn_exc:
+        except requests.exceptions.ConnectionError as conn_exc:
             message = ('A connection attempt failed because the ' +
                        'connected party did not properly respond ' +
                        'after a period of time, or established connection ' +
@@ -132,7 +137,7 @@ class Client:
                 message=message,
                 response=conn_exc.response,
             )
-        except RequestException as req_exc:
+        except requests.exceptions.RequestException as req_exc:
             raise exceptions.InternalServerError(
                 response=req_exc.response
             )
@@ -176,7 +181,7 @@ class Client:
         """Create a mapping of status codes to classes."""
         self.statuses = {}
         for cls in exceptions.__dict__.values():
-            if isinstance(cls, type) and issubclass(cls, exceptions.Error):
+            if isinstance(cls, type) and issubclass(cls, exceptions.ApiError):
                 self.statuses[cls().status] = cls
 
     def _parse_parameter_options(self, options):
