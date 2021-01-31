@@ -14,10 +14,6 @@ from requests.exceptions import ConnectionError, RetryError, RequestException
 
 from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
-from .constants import (
-    CONTENT_TYPE_JSON_API,
-    CONTENT_TYPE_JSON
-)
 
 
 class Client:
@@ -29,7 +25,7 @@ class Client:
         # Clients MUST send all JSON:API data in request documents with
         # the header 'Content-Type: application/vnd.api+json' without any
         # media type parameters.
-        'Content-Type': CONTENT_TYPE_JSON_API,
+        'Content-Type': 'application/vnd.api+json',
 
         # From the JSON:API docs:
         #
@@ -40,7 +36,7 @@ class Client:
         #
         # The client may pass a list of media type parameters to the server.
         # The server finds out that a valid parameter is included.
-        'Accept': CONTENT_TYPE_JSON_API + ', ' + CONTENT_TYPE_JSON
+        'Accept': 'application/vnd.api+json, application/json'
     }
 
     DEFAULT_OPTIONS = {
