@@ -7,14 +7,8 @@
 
 """Constants-only module."""
 
-from airslate import __version__, __url__
-
 CONTENT_TYPE_JSON_API = 'application/vnd.api+json'
 CONTENT_TYPE_JSON = 'application/json'
-
-# Default 'User-Agent' header. Usually should be replaced
-# with a more specific value.
-USER_AGENT = f'airslate/{__version__} ({__url__})'
 
 DEFAULT_OPTIONS = {
     # API endpoint base URL to connect to.
@@ -69,6 +63,3 @@ REQUEST_OPTIONS = {
 }
 
 ALL_OPTIONS = (CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS)
-
-BACKOFF_FACTOR = 1.0
-RETRY_DELAY = 2.0

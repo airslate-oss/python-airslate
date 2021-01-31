@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Standard exception hierarchy for airslate.
+"""Standard exception hierarchy for airslate package.
 
 Classes:
 
@@ -13,7 +13,7 @@ Classes:
     BadRequest
     Unauthorized
     RetryError
-    RateLimitError
+    InternalServerError
 
 """
 
@@ -117,7 +117,6 @@ class RetryError(Error):
     """Base class for retryable errors."""
 
     def __init__(self, message=None, status=None, response=None):
-        self.retry_after = None
         super().__init__(
             message=message,
             status=status,
@@ -125,40 +124,22 @@ class RetryError(Error):
         )
 
 
-class RateLimitError(RetryError):
-    """Error raised for exceeding rate limit.
-
-    The server is limiting the rate at which this client receives responses,
-    and this request exceeds that rate.
-    """
-
-    def __init__(self, response=None):
-        message = ("Exceeded airSlate's Rate Limit. "
-                   "Please use time.sleep() to space requests.")
-
-        super().__init__(
-            message=message,
-            status=429,
-            response=response,
-        )
-
-        if response is not None:
-            self.retry_after = float(response.headers['Retry-After'])
-
-
-class InternalServerError(RetryError):
+class InternalServerError(Error):
     """Internal server error class.
 
     The server has encountered a situation it doesn't know how to handle.
     """
 
-    def __init__(self, response=None):
+    def __init__(self, message=None, response=None):
         status = 500
         if response is not None:
             status = response.status_code
 
+        if message is None:
+            message = 'Internal Server Error'
+
         super().__init__(
-            message='Internal Server Error',
+            message=message,
             status=status,
             response=response,
         )

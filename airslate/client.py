@@ -8,42 +8,24 @@
 """Client module for airslate package."""
 
 import json
-import time
 
 from asdicts.dict import merge, intersect_keys
+from requests.exceptions import ConnectionError, RetryError, RequestException
 
 from . import exceptions, constants, session
-from .resources.addons import (
-    Addons,
-    FlowDocuments
-)
-
-
-def _sleep(exc, retry_count):
-    """Sleep based on the type of :class:`RetryError`."""
-    if isinstance(exc, exceptions.RetryError) and exc.retry_after is not None:
-        time.sleep(exc.retry_after)
-        return
-
-    backoff_factor = constants.BACKOFF_FACTOR
-    retry_delay = constants.RETRY_DELAY
-
-    # Prevent incorrect configuration to avoid hammering API servers
-    if backoff_factor <= 0.0:
-        backoff_factor = 1.0
-    if retry_delay <= 0.0:
-        retry_delay = 2.0
-    time.sleep(backoff_factor * (retry_delay ** retry_count))
+from .resources.addons import Addons, FlowDocuments
 
 
 class Client:
     """airSlate API client class."""
 
-    def __init__(self, sess=None, **options):
+    def __init__(self, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
-        self.session = session.factory(sess)
         self.options = merge(constants.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
+        self.session = session.factory(
+            max_retries=self.options['max_retries'],
+        )
 
         if 'token' in options:
             self.headers['Authorization'] = f'Bearer {options.pop("token")}'
@@ -60,30 +42,39 @@ class Client:
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
         request_options = self._parse_request_options(options)
 
-        retry_count = 0
-        while True:
-            try:
-                response = getattr(self.session, method)(
-                    url, **request_options
+        try:
+            response = getattr(self.session, method)(url, **request_options)
+
+            if response.status_code in self.statuses:
+                raise self.statuses[response.status_code](
+                    response=response
                 )
 
-                if response.status_code in self.statuses:
-                    raise self.statuses[response.status_code](
-                        response=response
-                    )
+            # Any unhandled 5xx is a server error
+            if 500 <= response.status_code < 600:
+                raise exceptions.InternalServerError(response=response)
 
-                # Any unhandled 5xx is a server error
-                if 500 <= response.status_code < 600:
-                    raise exceptions.InternalServerError(response=response)
-
-                if options['full_response']:
-                    return response.json()
-                return response.json()['data']
-            except exceptions.RetryError as exc:
-                if retry_count == options['max_retries']:
-                    raise exc
-                _sleep(exc, retry_count)
-                retry_count += 1
+            if options['full_response']:
+                return response.json()
+            return response.json()['data']
+        except RetryError as retry_exc:
+            raise exceptions.RetryError(
+                message='Exceeded API Rate Limit',
+                response=retry_exc.response
+            )
+        except ConnectionError as conn_exc:
+            message = ('A connection attempt failed because the ' +
+                       'connected party did not properly respond ' +
+                       'after a period of time, or established connection ' +
+                       'failed because connected host has failed to respond.')
+            raise exceptions.InternalServerError(
+                message=message,
+                response=conn_exc.response,
+            )
+        except RequestException as req_exc:
+            raise exceptions.InternalServerError(
+                response=req_exc.response
+            )
 
     def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""

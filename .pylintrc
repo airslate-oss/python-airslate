@@ -17,3 +17,9 @@ jobs=0
 # The type of string formatting that logging methods do. `old` means using %
 # formatting, `new` is for `{}` formatting.
 logging-format-style=old
+
+[VARIABLES]
+
+# List of qualified module names which can have objects that can redefine
+# builtins.
+redefining-builtins-modules=requests.exceptions
