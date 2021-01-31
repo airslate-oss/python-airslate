@@ -3,16 +3,13 @@ Addons resource
 ===============
 
 
-Methods
-=======
-
 Get access token for an installed addon
 ---------------------------------------
 
 .. code-block:: python
 
    import json
-   from airslate.client import Client
+   from airslate import Client
 
    client = Client()
 

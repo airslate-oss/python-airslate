@@ -3,9 +3,6 @@ Flow documents
 ==============
 
 
-Methods
-=======
-
 Get supported documents for given flow
 --------------------------------------
 
@@ -17,7 +14,7 @@ Get supported documents for given flow
 
    import os
    import json
-   from airslate.client import Client
+   from airslate import Client
 
    org_id = '057C5000-0000-0000-0000D981'
    flow_id = '04415300-0000-0000-0000BA29'

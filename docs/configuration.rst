@@ -5,17 +5,17 @@ Configuration
 Client Options
 ==============
 
-Various options can be set globally on the ``constants.DEFAULT_OPTIONS`` object,
+Various options can be set globally on the ``Client.DEFAULT_OPTIONS`` object,
 per-client on ``client.options``, or per-request as additional named arguments.
 For example:
 
 .. code-block:: python
 
-   from airslate.client import Client
+   from airslate import Client
 
 
    # global
-   airslate.constants.DEFAULT_OPTIONS['timeout'] = 10.0
+   Client.DEFAULT_OPTIONS['timeout'] = 10.0
 
    # per-client
    client = Client(timeout=10.0)
@@ -35,8 +35,12 @@ Available options
 - ``full_response`` (default: False): Return the entire JSON response or just ``data`` section.
 
 
-The following options can be set only globally or per-client:
+The following options can be set only globally:
 
 - ``max_retries`` (default: 3): The number to times to retry if API rate limit is reached or a
   server error occurs. Rate limit retries delay until the rate limit expires, server errors
-  exponentially backoff starting with a 1 second delay.
+  exponentially backoff starting with a 1 second delay. The algorithm is as follows:
+
+.. code-block::
+
+  {backoff factor} * (2 ** ({number of total retries} - 1))
