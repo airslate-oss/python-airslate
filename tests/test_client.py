@@ -5,9 +5,11 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+import pytest
 import responses
 from responses import POST
 
+from airslate import exceptions
 from airslate.client import Client
 from airslate.session import USER_AGENT
 
@@ -66,6 +68,54 @@ def test_auth_header():
     client = Client(token='secret')
 
     assert client.headers['Authorization'] == 'Bearer secret'
+
+
+@responses.activate
+def test_full_response(client):
+    url = f'{client.base_url}/v1/test'
+    response_data = {
+        'data': {},
+        'meta': {},
+    }
+    responses.add(POST, url, status=200, json=response_data)
+
+    client.options['full_response'] = True
+    response = client.post('/v1/test', {})
+
+    assert response == response_data
+
+
+@responses.activate
+def test_data_response(client):
+    url = f'{client.base_url}/v1/test'
+    response_data = {
+        'data': {
+            'type': 'test'
+        },
+        'meta': {},
+    }
+    responses.add(POST, url, status=200, json=response_data)
+
+    client.options['full_response'] = False
+    response = client.post('/v1/test', {})
+
+    assert response == response_data['data']
+
+
+@responses.activate
+def test_missed_data_response(client):
+    url = f'{client.base_url}/v1/test'
+    response_data = {
+        'meta': {},
+    }
+    responses.add(POST, url, status=200, json=response_data)
+
+    client.options['full_response'] = False
+
+    with pytest.raises(exceptions.MissingData) as exc_info:
+        client.post('/v1/test', {})
+
+    assert 'Data is missing in JSON:API response' in str(exc_info.value)
 
 
 def test_custom_options():

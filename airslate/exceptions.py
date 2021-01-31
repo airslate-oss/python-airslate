@@ -9,7 +9,7 @@
 
 Classes:
 
-    Error
+    ApiError
     BadRequest
     Unauthorized
     RetryError
@@ -18,8 +18,8 @@ Classes:
 """
 
 
-class Error(Exception):
-    """Base class for errors in airslate package."""
+class ApiError(Exception):
+    """Base class for errors in API endpoints."""
 
     def __init__(self, message=None, status=None, response=None):
         super().__init__(message)
@@ -84,7 +84,7 @@ class Error(Exception):
         self.message = message
 
 
-class BadRequest(Error):
+class BadRequest(ApiError):
     """Error raised for all kinds of bad requests.
 
     Raise if the client sends something to the server cannot handle.
@@ -98,7 +98,7 @@ class BadRequest(Error):
         )
 
 
-class Unauthorized(Error):
+class Unauthorized(ApiError):
     """Error raised for credentials issues on authentication stage.
 
     It indicates that the request has not been applied because it lacks valid
@@ -113,7 +113,7 @@ class Unauthorized(Error):
         )
 
 
-class RetryError(Error):
+class RetryApiError(ApiError):
     """Base class for retryable errors."""
 
     def __init__(self, message=None, status=None, response=None):
@@ -124,7 +124,7 @@ class RetryError(Error):
         )
 
 
-class InternalServerError(Error):
+class InternalServerError(ApiError):
     """Internal server error class.
 
     The server has encountered a situation it doesn't know how to handle.
@@ -143,3 +143,23 @@ class InternalServerError(Error):
             status=status,
             response=response,
         )
+
+
+class DomainError(Exception):
+    """Base domain error for airslate package."""
+
+    def __init__(self, message=None):
+        if message is None:
+            message = 'Something went wrong with AirSlate API'
+
+        super().__init__(message)
+
+
+class MissingData(DomainError):
+    """Error raised when ``data`` is is missing in JSON:API response."""
+
+    def __init__(self, message=None):
+        if message is None:
+            message = 'Data is missing in JSON:API response'
+
+        super().__init__(message)
