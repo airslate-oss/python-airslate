@@ -59,15 +59,15 @@ class BaseEntity(metaclass=ABCMeta):
 
     def has_many(self, cls, relation):
         """Create a list of ``cls`` instances."""
-        if relation not in self._relationships:
+        if relation not in self.relationships:
             raise RelationNotExist()
 
-        data = path(self._relationships, f'{relation}.data')
+        data = path(self.relationships, f'{relation}.data')
         if data is None:
             return []
 
         ids = set((r['id'], r['type']) for r in data)
-        relations = [e for e in self._included if (e['type'], e['id']) in ids]
+        relations = [e for e in self.included if (e['id'], e['type']) in ids]
 
         if len(relations) == 0:
             result = map(lambda r: cls(r[0]), ids)
