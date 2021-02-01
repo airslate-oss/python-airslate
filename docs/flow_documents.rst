@@ -13,7 +13,6 @@ Get supported documents for given flow
 .. code-block:: python
 
    import os
-   import json
    from airslate.client import Client
 
    org_id = '057C5000-0000-0000-0000D981'
