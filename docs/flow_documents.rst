@@ -26,6 +26,8 @@ Get supported documents for given flow
    documents = client.flow_documents.collection(flow_id, include='fields')
 
    for document in documents:
+       print(document)
+
        print({
            'id': document['id'],
            'name': document['name'],
@@ -42,6 +44,7 @@ Get supported documents for given flow
 
 .. code-block::
 
+    <Document (documents): 5ED5E800-0000-0000-000021F6>
     {'id': '5ED5E800-0000-0000-000021F6', 'name': 'Untitled Form', 'status': 'DRAFT', 'version': 8}
     <Field (dictionary): 5ED5E800-0000-0000-000021F6-0001>
     <Field (dictionary): 5ED5E800-0000-0000-000021F6-0002>
