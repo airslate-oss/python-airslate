@@ -5,7 +5,10 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-from airslate.entities.base import filter_included
+import pytest
+
+from airslate.entities.base import filter_included, BaseEntity
+from airslate.exceptions import MissingData
 
 
 def test_filter_includes(documents_collection):
@@ -34,3 +37,10 @@ def test_filter_includes(documents_collection):
     assert len(result) == 1
     assert result[0]['type'] == 'documents'
     assert result[0]['id'] == 'BE7F4800-0000-0000-000021F6'
+
+
+def test_from_collection():
+    with pytest.raises(MissingData) as exc_info:
+        BaseEntity.from_collection({})
+
+    assert 'Data is missing in JSON:API response' in str(exc_info.value)
