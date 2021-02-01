@@ -5,10 +5,15 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+"""Provides document fields related classes and functionality."""
+
+
 from .base import BaseEntity
 
 
 class Field(BaseEntity):
+    """Document fields entity."""
+
     @property
     def type(self):
         return 'dictionary'
