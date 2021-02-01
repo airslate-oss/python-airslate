@@ -52,6 +52,14 @@ class BaseEntity(metaclass=ABCMeta):
         """Attribute membership verification."""
         return item in self._attributes
 
+    def __repr__(self):
+        """String representation of the current entity."""
+        return '<%s (%s): %s>' % (
+            self.__class__.__name__,
+            self.type,
+            self['id']
+        )
+
     def set_attributes(self, attributes):
         """Bulk setter for attributes."""
         for k in attributes:

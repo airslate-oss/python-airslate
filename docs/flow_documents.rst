@@ -34,7 +34,7 @@ Get supported documents for given flow
        })
 
        for field in document.fields:
-           print((field['id'], field.type))
+           print(field)
 
 .. raw:: html
 
@@ -43,6 +43,6 @@ Get supported documents for given flow
 .. code-block::
 
     {'id': '5ED5E800-0000-0000-000021F6', 'name': 'Untitled Form', 'status': 'DRAFT', 'version': 8}
-    ('5ED5E800-0000-0000-000021F6-0002', 'dictionary')
-    ('5ED5E800-0000-0000-000021F6-0001', 'dictionary')
-    ('5ED5E800-0000-0000-000021F6-0003', 'dictionary')
+    <Field (dictionary): 5ED5E800-0000-0000-000021F6-0001>
+    <Field (dictionary): 5ED5E800-0000-0000-000021F6-0002>
+    <Field (dictionary): 5ED5E800-0000-0000-000021F6-0003>
