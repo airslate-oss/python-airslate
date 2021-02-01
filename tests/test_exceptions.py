@@ -44,3 +44,17 @@ def test_internal_server_error(status, client):
         )
 
     assert exc_info.value.status == status
+
+
+def test_domain_exception_default_message():
+    with pytest.raises(exceptions.DomainError) as exc_info:
+        raise exceptions.DomainError()
+
+    assert 'Something went wrong with airSlate API' == str(exc_info.value)
+
+
+def test_domain_exception_custom_message():
+    with pytest.raises(exceptions.DomainError) as exc_info:
+        raise exceptions.DomainError('Hello, World!')
+
+    assert 'Hello, World!' == str(exc_info.value)
