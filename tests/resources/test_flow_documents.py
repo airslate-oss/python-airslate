@@ -25,4 +25,4 @@ def test_access_token(client):
     headers = responses.calls[0].request.headers
 
     assert ('Content-Type' in headers) is False
-    assert isinstance(resp, dict)
+    assert isinstance(resp, list)

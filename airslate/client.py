@@ -65,7 +65,15 @@ class Client:
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
 
-    QUERY_OPTIONS = {'include'}
+    QUERY_OPTIONS = {
+        # Example:
+        # '/v1/addons/slates/{flow_id}/documents?include=fields'
+        'include',
+
+        # Example:
+        # '/v1/{resource}?page=3'
+        'page',
+    }
 
     REQUEST_OPTIONS = {
         'headers',

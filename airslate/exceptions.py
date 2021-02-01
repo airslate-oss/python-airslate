@@ -9,16 +9,25 @@
 
 Classes:
 
+    BaseError
     ApiError
     BadRequest
     Unauthorized
     RetryError
     InternalServerError
+    DomainError
+    MissingData
+    TypeMismatch
+    RelationNotExist
 
 """
 
 
-class ApiError(Exception):
+class BaseError(Exception):
+    """Base class for all errors in airslate package."""
+
+
+class ApiError(BaseError):
     """Base class for errors in API endpoints."""
 
     def __init__(self, message=None, status=None, response=None):
@@ -145,21 +154,32 @@ class InternalServerError(ApiError):
         )
 
 
-class DomainError(Exception):
+class DomainError(BaseError):
     """Base domain error for airslate package."""
 
     def __init__(self, message=None):
         if message is None:
-            message = 'Something went wrong with AirSlate API'
+            message = 'Something went wrong with airSlate API'
 
         super().__init__(message)
 
 
 class MissingData(DomainError):
-    """Error raised when ``data`` is is missing in JSON:API response."""
+    """Error raised when ``data`` is missing in JSON:API response."""
 
-    def __init__(self, message=None):
-        if message is None:
-            message = 'Data is missing in JSON:API response'
+    def __init__(self):
+        super().__init__('Data is missing in JSON:API response')
 
-        super().__init__(message)
+
+class TypeMismatch(DomainError):
+    """Error raised when ``data.type`` is invalid."""
+
+    def __init__(self):
+        super().__init__('Json type does not match to the entity type')
+
+
+class RelationNotExist(DomainError):
+    """Error raised when there is no relation with given name."""
+
+    def __init__(self):
+        super().__init__('No relation with given name')

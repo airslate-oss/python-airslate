@@ -8,6 +8,7 @@
 """Addons module for airslate package."""
 
 from . import BaseResource
+from ..entities.documents import Document
 
 
 class Addons(BaseResource):
@@ -46,4 +47,5 @@ class FlowDocuments(BaseResource):
             f'addons/slates/{flow_id}/documents'
         )
 
-        return self.client.get(url, **options)
+        response = self.client.get(url, full_response=True, **options)
+        return Document.from_collection(response)
