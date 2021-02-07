@@ -23,6 +23,7 @@ Get the requested slate addon file
    file = client.slate_addon_files.get(file_id)
    print(file)
    print(file['name'], file['size'])
+   print(file.object_meta['download_url'])
 
    addon = file.slate_addon
    print(addon)
@@ -35,6 +36,7 @@ Get the requested slate addon file
 
    <SlateAddonFile: id=D77F5000-0000-0000-0000AE67, type=slate_addon_files>
    my_file.csv 733
+   https://api.airslate.com/v1/slate-addon-files/C41CDE20-0000-0000-000045B9/download
    <SlateAddon: id=09867A00-0000-0000-000093F0, type=slate_addons>
 
 .. note::
