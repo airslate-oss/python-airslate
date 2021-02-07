@@ -128,6 +128,7 @@ test-wheel: $(VENV_PYTHON) wheel
 .PHONY: test
 test: $(VENV_PYTHON)
 	@echo $(CS)Running tests$(HEADER_EXTRA)$(CE)
+	export PYTHONDONTWRITEBYTECODE=1
 	$(VENV_BIN)/py.test $(PYTEST_FLAGS) $(COV) ./airslate ./tests
 	@echo
 
