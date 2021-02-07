@@ -25,12 +25,17 @@ class BaseResource(metaclass=ABCMeta):
 
     API_VERSION = 'v1'
 
+    def __init__(self, client, api_version=None):
+        """A :class:`BaseResource` base object for airslate resources."""
+        self.client = client
+        self.api_version = api_version or BaseResource.API_VERSION
+
     def resolve_endpoint(self, path: str) -> str:
         """Resolve resource endpoint taking into account API version.
 
-        >>> resolve_endpoint('/addon-token')
+        >>> self.resolve_endpoint('/addon-token')
         /v1/addon-token
-        >>> resolve_endpoint('addons/slates/0/documents')
+        >>> self.resolve_endpoint('addons/slates/0/documents')
         /v1/addons/slates/0/documents
         """
-        return '/%s/%s' % (self.API_VERSION, path.lstrip('/'))
+        return '/%s/%s' % (self.api_version, path.lstrip('/'))
