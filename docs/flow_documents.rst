@@ -44,8 +44,8 @@ Get supported documents for given flow
 
 .. code-block::
 
-    <Document (documents): 5ED5E800-0000-0000-000021F6>
+    <Document: id=5ED5E800-0000-0000-000021F6, type=documents>
     {'id': '5ED5E800-0000-0000-000021F6', 'name': 'Untitled Form', 'status': 'DRAFT', 'version': 8}
-    <Field (dictionary): 5ED5E800-0000-0000-000021F6-0001>
-    <Field (dictionary): 5ED5E800-0000-0000-000021F6-0002>
-    <Field (dictionary): 5ED5E800-0000-0000-000021F6-0003>
+    <Field: id=5ED5E800-0000-0000-000021F6-0001, type=dictionary>
+    <Field: id=5ED5E800-0000-0000-000021F6-0002, type=dictionary>
+    <Field: id=5ED5E800-0000-0000-000021F6-0003, type=dictionary>
