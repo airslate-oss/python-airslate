@@ -25,12 +25,12 @@ def test_resolve_endpoint(provided, expected, client):
 @pytest.mark.parametrize(
     'api_version,expected',
     [
-        ('v1', f'/v1/addons-token'),
-        ('v2', f'/v2/addons-token'),
-        ('v3', f'/v3/addons-token'),
-        (None, f'/v1/addons-token'),
-        ('', f'/v1/addons-token'),
-        (False, f'/v1/addons-token'),
+        ('v1', '/v1/addons-token'),
+        ('v2', '/v2/addons-token'),
+        ('v3', '/v3/addons-token'),
+        (None, '/v1/addons-token'),
+        ('', '/v1/addons-token'),
+        (False, '/v1/addons-token'),
     ])
 def test_custom_api_version(api_version, expected, client):
     resource = BaseResource(client, api_version)
