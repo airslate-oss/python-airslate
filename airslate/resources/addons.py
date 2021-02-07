@@ -7,12 +7,12 @@
 
 """Addons module for airslate package."""
 
+from airslate.entities.documents import Document
 from . import BaseResource
-from ..entities.documents import Document
 
 
 class Addons(BaseResource):
-    """Addons resource."""
+    """Represent addons resource."""
 
     def access_token(self, org_id: str, client_id: str, client_secret: str):
         """Get access token for an addon installed in an organization."""
@@ -33,7 +33,7 @@ class Addons(BaseResource):
 
 
 class FlowDocuments(BaseResource):
-    """Addons flow documents resource."""
+    """Represent flow documents resource."""
 
     def collection(self, flow_id, **options):
         """Get supported documents for given flow."""

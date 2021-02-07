@@ -14,6 +14,7 @@ from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
+from .resources.slate_addon import SlateAddonFiles
 
 
 class Client:
@@ -102,6 +103,7 @@ class Client:
         # Initialize each resource and injecting client object into it
         self.addons = Addons(self)
         self.flow_documents = FlowDocuments(self)
+        self.slate_addon_files = SlateAddonFiles(self)
 
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""

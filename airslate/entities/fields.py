@@ -12,7 +12,7 @@ from .base import BaseEntity
 
 
 class Field(BaseEntity):
-    """Document fields entity."""
+    """Represents document fields entity."""
 
     @property
     def type(self):

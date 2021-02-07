@@ -10,7 +10,7 @@ from responses import GET
 
 
 @responses.activate
-def test_access_token(client):
+def test_empty_response(client):
     flow_id = '1'
 
     responses.add(
@@ -21,8 +21,4 @@ def test_access_token(client):
     )
 
     resp = client.flow_documents.collection(flow_id, include='fields')
-
-    headers = responses.calls[0].request.headers
-
-    assert ('Content-Type' in headers) is False
     assert isinstance(resp, list)

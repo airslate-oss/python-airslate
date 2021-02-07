@@ -44,3 +44,10 @@ def test_from_collection():
         BaseEntity.from_collection({})
 
     assert 'Data is missing in JSON:API response' in str(exc_info.value)
+
+
+def test_from_one():
+    with pytest.raises(MissingData) as exc_info:
+        BaseEntity.from_one({})
+
+    assert 'Data is missing in JSON:API response' in str(exc_info.value)

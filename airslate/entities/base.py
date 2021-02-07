@@ -31,7 +31,7 @@ class BaseEntity(metaclass=ABCMeta):
     """Base entity class."""
 
     # pylint: disable=too-many-instance-attributes
-    # Nine is reasonable in this case.
+    # Ten is reasonable in this case.
 
     def __init__(self, uid):
         self._attributes = {'id': uid}
@@ -39,6 +39,7 @@ class BaseEntity(metaclass=ABCMeta):
         self._included = []
         self._original_included = []
         self._meta = {}
+        self._object_meta = {}
 
     def __getitem__(self, item):
         """Getter for the attribute value."""
@@ -65,12 +66,29 @@ class BaseEntity(metaclass=ABCMeta):
         for k in attributes:
             self[k] = attributes[k]
 
-    def has_many(self, cls, relation):
-        """Create a list of ``cls`` instances."""
-        if relation not in self.relationships:
+    def has_one(self, cls, relation_name):
+        """Create a ``cls`` instance."""
+        if relation_name not in self.relationships:
             raise RelationNotExist()
 
-        data = path(self.relationships, f'{relation}.data')
+        data = path(self.relationships, f'{relation_name}.data')
+        if data is None:
+            return None
+
+        ids = (path(data, 'id'), path(data, 'type'))
+        relations = [e for e in self.included if (e['id'], e['type']) == ids]
+
+        if len(relations) == 0:
+            return cls(path(data, 'id'))
+
+        return cls.from_one({'data': relations})
+
+    def has_many(self, cls, relation_name):
+        """Create a list of ``cls`` instances."""
+        if relation_name not in self.relationships:
+            raise RelationNotExist()
+
+        data = path(self.relationships, f'{relation_name}.data')
         if data is None:
             return []
 
@@ -114,6 +132,16 @@ class BaseEntity(metaclass=ABCMeta):
         self._meta = data
 
     @property
+    def object_meta(self):
+        """Getter for object_meta dictionary."""
+        return self._object_meta
+
+    @object_meta.setter
+    def object_meta(self, data):
+        """Setter for object_meta dictionary."""
+        self._object_meta = data
+
+    @property
     def original_included(self):
         """Getter for original included list."""
         return self._original_included
@@ -127,6 +155,30 @@ class BaseEntity(metaclass=ABCMeta):
     @abstractmethod
     def type(self):
         """Get type name of the current entity."""
+
+    @classmethod
+    def from_one(cls, response):
+        """Create an instance of ``cls`` from the given ``response``."""
+        if 'data' not in response:
+            raise MissingData()
+
+        entity = cls(path(response, 'data.id'))
+        if path(response, 'data.type', '') != entity.type:
+            raise TypeMismatch()
+
+        entity.set_attributes(path(response, 'data.attributes', []))
+        relationships = path(response, 'data.relationships', {})
+
+        original_included = path(response, 'included', [])
+        included = filter_included(relationships, original_included)
+
+        entity.relationships = relationships
+        entity.included = included
+        entity.meta = path(response, 'meta', {})
+        entity.object_meta = path(response, 'data.meta', {})
+        entity.original_included = original_included
+
+        return entity
 
     @classmethod
     def from_collection(cls, response):
@@ -169,8 +221,8 @@ def filter_included(relationships, included):
         return data if isinstance(data, list) else [data]
 
     def simplify(relation):
-        return ((d['type'], d['id'])
-                for i in relation for d in normalize(relation[i]['data']))
+        return ((d['type'], d['id']) for i in relation for d in
+                normalize(path(relation, f'{i}.data')))
 
     r_set = set(simplify(relationships))
 
