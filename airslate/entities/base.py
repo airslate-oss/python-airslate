@@ -54,10 +54,10 @@ class BaseEntity(metaclass=ABCMeta):
 
     def __repr__(self):
         """String representation of the current entity."""
-        return '<%s (%s): %s>' % (
+        return '<%s: id=%s, type=%s>' % (
             self.__class__.__name__,
+            self['id'],
             self.type,
-            self['id']
         )
 
     def set_attributes(self, attributes):

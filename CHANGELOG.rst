@@ -14,6 +14,15 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
 0.2.0 (2021-XX-XX)
 ------------------
 
+Trivial/Internal Changes
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Change default string representation of entities. Now it has the
+  following form ``<EntityName: id=ID, type=TYPE>``.
+
+
+----
+
 
 0.1.0 (2021-02-07)
 ------------------
