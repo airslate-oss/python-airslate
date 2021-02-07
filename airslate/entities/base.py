@@ -31,7 +31,7 @@ class BaseEntity(metaclass=ABCMeta):
     """Base entity class."""
 
     # pylint: disable=too-many-instance-attributes
-    # Nine is reasonable in this case.
+    # Eleven is reasonable in this case.
 
     def __init__(self, uid):
         self._attributes = {'id': uid}
@@ -39,6 +39,7 @@ class BaseEntity(metaclass=ABCMeta):
         self._included = []
         self._original_included = []
         self._meta = {}
+        self._object_meta = {}
 
     def __getitem__(self, item):
         """Getter for the attribute value."""
@@ -65,12 +66,41 @@ class BaseEntity(metaclass=ABCMeta):
         for k in attributes:
             self[k] = attributes[k]
 
-    def has_many(self, cls, relation):
-        """Create a list of ``cls`` instances."""
-        if relation not in self.relationships:
+    def has_one(self, cls, relation_name):
+        """Create an instance of the related entity.
+
+        :param cls: The class of the related entity
+        :param relation_name: The name of the relation defined in the
+            ``relationships`` dictionary
+        :return: An instance of the related entity if any or None
+        """
+        if relation_name not in self.relationships:
             raise RelationNotExist()
 
-        data = path(self.relationships, f'{relation}.data')
+        data = path(self.relationships, f'{relation_name}.data')
+        if data is None:
+            return None
+
+        ids = (path(data, 'id'), path(data, 'type'))
+        relations = [e for e in self.included if (e['id'], e['type']) == ids]
+
+        if len(relations) == 0:
+            return cls(path(data, 'id'))
+
+        return cls.from_one({'data': relations})
+
+    def has_many(self, cls, relation_name):
+        """Create a list of instances of the related entities.
+
+        :param cls: The class of the related entity
+        :param relation_name: The name of the relation defined in the
+            ``relationships`` dictionary
+        :return: A list of instances of the related entities
+        """
+        if relation_name not in self.relationships:
+            raise RelationNotExist()
+
+        data = path(self.relationships, f'{relation_name}.data')
         if data is None:
             return []
 
@@ -114,6 +144,16 @@ class BaseEntity(metaclass=ABCMeta):
         self._meta = data
 
     @property
+    def object_meta(self):
+        """Getter for object meta dictionary."""
+        return self._object_meta
+
+    @object_meta.setter
+    def object_meta(self, data):
+        """Setter for object meta dictionary."""
+        self._object_meta = data
+
+    @property
     def original_included(self):
         """Getter for original included list."""
         return self._original_included
@@ -129,12 +169,38 @@ class BaseEntity(metaclass=ABCMeta):
         """Get type name of the current entity."""
 
     @classmethod
-    def from_collection(cls, response):
-        """Create a list of ``cls`` instances from the given ``response``."""
-        if 'data' not in response:
+    def from_one(cls, obj):
+        """Create an instance of the current class from the provided data."""
+        if 'data' not in obj:
             raise MissingData()
 
-        data = response['data']
+        entity = cls(path(obj, 'data.id'))
+        if path(obj, 'data.type', '') != entity.type:
+            raise TypeMismatch()
+
+        entity.set_attributes(path(obj, 'data.attributes', []))
+        relationships = path(obj, 'data.relationships', {})
+
+        original_included = path(obj, 'included', [])
+        included = filter_included(relationships, original_included)
+
+        entity.relationships = relationships
+        entity.included = included
+        entity.meta = path(obj, 'meta', {})
+        entity.object_meta = path(obj, 'data.meta', {})
+        entity.original_included = original_included
+
+        return entity
+
+    @classmethod
+    def from_collection(cls, obj):
+        """
+        Create a list of instances of the current class from the provided data.
+        """
+        if 'data' not in obj:
+            raise MissingData()
+
+        data = obj['data']
         if len(data) == 0:
             return []
 
@@ -148,7 +214,7 @@ class BaseEntity(metaclass=ABCMeta):
             entity.set_attributes(item['attributes'])
             relationships = path(item, 'relationships', {})
 
-            original_included = path(response, 'included', [])
+            original_included = path(obj, 'included', [])
             included = filter_included(relationships, original_included)
 
             entity.relationships = relationships
@@ -169,8 +235,8 @@ def filter_included(relationships, included):
         return data if isinstance(data, list) else [data]
 
     def simplify(relation):
-        return ((d['type'], d['id'])
-                for i in relation for d in normalize(relation[i]['data']))
+        return ((d['type'], d['id']) for i in relation for d in
+                normalize(path(relation, f'{i}.data')))
 
     r_set = set(simplify(relationships))
 

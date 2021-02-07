@@ -8,12 +8,13 @@
 """Client module for airslate package."""
 
 import json
-import requests
 
+import requests
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
+from .resources.slate_addon import SlateAddonFiles
 
 
 class Client:
@@ -76,6 +77,7 @@ class Client:
     }
 
     REQUEST_OPTIONS = {
+        'stream',
         'headers',
         'params',
         'data',
@@ -102,6 +104,7 @@ class Client:
         # Initialize each resource and injecting client object into it
         self.addons = Addons(self)
         self.flow_documents = FlowDocuments(self)
+        self.slate_addon_files = SlateAddonFiles(self)
 
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
@@ -122,6 +125,9 @@ class Client:
             # Any unhandled 5xx is a server error
             if 500 <= response.status_code < 600:
                 raise exceptions.InternalServerError(response=response)
+
+            if 'stream' in options and options['stream']:
+                return response
 
             response_data = response.json()
             if options['full_response']:

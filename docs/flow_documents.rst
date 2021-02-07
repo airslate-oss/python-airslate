@@ -6,10 +6,6 @@ Flow documents
 Get supported documents for given flow
 --------------------------------------
 
-.. note::
-
-   To obtain ``token`` refer to ``airslate.addons.access_token()`` function.
-
 .. code-block:: python
 
    import os
@@ -49,3 +45,7 @@ Get supported documents for given flow
     <Field: id=5ED5E800-0000-0000-000021F6-0001, type=dictionary>
     <Field: id=5ED5E800-0000-0000-000021F6-0002, type=dictionary>
     <Field: id=5ED5E800-0000-0000-000021F6-0003, type=dictionary>
+
+.. note::
+
+   To obtain ``token`` refer to ``airslate.addons.access_token()`` method.

@@ -128,3 +128,32 @@ def documents_collection():
             },
         ]
     }
+
+
+@pytest.fixture
+def slate_addon_files():
+    host = 'http://airslate.localhost'
+    file_id = 'C41CDE20-0000-0000-000045B9'
+
+    return {
+        'data': {
+            'type': 'slate_addon_files',
+            'id': 'D77F5000-0000-0000-0000AE67',
+            'attributes': {
+                'name': 'example.json',
+                'size': 733
+            },
+            'relationships': {
+                'slate_addon': {
+                    'data': {
+                        'type': 'slate_addons',
+                        'id': '09867A00-0000-0000-000093F0'
+                    }
+                }
+            },
+            'meta': {
+                'download_url': (f'{host}/v1/slate-addon-files/{file_id}' +
+                                 '/download')
+            }
+        }
+    }

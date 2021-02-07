@@ -14,6 +14,29 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
 0.2.0 (2021-XX-XX)
 ------------------
 
+Features
+^^^^^^^^
+
+
+* Provided ability to get slate addon file.
+
+* Added new resources:
+
+  * ``airslate.resources.slate_addon.SlateAddonFiles`` - represent slate addon files resource
+
+* Added new entities:
+
+  * ``airslate.entities.addons.SlateAddon`` - represent slate addon entity
+  * ``airslate.entities.addons.SlateAddonFile`` - represent slate addon file entity
+
+
+* The base entity class as well as all derived classes now provide the following methods:
+
+  * ``has_one()`` - create an instance of the related entity
+  * ``from_one()`` - create an instance of the current class from the provided data
+
+
+
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
