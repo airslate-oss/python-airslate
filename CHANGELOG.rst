@@ -11,7 +11,7 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
    Backward incompatible (breaking) changes will only be introduced in major
    versions.
 
-0.2.0 (2021-XX-XX)
+0.2.0 (2021-02-08)
 ------------------
 
 Features
