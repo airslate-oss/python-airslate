@@ -54,12 +54,3 @@ $(error "Python is not available please install Python")
 endif
 endif
 endif
-
-#define CHECK_AIRSLATE
-#import pkgutil
-#print(1 if pkgutil.find_loader('airslate') else 0)
-#endef
-#export CHECK_AIRSLATE
-#
-#HAVE_AIRSLATE=$(shell sh -c "$(VENV_PYTHON) -c \"$$CHECK_AIRSLATE\"")
-#$(error "HAVE_AIRSLATE=$(HAVE_AIRSLATE)")
