@@ -14,9 +14,6 @@ from ..entities.documents import Document
 class Addons(BaseResource):
     """Addons resource."""
 
-    def __init__(self, client):
-        self.client = client
-
     def access_token(self, org_id: str, client_id: str, client_secret: str):
         """Get access token for an addon installed in an organization."""
         url = self.resolve_endpoint('addon-token')
@@ -37,9 +34,6 @@ class Addons(BaseResource):
 
 class FlowDocuments(BaseResource):
     """Addons flow documents resource."""
-
-    def __init__(self, client):
-        self.client = client
 
     def collection(self, flow_id, **options):
         """Get supported documents for given flow."""
