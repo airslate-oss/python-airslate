@@ -8,8 +8,8 @@
 """Client module for airslate package."""
 
 import json
-import requests
 
+import requests
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session

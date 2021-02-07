@@ -31,7 +31,7 @@ class BaseEntity(metaclass=ABCMeta):
     """Base entity class."""
 
     # pylint: disable=too-many-instance-attributes
-    # Ten is reasonable in this case.
+    # Eleven is reasonable in this case.
 
     def __init__(self, uid):
         self._attributes = {'id': uid}
@@ -67,7 +67,13 @@ class BaseEntity(metaclass=ABCMeta):
             self[k] = attributes[k]
 
     def has_one(self, cls, relation_name):
-        """Create a ``cls`` instance."""
+        """Create an instance of the related entity.
+
+        :param cls: The class of the related entity
+        :param relation_name: The name of the relation defined in the
+            ``relationships`` dictionary
+        :return: An instance of the related entity if any or None
+        """
         if relation_name not in self.relationships:
             raise RelationNotExist()
 
@@ -84,7 +90,13 @@ class BaseEntity(metaclass=ABCMeta):
         return cls.from_one({'data': relations})
 
     def has_many(self, cls, relation_name):
-        """Create a list of ``cls`` instances."""
+        """Create a list of instances of the related entities.
+
+        :param cls: The class of the related entity
+        :param relation_name: The name of the relation defined in the
+            ``relationships`` dictionary
+        :return: A list of instances of the related entities
+        """
         if relation_name not in self.relationships:
             raise RelationNotExist()
 
@@ -133,12 +145,12 @@ class BaseEntity(metaclass=ABCMeta):
 
     @property
     def object_meta(self):
-        """Getter for object_meta dictionary."""
+        """Getter for object meta dictionary."""
         return self._object_meta
 
     @object_meta.setter
     def object_meta(self, data):
-        """Setter for object_meta dictionary."""
+        """Setter for object meta dictionary."""
         self._object_meta = data
 
     @property
@@ -157,36 +169,38 @@ class BaseEntity(metaclass=ABCMeta):
         """Get type name of the current entity."""
 
     @classmethod
-    def from_one(cls, response):
-        """Create an instance of ``cls`` from the given ``response``."""
-        if 'data' not in response:
+    def from_one(cls, obj):
+        """Create an instance of the current class from the provided data."""
+        if 'data' not in obj:
             raise MissingData()
 
-        entity = cls(path(response, 'data.id'))
-        if path(response, 'data.type', '') != entity.type:
+        entity = cls(path(obj, 'data.id'))
+        if path(obj, 'data.type', '') != entity.type:
             raise TypeMismatch()
 
-        entity.set_attributes(path(response, 'data.attributes', []))
-        relationships = path(response, 'data.relationships', {})
+        entity.set_attributes(path(obj, 'data.attributes', []))
+        relationships = path(obj, 'data.relationships', {})
 
-        original_included = path(response, 'included', [])
+        original_included = path(obj, 'included', [])
         included = filter_included(relationships, original_included)
 
         entity.relationships = relationships
         entity.included = included
-        entity.meta = path(response, 'meta', {})
-        entity.object_meta = path(response, 'data.meta', {})
+        entity.meta = path(obj, 'meta', {})
+        entity.object_meta = path(obj, 'data.meta', {})
         entity.original_included = original_included
 
         return entity
 
     @classmethod
-    def from_collection(cls, response):
-        """Create a list of ``cls`` instances from the given ``response``."""
-        if 'data' not in response:
+    def from_collection(cls, obj):
+        """
+        Create a list of instances of the current class from the provided data.
+        """
+        if 'data' not in obj:
             raise MissingData()
 
-        data = response['data']
+        data = obj['data']
         if len(data) == 0:
             return []
 
@@ -200,7 +214,7 @@ class BaseEntity(metaclass=ABCMeta):
             entity.set_attributes(item['attributes'])
             relationships = path(item, 'relationships', {})
 
-            original_included = path(response, 'included', [])
+            original_included = path(obj, 'included', [])
             included = filter_included(relationships, original_included)
 
             entity.relationships = relationships

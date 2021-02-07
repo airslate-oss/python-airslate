@@ -30,6 +30,13 @@ Features
   * ``airslate.entities.addons.SlateAddonFile`` - represent slate addon file entity
 
 
+* The base entity class as well as all derived classes now provide the following methods:
+
+  * ``has_one()`` - create an instance of the related entity
+  * ``from_one()`` - create an instance of the current class from the provided data
+
+
+
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
