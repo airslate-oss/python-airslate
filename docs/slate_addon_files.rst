@@ -28,6 +28,10 @@ Get the requested slate addon file
    addon = file.slate_addon
    print(addon)
 
+.. note::
+
+   To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
+
 .. raw:: html
 
    <details><summary>Output</summary>
@@ -38,10 +42,6 @@ Get the requested slate addon file
    my_file.csv 733
    https://api.airslate.com/v1/slate-addon-files/C41CDE20-0000-0000-000045B9/download
    <SlateAddon: id=09867A00-0000-0000-000093F0, type=slate_addons>
-
-.. note::
-
-   To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
 
 Download contents of the requested file
