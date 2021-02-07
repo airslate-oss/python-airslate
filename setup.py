@@ -140,14 +140,14 @@ CLASSIFIERS = [
 # Dependencies that are downloaded by pip on installation and why
 INSTALL_REQUIRES = [
     'requests>=2.20.0,==2.*',  # Interact with airSlate HTTP API
-    'urllib3>=1.21.1,<1.27',   # Out HTTP client for Python
+    'urllib3>=1.21.1,<1.27',   # Our internal HTTP client
 
 ]
 
 EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
     'testing': [
-        'pytest',  # Our tests framework
+        'pytest',    # Our tests framework
         'responses'  # Mocking out the requests Python library
     ],
 }

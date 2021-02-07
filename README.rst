@@ -12,7 +12,7 @@
 
 .. teaser-begin
 
-``airslate`` is a Python client library for the `airSlate <https://www.airslate.com>`_ API v1.
+``airslate`` is a Python client library for the `airSlate <https://www.airslate.com>`__ API v1.
 
 This Python client library has been designed to quickly and easily implement
 the airSlate REST API. It offers a simple and elegant way to interact with
