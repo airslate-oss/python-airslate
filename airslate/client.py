@@ -77,6 +77,7 @@ class Client:
     }
 
     REQUEST_OPTIONS = {
+        'stream',
         'headers',
         'params',
         'data',
@@ -124,6 +125,9 @@ class Client:
             # Any unhandled 5xx is a server error
             if 500 <= response.status_code < 600:
                 raise exceptions.InternalServerError(response=response)
+
+            if 'stream' in options and options['stream']:
+                return response
 
             response_data = response.json()
             if options['full_response']:

@@ -22,3 +22,11 @@ class SlateAddonFiles(BaseResource):
 
         response = self.client.get(url, full_response=True)
         return SlateAddonFile.from_one(response)
+
+    def download(self, file_id):
+        """Download contents of the requested file."""
+        url = self.resolve_endpoint(
+            f'slate-addon-files/{file_id}/download'
+        )
+
+        return self.client.get(url, stream=True)

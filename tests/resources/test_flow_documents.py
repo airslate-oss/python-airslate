@@ -10,7 +10,7 @@ from responses import GET
 
 
 @responses.activate
-def test_empty_response(client):
+def test_empty_collection_response(client):
     flow_id = '1'
 
     responses.add(
@@ -21,4 +21,8 @@ def test_empty_response(client):
     )
 
     resp = client.flow_documents.collection(flow_id, include='fields')
+    headers = responses.calls[0].request.headers
+
+    # There is no 'Content-Type' for GET requests
+    assert ('Content-Type' in headers) is False
     assert isinstance(resp, list)
