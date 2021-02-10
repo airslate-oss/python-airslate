@@ -27,6 +27,7 @@ def test_default_headers(client):
 
     assert headers['key'] == 'value'
     assert headers['User-Agent'] == default_headers()['user-agent']
+    assert headers['Accept'] == 'application/vnd.api+json, application/json'
     assert headers['Content-Type'] == 'application/vnd.api+json'
 
 
