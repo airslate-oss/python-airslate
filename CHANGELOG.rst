@@ -11,16 +11,19 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
    Backward incompatible (breaking) changes will only be introduced in major
    versions.
 
-0.2.1 (2021-XX-XX)
+0.3.0 (2021-XX-XX)
 ------------------
 
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Provide utility functions that are used within airslate package:
+* Provided utility module for be use within ``airslate`` package:
 
-  * ``Client.DEFAULT_HEADERS`` was moved to ``utils.default_headers()``
-  * ``session.USER_AGENT`` was moved to ``utils.default_user_agent()``
+  * ``airslate.client.Client.DEFAULT_HEADERS`` was moved to ``airslate.utils.default_headers()``
+  * ``airslate.session.USER_AGENT`` was moved to ``airslate.utils.default_user_agent()``
+
+
+----
 
 
 0.2.1 (2021-02-08)
