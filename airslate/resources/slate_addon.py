@@ -29,4 +29,5 @@ class SlateAddonFiles(BaseResource):
             f'slate-addon-files/{file_id}/download'
         )
 
-        return self.client.get(url, stream=True)
+        headers = {'Accept': '*/*'}
+        return self.client.get(url, headers=headers, stream=True)
