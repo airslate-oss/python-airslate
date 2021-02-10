@@ -15,30 +15,11 @@ from asdicts.dict import merge, intersect_keys
 from . import exceptions, session
 from .resources.addons import Addons, FlowDocuments
 from .resources.slate_addon import SlateAddonFiles
+from .utils import default_headers
 
 
 class Client:
     """airSlate API client class."""
-
-    DEFAULT_HEADERS = {
-        # From the JSON:API docs:
-        #
-        # Clients MUST send all JSON:API data in request documents with
-        # the header 'Content-Type: application/vnd.api+json' without any
-        # media type parameters.
-        'Content-Type': 'application/vnd.api+json',
-
-        # From the JSON:API docs:
-        #
-        # Servers MUST respond with a '406 Not Acceptable' status code if
-        # a request’s 'Accept' header contains the JSON:API media type and
-        # all instances of that media type are modified with media type
-        # parameters.
-        #
-        # The client may pass a list of media type parameters to the server.
-        # The server finds out that a valid parameter is included.
-        'Accept': 'application/vnd.api+json, application/json'
-    }
 
     DEFAULT_OPTIONS = {
         # API endpoint base URL to connect to.
@@ -165,7 +146,7 @@ class Client:
         body = merge(parameter_options, data)
 
         # Values in the ``options['headers']`` takes precedence.
-        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
+        headers = merge(default_headers(), options.pop('headers', {}))
 
         return self.request('post', path, data=body, headers=headers,
                             **options)
@@ -183,7 +164,7 @@ class Client:
         query = merge(query_options, parameter_options, _query)
 
         # Values in the ``options['headers']`` takes precedence.
-        headers = merge(self.DEFAULT_HEADERS, options.pop('headers', {}))
+        headers = merge(default_headers(), options.pop('headers', {}))
 
         # `Content-Type` HTTP header should be set only for PUT and POST
         del headers['Content-Type']
