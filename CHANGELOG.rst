@@ -11,6 +11,18 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
    Backward incompatible (breaking) changes will only be introduced in major
    versions.
 
+0.2.1 (2021-XX-XX)
+------------------
+
+Trivial/Internal Changes
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Provide utility functions that are used within airslate package:
+
+  * ``Client.DEFAULT_HEADERS`` was moved to ``utils.default_headers()``
+  * ``session.USER_AGENT`` was moved to ``utils.default_user_agent()``
+
+
 0.2.1 (2021-02-08)
 ------------------
 
@@ -34,7 +46,6 @@ Features
 
   * ``has_one()`` - create an instance of the related entity
   * ``from_one()`` - create an instance of the current class from the provided data
-
 
 
 Trivial/Internal Changes

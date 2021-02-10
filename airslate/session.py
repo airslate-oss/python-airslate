@@ -13,12 +13,6 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from . import __version__, __url__
-
-# Default 'User-Agent' header. Usually should be replaced
-# with a more specific value.
-USER_AGENT = f'airslate/{__version__} ({__url__})'
-
 
 def create_retry(max_retries=3, backoff_factor=1.0):
     """Create default HTTP adapter based on retry policy."""
@@ -81,10 +75,6 @@ def factory(max_retries=3, backoff_factor=1.0):
     :class:`airslate.client.Client` instances.
     """
     session = Session()
-
-    # Setting the default 'User-Agent' header. Can be overridden using
-    # ``headers`` client option.
-    session.headers['User-Agent'] = USER_AGENT
 
     retry_strategy = create_retry(max_retries, backoff_factor)
     adapter = HTTPAdapter(max_retries=retry_strategy)
