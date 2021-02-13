@@ -1,10 +1,10 @@
 ==============
-Flow documents
+Flow Documents
 ==============
 
 
-Get supported documents for given flow
---------------------------------------
+Get supported documents for a given Flow
+----------------------------------------
 
 .. code-block:: python
 
@@ -19,7 +19,7 @@ Get supported documents for given flow
        headers={'Organization-Id': org_id}
    )
 
-   documents = client.flow_documents.collection(flow_id, include='fields')
+   documents = client.flow.documents.collection(flow_id, include='fields')
 
    for document in documents:
        print(document)

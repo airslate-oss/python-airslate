@@ -11,13 +11,32 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
    Backward incompatible (breaking) changes will only be introduced in major
    versions.
 
-0.3.0 (2021-XX-XX)
-------------------
+0.3.0a1 (2021-XX-XX)
+--------------------
+
+Features
+^^^^^^^^
+
+* Provided ability to assign tags to a given Flow.
+* Introduced ``airslate.exceptions.NotFoundError`` to raise from client
+  when the server can not find the requested resource.
+* Introduced ``airslate.flow`` module to better organize Flow API:
+
+  * ``client.flow.documents.collection()`` - get supported documents for a given Flow
+  * ``client.flow.tags.assign()`` - assign tags to a given Flow
+  * ``client.flow.tags.collection()`` - get tags for a given Flow
+
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+* Moved ``client.flow_documents`` to ``client.flow.documents``
+
 
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Provided utility module for be use within ``airslate`` package:
+* Provided ``utils`` utility module for be use within ``airslate`` package:
 
   * ``airslate.client.Client.DEFAULT_HEADERS`` was moved to ``airslate.utils.default_headers()``
   * ``airslate.session.USER_AGENT`` was moved to ``airslate.utils.default_user_agent()``
@@ -31,7 +50,6 @@ Trivial/Internal Changes
 
 Features
 ^^^^^^^^
-
 
 * Provided ability to get slate addon file.
 

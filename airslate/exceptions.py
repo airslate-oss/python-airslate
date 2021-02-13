@@ -13,6 +13,7 @@ Classes:
     ApiError
     BadRequest
     Unauthorized
+    NotFoundError
     RetryError
     InternalServerError
     DomainError
@@ -118,6 +119,17 @@ class Unauthorized(ApiError):
         super().__init__(
             message='Unauthorized',
             status=401,
+            response=response
+        )
+
+
+class NotFoundError(ApiError):
+    """Error raised when the server can not find the requested resource."""
+
+    def __init__(self, response=None):
+        super().__init__(
+            message='Not Found',
+            status=404,
             response=response
         )
 

@@ -58,3 +58,16 @@ def test_domain_exception_custom_message():
         raise exceptions.DomainError('Hello, World!')
 
     assert 'Hello, World!' == str(exc_info.value)
+
+
+@responses.activate
+def test_notfound(client):
+    responses.add(
+        POST,
+        f'{client.base_url}/v1/a/b/c/d',
+        status=404,
+        body='{}'
+    )
+
+    with pytest.raises(exceptions.NotFoundError):
+        client.post('/v1/a/b/c/d', {})

@@ -34,6 +34,7 @@ class BaseEntity(metaclass=ABCMeta):
     # Eleven is reasonable in this case.
 
     def __init__(self, uid):
+        """Initialize current entity."""
         self._attributes = {'id': uid}
         self._relationships = {}
         self._included = []
@@ -54,7 +55,7 @@ class BaseEntity(metaclass=ABCMeta):
         return item in self._attributes
 
     def __repr__(self):
-        """String representation of the current entity."""
+        """Provide an easy to read description of the current entity."""
         return '<%s: id=%s, type=%s>' % (
             self.__class__.__name__,
             self['id'],

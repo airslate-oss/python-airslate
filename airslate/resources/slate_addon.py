@@ -5,17 +5,17 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Slate addon module for airslate package."""
+"""Slate Addon module for airslate package."""
 
 from airslate.entities.addons import SlateAddonFile
 from . import BaseResource
 
 
 class SlateAddonFiles(BaseResource):
-    """Represent slate addon files resource."""
+    """Represent Slate Addon Files resource."""
 
     def get(self, file_id):
-        """Get the requested slate addon file."""
+        """Get the requested Slate Addon File."""
         url = self.resolve_endpoint(
             f'slate-addon-files/{file_id}'
         )

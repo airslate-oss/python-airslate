@@ -13,7 +13,8 @@ import requests
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
-from .resources.addons import Addons, FlowDocuments
+from .flow import Flow
+from .resources.addons import Addons
 from .resources.slate_addon import SlateAddonFiles
 from .utils import default_headers
 
@@ -84,7 +85,7 @@ class Client:
 
         # Initialize each resource and injecting client object into it
         self.addons = Addons(self)
-        self.flow_documents = FlowDocuments(self)
+        self.flow = Flow(self)
         self.slate_addon_files = SlateAddonFiles(self)
 
     def request(self, method: str, path: str, **options):
