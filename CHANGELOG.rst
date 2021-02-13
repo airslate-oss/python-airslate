@@ -76,5 +76,3 @@ Trivial/Internal Changes
 ------------------
 
 * Initial release.
-
-.. _Semantic Versioning: https://semver.org/

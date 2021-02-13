@@ -6,6 +6,32 @@ Flow Tags
 
    To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
+Get tags for a given Flow
+-------------------------
+
+.. code-block:: python
+
+   import os
+   from airslate.client import Client
+
+   org_id = '057C5000-0000-0000-0000D981'
+   flow_id = '04415300-0000-0000-0000BA29'
+
+   client = Client(
+       token=os.getenv('API_TOKEN'),
+       headers={'Organization-Id': org_id}
+   )
+
+   tags = client.flow.tags.collection(flow_id)
+   print(tags)
+
+Output
+
+.. code-block::
+
+    [<Tag: id=0A231100-0000-0000-0000943B, type=flow_tags>,
+     <Tag: id=FFD92100-0000-0000-0000943B, type=flow_tags>,
+     <Tag: id=D1533100-0000-0000-0000943B, type=flow_tags>]
 
 Assign tags to a given Flow
 ---------------------------
@@ -60,32 +86,3 @@ Assign tags to a given Flow
      'name': 'internal',
      'created_at': '2021-02-13 14:08:49',
      'org_id': '057C5000-0000-0000-0000D981'}
-
-Get tags for a given Flow
--------------------------
-
-.. code-block:: python
-
-   import os
-   from airslate.client import Client
-
-   org_id = '057C5000-0000-0000-0000D981'
-   flow_id = '04415300-0000-0000-0000BA29'
-
-   client = Client(
-       token=os.getenv('API_TOKEN'),
-       headers={'Organization-Id': org_id}
-   )
-
-   tags = client.flow.tags.collection(flow_id)
-   print(tags)
-
-.. raw:: html
-
-   <details><summary>Output</summary>
-
-.. code-block::
-
-    [<Tag: id=0A231100-0000-0000-0000943B, type=flow_tags>,
-     <Tag: id=FFD92100-0000-0000-0000943B, type=flow_tags>,
-     <Tag: id=D1533100-0000-0000-0000943B, type=flow_tags>]
