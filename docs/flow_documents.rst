@@ -3,8 +3,8 @@ Flow documents
 ==============
 
 
-Get supported documents for given flow
---------------------------------------
+Get supported documents for a given flow
+----------------------------------------
 
 .. code-block:: python
 

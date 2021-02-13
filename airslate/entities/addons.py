@@ -11,7 +11,7 @@ from .base import BaseEntity
 
 
 class SlateAddon(BaseEntity):
-    """Represents slate addon entity."""
+    """Represents Slate Addon entity."""
 
     @property
     def type(self):
@@ -19,7 +19,7 @@ class SlateAddon(BaseEntity):
 
 
 class SlateAddonFile(BaseEntity):
-    """Represent slate addon file entity."""
+    """Represent Slate Addon File entity."""
 
     @property
     def type(self):

@@ -12,10 +12,10 @@ from . import BaseResource
 
 
 class Addons(BaseResource):
-    """Represent addons resource."""
+    """Represent Addons resource."""
 
     def access_token(self, org_id: str, client_id: str, client_secret: str):
-        """Get access token for an addon installed in an organization."""
+        """Get access token for an Addon installed in an Organization."""
         url = self.resolve_endpoint('addon-token')
 
         headers = {
@@ -33,10 +33,10 @@ class Addons(BaseResource):
 
 
 class FlowDocuments(BaseResource):
-    """Represent flow documents resource."""
+    """Represent Flow Documents resource."""
 
     def collection(self, flow_id, **options):
-        """Get supported documents for given flow."""
+        """Get supported Documents for a given Flow."""
         url = self.resolve_endpoint(
             f'addons/slates/{flow_id}/documents'
         )
