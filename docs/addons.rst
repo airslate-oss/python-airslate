@@ -3,7 +3,7 @@ Addons resource
 ===============
 
 
-Get access token for an installed addon
+Get access token for an installed Addon
 ---------------------------------------
 
 .. code-block:: python

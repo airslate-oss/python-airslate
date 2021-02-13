@@ -1,9 +1,9 @@
 ==============
-Flow documents
+Flow Documents
 ==============
 
 
-Get supported documents for a given flow
+Get supported documents for a given Flow
 ----------------------------------------
 
 .. code-block:: python
