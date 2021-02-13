@@ -122,6 +122,17 @@ class Unauthorized(ApiError):
         )
 
 
+class NotFoundError(ApiError):
+    """Error raised when the server can not find the requested resource."""
+
+    def __init__(self, response=None):
+        super().__init__(
+            message='Not Found',
+            status=404,
+            response=response
+        )
+
+
 class RetryApiError(ApiError):
     """Base class for retryable errors."""
 
