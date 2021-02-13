@@ -15,10 +15,9 @@ def test_create_empty_assign_model():
 
 
 def test_names_in_assign_model():
-    model = Assign()
     names = ['foo', 'bar', 'baz']
+    model = Assign(names=names)
 
-    model.set_names(names)
     assert model.data == {'names': names}
 
     expected = {'data': [

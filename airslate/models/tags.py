@@ -15,9 +15,11 @@ from .base import BaseModel
 class Assign(BaseModel):
     """Represents Assign tags model."""
 
-    def set_names(self, names):
-        """Setter for tags names."""
-        self.data['names'] = names
+    def __init__(self, data=None, included=None, names=None):
+        """Initialize Tags model."""
+        super().__init__(data, included)
+        if names is not None:
+            self.data['names'] = names
 
     def to_dict(self):
         """Convert this model to a dictionary."""
