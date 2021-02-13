@@ -20,12 +20,17 @@ Features
 * Provide ability to assign tags to a given Flow.
 * Introduce ``airslate.exceptions.NotFoundError`` to raise from client
   when the server can not find the requested resource.
+* Introduce ``airslate.flow`` module to better organize Flow API:
+
+  * ``client.flow.documents.collection()`` - get supported documents for a given Flow
+  * ``client.flow.tags.assign()`` - assign tags to a given Flow
+  * ``client.flow.tags.collection()`` - get tags for a given Flow
 
 
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Provided utility module for be use within ``airslate`` package:
+* Provided ``utils`` utility module for be use within ``airslate`` package:
 
   * ``airslate.client.Client.DEFAULT_HEADERS`` was moved to ``airslate.utils.default_headers()``
   * ``airslate.session.USER_AGENT`` was moved to ``airslate.utils.default_user_agent()``

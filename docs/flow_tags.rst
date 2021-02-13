@@ -25,7 +25,7 @@ Assign tags to a given Flow
        headers={'Organization-Id': org_id}
    )
 
-   tags = client.flow_tags.assign(
+   tags = client.flow.tags.assign(
        flow_id,
        packet_id,
        Assign(names=['bookkeeping', 'contacts', 'internal']),
@@ -77,7 +77,7 @@ Get tags for a given Flow
        headers={'Organization-Id': org_id}
    )
 
-   tags = client.flow_tags.collection(flow_id)
+   tags = client.flow.tags.collection(flow_id)
    print(tags)
 
 .. raw:: html

@@ -13,17 +13,14 @@ import requests
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
-from .resources.addons import Addons, FlowDocuments
-from .resources.flow import Tags
+from .flow import Flow
+from .resources.addons import Addons
 from .resources.slate_addon import SlateAddonFiles
 from .utils import default_headers
 
 
 class Client:
     """airSlate API client class."""
-
-    # pylint: disable=too-many-instance-attributes
-    # Eight is reasonable in this case.
 
     DEFAULT_OPTIONS = {
         # API endpoint base URL to connect to.
@@ -88,8 +85,7 @@ class Client:
 
         # Initialize each resource and injecting client object into it
         self.addons = Addons(self)
-        self.flow_documents = FlowDocuments(self)
-        self.flow_tags = Tags(self)
+        self.flow = Flow(self)
         self.slate_addon_files = SlateAddonFiles(self)
 
     def request(self, method: str, path: str, **options):
