@@ -17,14 +17,20 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
 Features
 ^^^^^^^^
 
-* Provide ability to assign tags to a given Flow.
-* Introduce ``airslate.exceptions.NotFoundError`` to raise from client
+* Provided ability to assign tags to a given Flow.
+* Introduced ``airslate.exceptions.NotFoundError`` to raise from client
   when the server can not find the requested resource.
-* Introduce ``airslate.flow`` module to better organize Flow API:
+* Introduced ``airslate.flow`` module to better organize Flow API:
 
   * ``client.flow.documents.collection()`` - get supported documents for a given Flow
   * ``client.flow.tags.assign()`` - assign tags to a given Flow
   * ``client.flow.tags.collection()`` - get tags for a given Flow
+
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+* Moved ``client.flow_documents`` to ``client.flow.documents``
 
 
 Trivial/Internal Changes
