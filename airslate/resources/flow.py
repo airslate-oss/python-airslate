@@ -8,11 +8,12 @@
 """Provides Flow related classes and functionality."""
 
 from airslate.entities.tags import Tag
+from airslate.models.tags import Assign
 from . import BaseResource
 
 
 class Tags(BaseResource):
-    """Represent tags resource."""
+    """Represent Tags resource."""
 
     def collection(self, flow_id, **options):
         """Get tags for a given Flow."""
@@ -21,4 +22,14 @@ class Tags(BaseResource):
         )
 
         response = self.client.get(url, full_response=True, **options)
+        return Tag.from_collection(response)
+
+    def assign(self, flow_id, packet_id, assign: Assign):
+        """Assign tags to a given Flow."""
+        url = self.resolve_endpoint(
+            f'flows/{flow_id}/packets/{packet_id}/tags'
+        )
+
+        data = assign.to_dict()
+        response = self.client.post(url, full_response=True, data=data)
         return Tag.from_collection(response)
