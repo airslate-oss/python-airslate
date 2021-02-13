@@ -13,6 +13,7 @@ Classes:
     ApiError
     BadRequest
     Unauthorized
+    NotFoundError
     RetryError
     InternalServerError
     DomainError

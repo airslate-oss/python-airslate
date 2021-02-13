@@ -14,6 +14,14 @@ Versions follow `Semantic Versioning`_ (``<major>.<minor>.<patch>``).
 0.3.0 (2021-XX-XX)
 ------------------
 
+Features
+^^^^^^^^
+
+* Provide ability to assign tags to a given Flow.
+* Introduce ``airslate.exceptions.NotFoundError`` to raise from client
+  when the server can not find the requested resource.
+
+
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -31,7 +39,6 @@ Trivial/Internal Changes
 
 Features
 ^^^^^^^^
-
 
 * Provided ability to get slate addon file.
 
