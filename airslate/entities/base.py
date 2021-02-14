@@ -24,48 +24,56 @@ from abc import ABCMeta, abstractmethod
 
 from asdicts.dict import path
 
-from ..exceptions import MissingData, TypeMismatch, RelationNotExist
+from airslate.exceptions import MissingData, TypeMismatch, RelationNotExist
 
 
 class BaseEntity(metaclass=ABCMeta):
     """Base entity class."""
 
-    # pylint: disable=too-many-instance-attributes
-    # Eleven is reasonable in this case.
-
     def __init__(self, uid):
         """Initialize current entity."""
-        self._attributes = {'id': uid}
-        self._relationships = {}
-        self._included = []
-        self._original_included = []
-        self._meta = {}
-        self._object_meta = {}
+        self.attributes = {'id': uid}
+        self.relationships = {}
+        self.included = []
+        self.meta = {}
+        self.object_meta = {}
+
+    def __getattr__(self, item):
+        """Invoke for any attr not in the instance's __dict__."""
+        if item in super().__getattribute__('attributes'):
+            return super().__getattribute__('attributes')[item]
+
+        msg = f"'{self.__class__.__name__}' object has no attribute '{item}'"
+        raise AttributeError(msg)
+
+    def __setattr__(self, key, value):
+        """Implement setattr(self, name, value)."""
+        internal = ['attributes', 'relationships', 'included',
+                    'meta', 'object_meta']
+        if key in internal:
+            return super().__setattr__(key, value)
+
+        return super().__getattribute__('attributes').update({key: value})
 
     def __getitem__(self, item):
         """Getter for the attribute value."""
-        return self._attributes[item]
+        return self.attributes[item]
 
     def __setitem__(self, key, value):
         """Setter for the attribute value."""
-        self._attributes[key] = value
+        self.attributes[key] = value
 
     def __contains__(self, item):
         """Attribute membership verification."""
-        return item in self._attributes
+        return item in self.attributes
 
     def __repr__(self):
         """Provide an easy to read description of the current entity."""
         return '<%s: id=%s, type=%s>' % (
             self.__class__.__name__,
-            self['id'],
+            self.id,
             self.type,
         )
-
-    def set_attributes(self, attributes):
-        """Bulk setter for attributes."""
-        for k in attributes:
-            self[k] = attributes[k]
 
     def has_one(self, cls, relation_name):
         """Create an instance of the related entity.
@@ -115,56 +123,6 @@ class BaseEntity(metaclass=ABCMeta):
         return cls.from_collection({'data': relations})
 
     @property
-    def relationships(self):
-        """Getter for relationships dictionary."""
-        return self._relationships
-
-    @relationships.setter
-    def relationships(self, data):
-        """Setter for relationships dictionary."""
-        self._relationships = data
-
-    @property
-    def included(self):
-        """Getter for included list."""
-        return self._included
-
-    @included.setter
-    def included(self, data):
-        """Setter for included list."""
-        self._included = data
-
-    @property
-    def meta(self):
-        """Getter for meta dictionary."""
-        return self._meta
-
-    @meta.setter
-    def meta(self, data):
-        """Setter for meta dictionary."""
-        self._meta = data
-
-    @property
-    def object_meta(self):
-        """Getter for object meta dictionary."""
-        return self._object_meta
-
-    @object_meta.setter
-    def object_meta(self, data):
-        """Setter for object meta dictionary."""
-        self._object_meta = data
-
-    @property
-    def original_included(self):
-        """Getter for original included list."""
-        return self._original_included
-
-    @original_included.setter
-    def original_included(self, data):
-        """Setter for original included list."""
-        self._original_included = data
-
-    @property
     @abstractmethod
     def type(self):
         """Get type name of the current entity."""
@@ -175,21 +133,23 @@ class BaseEntity(metaclass=ABCMeta):
         if 'data' not in obj:
             raise MissingData()
 
-        entity = cls(path(obj, 'data.id'))
+        entity = cls(uid=None)
         if path(obj, 'data.type', '') != entity.type:
             raise TypeMismatch()
 
-        entity.set_attributes(path(obj, 'data.attributes', []))
-        relationships = path(obj, 'data.relationships', {})
-
-        original_included = path(obj, 'included', [])
-        included = filter_included(relationships, original_included)
-
-        entity.relationships = relationships
-        entity.included = included
-        entity.meta = path(obj, 'meta', {})
-        entity.object_meta = path(obj, 'data.meta', {})
-        entity.original_included = original_included
+        entity.__setstate__({
+            'data': {
+                'id': path(obj, 'data.id'),
+                'attributes': path(obj, 'data.attributes', {}),
+                'relationships': path(obj, 'data.relationships', {}),
+                'meta': path(obj, 'data.meta', {}),
+            },
+            'included': filter_included(
+                path(obj, 'data.relationships', {}),
+                path(obj, 'included', [])
+            ),
+            'meta': path(obj, 'meta', {}),
+        })
 
         return entity
 
@@ -207,25 +167,69 @@ class BaseEntity(metaclass=ABCMeta):
 
         entities = []
         for item in data:
-            entity = cls(item['id'])
+            entity = cls(uid=None)
 
             if path(item, 'type', '') != entity.type:
                 raise TypeMismatch()
 
-            entity.set_attributes(item['attributes'])
-            relationships = path(item, 'relationships', {})
-
-            original_included = path(obj, 'included', [])
-            included = filter_included(relationships, original_included)
-
-            entity.relationships = relationships
-            entity.included = included
-            entity.meta = path(item, 'meta', {})
-            entity.original_included = original_included
+            entity.__setstate__({
+                'data': {
+                    'id': path(item, 'id'),
+                    'attributes': path(item, 'attributes', {}),
+                    'relationships': path(item, 'relationships', {}),
+                },
+                'included': filter_included(
+                    path(item, 'relationships', {}),
+                    path(obj, 'included', [])
+                ),
+                'meta': path(item, 'meta', {}),
+            })
 
             entities.append(entity)
 
         return entities
+
+    def __getstate__(self):
+        """Play nice with pickle."""
+        return self.to_dict()
+
+    def __setstate__(self, obj):
+        """Play nice with pickle."""
+        self.attributes = path(obj, 'data.attributes', {})
+        self.attributes['id'] = path(obj, 'data.id')
+        self.relationships = path(obj, 'data.relationships', {})
+        self.included = path(obj, 'included', [])
+        self.meta = path(obj, 'meta', {})
+        self.object_meta = path(obj, 'data.meta', {})
+
+    def to_dict(self):
+        """Convert this entity to a dictionary."""
+        attributes = self.attributes.copy()
+        del attributes['id']
+
+        result = {
+            'data': {
+                'type': self.type,
+                'id': self.id,
+            }
+        }
+
+        if len(attributes) > 0:
+            result['data']['attributes'] = attributes
+
+        if len(self.relationships) > 0:
+            result['data']['relationships'] = self.relationships
+
+        if len(self.object_meta) > 0:
+            result['data']['meta'] = self.object_meta
+
+        if len(self.meta) > 0:
+            result['meta'] = self.meta
+
+        if len(self.included) > 0:
+            result['included'] = self.included
+
+        return result
 
 
 def filter_included(relationships, included):

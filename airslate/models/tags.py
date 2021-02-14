@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""The base module for tags related models and functionality."""
+"""The base module for Tags request models."""
 
 from asdicts.dict import path
 
@@ -13,7 +13,7 @@ from .base import BaseModel
 
 
 class Assign(BaseModel):
-    """Represents Assign tags model."""
+    """Represents Assign Tags request model."""
 
     def __init__(self, data=None, included=None, names=None):
         """Initialize Tags model."""

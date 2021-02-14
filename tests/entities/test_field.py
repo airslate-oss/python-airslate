@@ -11,11 +11,10 @@ from airslate.entities.documents import Field
 def test_simple_construct():
     field = Field('123')
 
-    assert field['id'] == '123'
+    assert field.id == '123'
     assert field.type == 'dictionary'
     assert field.relationships == {}
     assert field.included == []
-    assert field.original_included == []
     assert field.meta == {}
     assert field.object_meta == {}
     assert field.__repr__() == '<Field: id=123, type=dictionary>'

@@ -11,11 +11,10 @@ from airslate.entities.tags import Tag
 def test_simple_construct():
     tag = Tag('123')
 
-    assert tag['id'] == '123'
+    assert tag.id == '123'
     assert tag.type == 'flow_tags'
     assert tag.relationships == {}
     assert tag.included == []
-    assert tag.original_included == []
     assert tag.meta == {}
     assert tag.object_meta == {}
     assert tag.__repr__() == '<Tag: id=123, type=flow_tags>'

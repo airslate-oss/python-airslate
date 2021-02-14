@@ -19,11 +19,23 @@ Features
   * ``client.flow.tags.assign()`` - assign tags to a given Flow
   * ``client.flow.tags.collection()`` - get tags for a given Flow
 
+* Entity attributes are now accessible via dot notation,
+  i.e. ``entity['id']`` is the same as ``entity.id``.
+* Implement ``airslate.entities.base.BaseEntity.to_dict()`` to convert entities
+  to a dictionary.
+* Implement ``airslate.entities.base.BaseEntity.__getstate__()`` as well as
+  ``airslate.entities.base.BaseEntity.__setstate__()`` to provide ability to persist
+  and load entities state.
+
 
 Breaking Changes
 ^^^^^^^^^^^^^^^^
 
 * Moved ``client.flow_documents`` to ``client.flow.documents``
+* ``BaseEntity.set_attributes()`` from ``airslate.entities.base`` module has been
+  removed. Users are recommended to use ``entity.attributes.update(dict)``.
+* ``BaseEntity.original_included`` from ``airslate.entities.base`` module has been
+  removed.
 
 
 Trivial/Internal Changes
@@ -66,7 +78,7 @@ Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Change default string representation of entities. Now it has the
-  following form ``<EntityName: id=ID, type=TYPE>``.
+  following form: ``<EntityName: id=ID, type=TYPE>``.
 
 
 ----

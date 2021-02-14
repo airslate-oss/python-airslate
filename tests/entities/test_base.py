@@ -5,10 +5,18 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+import pickle
+
 import pytest
 
 from airslate.entities.base import filter_included, BaseEntity
 from airslate.exceptions import MissingData
+
+
+class MyEntity(BaseEntity):
+    @property
+    def type(self):
+        return 'dictionary'
 
 
 def test_filter_includes(documents_collection):
@@ -51,3 +59,119 @@ def test_from_one():
         BaseEntity.from_one({})
 
     assert 'Data is missing in JSON:API response' in str(exc_info.value)
+
+
+def test_to_dict():
+    entity = MyEntity(1)
+    assert entity.to_dict() == {'data': {'type': 'dictionary', 'id': 1}}
+
+    entity.attributes.update({'name': 'foo'})
+    assert entity.to_dict() == {'data': {
+        'attributes': {'name': 'foo'},
+        'type': 'dictionary',
+        'id': 1,
+    }}
+
+    entity.relationships.update({'slate_addon': {}})
+    assert entity.to_dict() == {'data': {
+        'attributes': {'name': 'foo'},
+        'relationships': {'slate_addon': {}},
+        'type': 'dictionary',
+        'id': 1,
+    }}
+
+    entity.object_meta.update({'a': 'b'})
+    assert entity.to_dict() == {'data': {
+        'attributes': {'name': 'foo'},
+        'relationships': {'slate_addon': {}},
+        'type': 'dictionary',
+        'id': 1,
+        'meta': {'a': 'b'},
+    }}
+
+    entity.meta.update({'c': 'f'})
+    assert entity.to_dict() == {
+        'data': {
+            'attributes': {'name': 'foo'},
+            'relationships': {'slate_addon': {}},
+            'type': 'dictionary',
+            'id': 1,
+            'meta': {'a': 'b'},
+        },
+        'meta': {'c': 'f'},
+    }
+
+    entity.included.append({'x': 'y'})
+    assert entity.to_dict() == {
+        'data': {
+            'attributes': {'name': 'foo'},
+            'relationships': {'slate_addon': {}},
+            'type': 'dictionary',
+            'id': 1,
+            'meta': {'a': 'b'},
+        },
+        'meta': {'c': 'f'},
+        'included': [
+            {'x': 'y'}
+        ]
+    }
+
+
+def test_set_state():
+    state = {
+        'data': {
+            'attributes': {'name': 'foo'},
+            'relationships': {'slate_addon': {}},
+            'type': 'dictionary',
+            'id': 117,
+            'meta': {'a': 'b'},
+        },
+        'meta': {'c': 'f'},
+        'included': [
+            {'x': 'y'}
+        ]
+    }
+
+    entity = MyEntity(8)
+    entity.__setstate__(state)
+
+    assert entity.attributes == {'id': 117, 'name': 'foo'}
+    assert entity.relationships == {'slate_addon': {}}
+    assert entity.type == 'dictionary'
+    assert entity.id == 117
+    assert entity.object_meta == {'a': 'b'}
+    assert entity.meta == {'c': 'f'}
+    assert entity.included == [{'x': 'y'}]
+
+
+def test_get_state():
+    entity = MyEntity(42)
+    entity.attributes.update({'abc': 'def'})
+
+    serialized = pickle.dumps(entity)
+    deserialized = pickle.loads(serialized)
+
+    assert deserialized.id == 42
+    assert deserialized.abc == 'def'
+
+
+def test_get_invalid_attr():
+    entity = MyEntity(1)
+    with pytest.raises(AttributeError) as exc_info:
+        entity.abc
+
+    assert "'MyEntity' object has no attribute 'abc'" in str(exc_info.value)
+
+
+def test_get_set_attr():
+    entity = MyEntity(1)
+
+    assert entity.id == 1
+    assert entity['id'] == 1
+
+    assert 'abc' not in entity
+    entity.abc = 42
+
+    assert entity.abc == 42
+    assert entity['abc'] == 42
+    assert 'abc' in entity

@@ -7,8 +7,8 @@
 
 """The base module for airslate models.
 
-This module provides base model class used by various model
-classes within airslate package.
+This module provides base model class used by various
+request models classes within airslate package.
 
 Classes:
 
