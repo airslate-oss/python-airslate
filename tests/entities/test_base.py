@@ -113,3 +113,25 @@ def test_to_dict():
             {'x': 'y'}
         ]
     }
+
+
+def test_get_invalid_attr():
+    entity = MyEntity(1)
+    with pytest.raises(AttributeError) as exc_info:
+        x = entity.abc
+
+    assert "'MyEntity' object has no attribute 'abc'" in str(exc_info.value)
+
+
+def test_get_set_attr():
+    entity = MyEntity(1)
+
+    assert entity.id == 1
+    assert entity['id'] == 1
+
+    assert 'abc' not in entity
+    entity.abc = 42
+
+    assert entity.abc == 42
+    assert entity['abc'] == 42
+    assert 'abc' in entity
