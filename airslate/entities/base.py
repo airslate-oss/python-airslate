@@ -133,19 +133,23 @@ class BaseEntity(metaclass=ABCMeta):
         if 'data' not in obj:
             raise MissingData()
 
-        entity = cls(uid=path(obj, 'data.id'))
+        entity = cls(uid=None)
         if path(obj, 'data.type', '') != entity.type:
             raise TypeMismatch()
 
-        entity.attributes.update(path(obj, 'data.attributes', []))
-        relationships = path(obj, 'data.relationships', {})
-
-        included = filter_included(relationships, path(obj, 'included', []))
-
-        entity.relationships = relationships
-        entity.included = included
-        entity.meta = path(obj, 'meta', {})
-        entity.object_meta = path(obj, 'data.meta', {})
+        entity.__setstate__({
+            'data': {
+                'id': path(obj, 'data.id'),
+                'attributes': path(obj, 'data.attributes', {}),
+                'relationships': path(obj, 'data.relationships', {}),
+                'meta': path(obj, 'data.meta', {}),
+            },
+            'included': filter_included(
+                path(obj, 'data.relationships', {}),
+                path(obj, 'included', [])
+            ),
+            'meta': path(obj, 'meta', {}),
+        })
 
         return entity
 
@@ -163,22 +167,23 @@ class BaseEntity(metaclass=ABCMeta):
 
         entities = []
         for item in data:
-            entity = cls(item['id'])
+            entity = cls(uid=None)
 
             if path(item, 'type', '') != entity.type:
                 raise TypeMismatch()
 
-            entity.attributes.update(item['attributes'])
-            relationships = path(item, 'relationships', {})
-
-            included = filter_included(
-                relationships,
-                path(obj, 'included', [])
-            )
-
-            entity.relationships = relationships
-            entity.included = included
-            entity.meta = path(item, 'meta', {})
+            entity.__setstate__({
+                'data': {
+                    'id': path(item, 'id'),
+                    'attributes': path(item, 'attributes', {}),
+                    'relationships': path(item, 'relationships', {}),
+                },
+                'included': filter_included(
+                    path(item, 'relationships', {}),
+                    path(obj, 'included', [])
+                ),
+                'meta': path(item, 'meta', {}),
+            })
 
             entities.append(entity)
 
