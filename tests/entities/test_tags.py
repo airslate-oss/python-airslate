@@ -15,7 +15,6 @@ def test_simple_construct():
     assert tag.type == 'flow_tags'
     assert tag.relationships == {}
     assert tag.included == []
-    assert tag.original_included == []
     assert tag.meta == {}
     assert tag.object_meta == {}
     assert tag.__repr__() == '<Tag: id=123, type=flow_tags>'

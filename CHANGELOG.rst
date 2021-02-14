@@ -31,6 +31,8 @@ Breaking Changes
 * Moved ``client.flow_documents`` to ``client.flow.documents``
 * ``BaseEntity.set_attributes()`` from ``airslate.entities.base`` module has been
   removed. Users are recommended to use ``entity.attributes.update(dict)``.
+* ``BaseEntity.original_included`` from ``airslate.entities.base`` module has been
+  removed.
 
 
 Trivial/Internal Changes

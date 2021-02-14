@@ -35,7 +35,6 @@ class BaseEntity(metaclass=ABCMeta):
         self.attributes = {'id': uid}
         self.relationships = {}
         self.included = []
-        self.original_included = []
         self.meta = {}
         self.object_meta = {}
 
@@ -50,7 +49,7 @@ class BaseEntity(metaclass=ABCMeta):
     def __setattr__(self, key, value):
         """Implement setattr(self, name, value)."""
         internal = ['attributes', 'relationships', 'included',
-                    'original_included', 'meta', 'object_meta']
+                    'meta', 'object_meta']
         if key in internal:
             return super().__setattr__(key, value)
 
@@ -141,14 +140,12 @@ class BaseEntity(metaclass=ABCMeta):
         entity.attributes.update(path(obj, 'data.attributes', []))
         relationships = path(obj, 'data.relationships', {})
 
-        original_included = path(obj, 'included', [])
-        included = filter_included(relationships, original_included)
+        included = filter_included(relationships, path(obj, 'included', []))
 
         entity.relationships = relationships
         entity.included = included
         entity.meta = path(obj, 'meta', {})
         entity.object_meta = path(obj, 'data.meta', {})
-        entity.original_included = original_included
 
         return entity
 
@@ -174,13 +171,14 @@ class BaseEntity(metaclass=ABCMeta):
             entity.attributes.update(item['attributes'])
             relationships = path(item, 'relationships', {})
 
-            original_included = path(obj, 'included', [])
-            included = filter_included(relationships, original_included)
+            included = filter_included(
+                relationships,
+                path(obj, 'included', [])
+            )
 
             entity.relationships = relationships
             entity.included = included
             entity.meta = path(item, 'meta', {})
-            entity.original_included = original_included
 
             entities.append(entity)
 

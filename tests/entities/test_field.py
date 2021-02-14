@@ -15,7 +15,6 @@ def test_simple_construct():
     assert field.type == 'dictionary'
     assert field.relationships == {}
     assert field.included == []
-    assert field.original_included == []
     assert field.meta == {}
     assert field.object_meta == {}
     assert field.__repr__() == '<Field: id=123, type=dictionary>'

@@ -42,7 +42,6 @@ def test_document_included(documents_collection):
     document = Document.from_collection(documents_collection)[0]
 
     assert isinstance(document.included, list)
-    assert isinstance(document.original_included, list)
 
     assert len(document.included) == 2
     assert isinstance(document.included[0], dict)
