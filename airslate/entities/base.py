@@ -24,7 +24,7 @@ from abc import ABCMeta, abstractmethod
 
 from asdicts.dict import path
 
-from ..exceptions import MissingData, TypeMismatch, RelationNotExist
+from airslate.exceptions import MissingData, TypeMismatch, RelationNotExist
 
 
 class BaseEntity(metaclass=ABCMeta):
@@ -32,46 +32,41 @@ class BaseEntity(metaclass=ABCMeta):
 
     def __init__(self, uid):
         """Initialize current entity."""
-        super().__setattr__('_attributes', {'id': uid})
-        super().__setattr__('_relationships', {})
-        super().__setattr__('_included', [])
-        super().__setattr__('_original_included', [])
-        super().__setattr__('_meta', {})
-        super().__setattr__('_object_meta', {})
+        self.attributes = {'id': uid}
+        self.relationships = {}
+        self.included = []
+        self.original_included = []
+        self.meta = {}
+        self.object_meta = {}
 
     def __getattr__(self, item):
         """Invoke for any attr not in the instance's __dict__."""
-        internal = ['attributes', 'relationships', 'included',
-                    'original_included', 'meta', 'object_meta']
-        if item in internal:
-            return super().__getattribute__(f'_{item}')
-        elif item in super().__getattribute__('_attributes'):
-            return super().__getattribute__('_attributes')[item]
+        if item in super().__getattribute__('attributes'):
+            return super().__getattribute__('attributes')[item]
 
-        raise AttributeError(
-            f"'{self.__class__.__name__}' object has no attribute '{item}'"
-        )
+        msg = f"'{self.__class__.__name__}' object has no attribute '{item}'"
+        raise AttributeError(msg)
 
     def __setattr__(self, key, value):
         """Implement setattr(self, name, value)."""
         internal = ['attributes', 'relationships', 'included',
                     'original_included', 'meta', 'object_meta']
         if key in internal:
-            super().__setattr__(f'_{key}', value)
-        else:
-            super().__getattribute__('_attributes').update({key: value})
+            return super().__setattr__(key, value)
+
+        return super().__getattribute__('attributes').update({key: value})
 
     def __getitem__(self, item):
         """Getter for the attribute value."""
-        return self._attributes[item]
+        return self.attributes[item]
 
     def __setitem__(self, key, value):
         """Setter for the attribute value."""
-        self._attributes[key] = value
+        self.attributes[key] = value
 
     def __contains__(self, item):
         """Attribute membership verification."""
-        return item in self._attributes
+        return item in self.attributes
 
     def __repr__(self):
         """Provide an easy to read description of the current entity."""
@@ -80,10 +75,6 @@ class BaseEntity(metaclass=ABCMeta):
             self.id,
             self.type,
         )
-
-    def set_attributes(self, attributes):
-        """Bulk setter for attributes."""
-        super().__getattribute__('_attributes').update(attributes)
 
     def has_one(self, cls, relation_name):
         """Create an instance of the related entity.
@@ -147,7 +138,7 @@ class BaseEntity(metaclass=ABCMeta):
         if path(obj, 'data.type', '') != entity.type:
             raise TypeMismatch()
 
-        entity.set_attributes(path(obj, 'data.attributes', []))
+        entity.attributes.update(path(obj, 'data.attributes', []))
         relationships = path(obj, 'data.relationships', {})
 
         original_included = path(obj, 'included', [])
@@ -180,7 +171,7 @@ class BaseEntity(metaclass=ABCMeta):
             if path(item, 'type', '') != entity.type:
                 raise TypeMismatch()
 
-            entity.set_attributes(item['attributes'])
+            entity.attributes.update(item['attributes'])
             relationships = path(item, 'relationships', {})
 
             original_included = path(obj, 'included', [])
