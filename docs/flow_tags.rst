@@ -59,9 +59,9 @@ Assign tags to a given Flow
 
    for tag in tags:
        print({
-           'id': tag['id'],
-           'name': tag['name'],
-           'created_at': tag['created_at'],
+           'id': tag.id,
+           'name': tag.name,
+           'created_at': tag.created_at,
            'org_id': tag.relationships['organization']['data']['id'],
        })
 

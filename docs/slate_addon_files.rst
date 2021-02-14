@@ -52,7 +52,7 @@ Get the requested slate addon file
 
    file = client.slate_addon_files.get(file_id)
    print(file)
-   print(file['name'], file['size'])
+   print(file.name, file.size)
    print(file.object_meta['download_url'])
 
    addon = file.slate_addon

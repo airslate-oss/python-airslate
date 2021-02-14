@@ -25,10 +25,10 @@ Get supported documents for a given Flow
        print(document)
 
        print({
-           'id': document['id'],
-           'name': document['name'],
-           'status': document['status'],
-           'version': document['version'],
+           'id': document.id,
+           'name': document.name,
+           'status': document.status,
+           'version': document.version,
        })
 
        for field in document.fields:
