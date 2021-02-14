@@ -11,7 +11,7 @@ from .resources.addons import FlowDocuments
 from .resources.slate import Tags
 
 
-class Flow:
+class Flow:  # pylint: disable=too-few-public-methods
     """Represents Flow API."""
 
     def __init__(self, client):
@@ -27,8 +27,8 @@ class Flow:
         return self._documents
 
 
-class Slate:
-    """Represents Flow API."""
+class Slate:  # pylint: disable=too-few-public-methods
+    """Represents Slate API."""
 
     def __init__(self, client):
         """Initialize Slate instance."""
