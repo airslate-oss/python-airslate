@@ -5,13 +5,11 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-from airslate.flow import Flow
+from airslate.facades import Flow, Slate
 from airslate.resources.addons import FlowDocuments
-from airslate.resources.flow import Tags
+from airslate.resources.slate import Tags
 
 
 def test_getters(client):
-    flow = Flow(client)
-
-    assert isinstance(flow.documents, FlowDocuments)
-    assert isinstance(flow.tags, Tags)
+    assert isinstance(Flow(client).documents, FlowDocuments)
+    assert isinstance(Slate(client).tags, Tags)

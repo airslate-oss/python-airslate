@@ -5,10 +5,10 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Flow module for airslate package."""
+"""Facade module for API resources."""
 
 from .resources.addons import FlowDocuments
-from .resources.flow import Tags
+from .resources.slate import Tags
 
 
 class Flow:
@@ -18,7 +18,6 @@ class Flow:
         """Initialize Flow instance."""
         self._client = client
         self._documents = None
-        self._tags = None
 
     @property
     def documents(self):
@@ -26,6 +25,15 @@ class Flow:
         if self._documents is None:
             self._documents = FlowDocuments(self._client)
         return self._documents
+
+
+class Slate:
+    """Represents Flow API."""
+
+    def __init__(self, client):
+        """Initialize Slate instance."""
+        self._client = client
+        self._tags = None
 
     @property
     def tags(self):
