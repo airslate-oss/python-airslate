@@ -16,16 +16,16 @@ def test_from_one(slate_addon_files):
     addon = file.slate_addon
 
     assert str(addon) == str(file.has_one(SlateAddon, 'slate_addon'))
-    assert file['name'] == 'example.json'
+    assert file.name == 'example.json'
 
-    assert file['id'] == slate_addon_files['data']['id']
+    assert file.id == slate_addon_files['data']['id']
     assert file.type == 'slate_addon_files'
 
     assert isinstance(addon, SlateAddon)
     assert addon.type == 'slate_addons'
 
     relationships = slate_addon_files['data']['relationships']
-    assert addon['id'] == relationships['slate_addon']['data']['id']
+    assert addon.id == relationships['slate_addon']['data']['id']
 
 
 def test_has_one_invalid_relation(slate_addon_files):

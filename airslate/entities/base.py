@@ -30,17 +30,36 @@ from ..exceptions import MissingData, TypeMismatch, RelationNotExist
 class BaseEntity(metaclass=ABCMeta):
     """Base entity class."""
 
-    # pylint: disable=too-many-instance-attributes
-    # Eleven is reasonable in this case.
-
     def __init__(self, uid):
         """Initialize current entity."""
-        self._attributes = {'id': uid}
-        self._relationships = {}
-        self._included = []
-        self._original_included = []
-        self._meta = {}
-        self._object_meta = {}
+        super().__setattr__('_attributes', {'id': uid})
+        super().__setattr__('_relationships', {})
+        super().__setattr__('_included', [])
+        super().__setattr__('_original_included', [])
+        super().__setattr__('_meta', {})
+        super().__setattr__('_object_meta', {})
+
+    def __getattr__(self, item):
+        """Invoke for any attr not in the instance's __dict__."""
+        internal = ['attributes', 'relationships', 'included',
+                    'original_included', 'meta', 'object_meta']
+        if item in internal:
+            return super().__getattribute__(f'_{item}')
+        elif item in super().__getattribute__('_attributes'):
+            return super().__getattribute__('_attributes')[item]
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{item}'"
+        )
+
+    def __setattr__(self, key, value):
+        """Implement setattr(self, name, value)."""
+        internal = ['attributes', 'relationships', 'included',
+                    'original_included', 'meta', 'object_meta']
+        if key in internal:
+            super().__setattr__(f'_{key}', value)
+        else:
+            super().__getattribute__('_attributes').update({key: value})
 
     def __getitem__(self, item):
         """Getter for the attribute value."""
@@ -58,14 +77,13 @@ class BaseEntity(metaclass=ABCMeta):
         """Provide an easy to read description of the current entity."""
         return '<%s: id=%s, type=%s>' % (
             self.__class__.__name__,
-            self['id'],
+            self.id,
             self.type,
         )
 
     def set_attributes(self, attributes):
         """Bulk setter for attributes."""
-        for k in attributes:
-            self[k] = attributes[k]
+        super().__getattribute__('_attributes').update(attributes)
 
     def has_one(self, cls, relation_name):
         """Create an instance of the related entity.
@@ -115,56 +133,6 @@ class BaseEntity(metaclass=ABCMeta):
         return cls.from_collection({'data': relations})
 
     @property
-    def relationships(self):
-        """Getter for relationships dictionary."""
-        return self._relationships
-
-    @relationships.setter
-    def relationships(self, data):
-        """Setter for relationships dictionary."""
-        self._relationships = data
-
-    @property
-    def included(self):
-        """Getter for included list."""
-        return self._included
-
-    @included.setter
-    def included(self, data):
-        """Setter for included list."""
-        self._included = data
-
-    @property
-    def meta(self):
-        """Getter for meta dictionary."""
-        return self._meta
-
-    @meta.setter
-    def meta(self, data):
-        """Setter for meta dictionary."""
-        self._meta = data
-
-    @property
-    def object_meta(self):
-        """Getter for object meta dictionary."""
-        return self._object_meta
-
-    @object_meta.setter
-    def object_meta(self, data):
-        """Setter for object meta dictionary."""
-        self._object_meta = data
-
-    @property
-    def original_included(self):
-        """Getter for original included list."""
-        return self._original_included
-
-    @original_included.setter
-    def original_included(self, data):
-        """Setter for original included list."""
-        self._original_included = data
-
-    @property
     @abstractmethod
     def type(self):
         """Get type name of the current entity."""
@@ -175,7 +143,7 @@ class BaseEntity(metaclass=ABCMeta):
         if 'data' not in obj:
             raise MissingData()
 
-        entity = cls(path(obj, 'data.id'))
+        entity = cls(uid=path(obj, 'data.id'))
         if path(obj, 'data.type', '') != entity.type:
             raise TypeMismatch()
 
@@ -226,6 +194,35 @@ class BaseEntity(metaclass=ABCMeta):
             entities.append(entity)
 
         return entities
+
+    def to_dict(self):
+        """Convert this entity to a dictionary."""
+        attributes = self._attributes.copy()
+        del attributes['id']
+
+        result = {
+            'data': {
+                'type': self.type,
+                'id': self.id,
+            }
+        }
+
+        if len(attributes) > 0:
+            result['data']['attributes'] = attributes
+
+        if len(self.relationships) > 0:
+            result['data']['relationships'] = self.relationships
+
+        if len(self.object_meta) > 0:
+            result['data']['meta'] = self.object_meta
+
+        if len(self.meta) > 0:
+            result['meta'] = self.meta
+
+        if len(self.included) > 0:
+            result['included'] = self.included
+
+        return result
 
 
 def filter_included(relationships, included):

@@ -11,7 +11,7 @@ from airslate.entities.tags import Tag
 def test_simple_construct():
     tag = Tag('123')
 
-    assert tag['id'] == '123'
+    assert tag.id == '123'
     assert tag.type == 'flow_tags'
     assert tag.relationships == {}
     assert tag.included == []

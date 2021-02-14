@@ -89,7 +89,7 @@ def test_document_has_many_empty_relations(documents_collection):
     assert len(fields) == 2
     assert isinstance(fields[0], Field)
     assert isinstance(fields[1], Field)
-    assert fields[0]['id'] + fields[1]['id'] == 42
+    assert fields[0].id + fields[1].id == 42
 
 
 def test_document_has_many_fields(documents_collection):
@@ -100,5 +100,5 @@ def test_document_has_many_fields(documents_collection):
     assert len(fields) == 2
     assert isinstance(fields[0], Field)
     assert isinstance(fields[1], Field)
-    assert fields[0]['id'] == 'B15E5D00-0000-0000-000021F6-0001'
-    assert fields[1]['id'] == 'B15E5D00-0000-0000-000021F6-0002'
+    assert fields[0].id == 'B15E5D00-0000-0000-000021F6-0001'
+    assert fields[1].id == 'B15E5D00-0000-0000-000021F6-0002'
