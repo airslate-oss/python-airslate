@@ -30,7 +30,7 @@ Breaking Changes
 
 * Moved ``client.flow_documents`` to ``client.flow.documents``
 * ``BaseEntity.set_attributes()`` from ``airslate.entities.base`` module has been
-  removed.
+  removed. Users are recommended to use ``entity.attributes.update(dict)``.
 
 
 Trivial/Internal Changes
@@ -73,7 +73,7 @@ Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Change default string representation of entities. Now it has the
-  following form ``<EntityName: id=ID, type=TYPE>``.
+  following form: ``<EntityName: id=ID, type=TYPE>``.
 
 
 ----
