@@ -19,6 +19,11 @@ Features
   * ``client.flow.tags.assign()`` - assign tags to a given Flow
   * ``client.flow.tags.collection()`` - get tags for a given Flow
 
+* Entity attributes are now accessible via dot notation,
+  i.e. ``entity['id']`` is the same as ``entity.id``.
+* Implement ``airslate.entities.base.BaseEntity.to_dict()`` to convert entities
+  to a dictionary.
+
 
 Breaking Changes
 ^^^^^^^^^^^^^^^^
