@@ -188,7 +188,7 @@ class BaseEntity(metaclass=ABCMeta):
 
     def to_dict(self):
         """Convert this entity to a dictionary."""
-        attributes = self._attributes.copy()
+        attributes = self.attributes.copy()
         del attributes['id']
 
         result = {
