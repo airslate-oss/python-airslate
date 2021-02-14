@@ -11,6 +11,12 @@ from airslate.entities.base import filter_included, BaseEntity
 from airslate.exceptions import MissingData
 
 
+class MyEntity(BaseEntity):
+    @property
+    def type(self):
+        return 'dictionary'
+
+
 def test_filter_includes(documents_collection):
     relationships = documents_collection['data'][0]['relationships']
     includes = documents_collection['included']
@@ -51,3 +57,59 @@ def test_from_one():
         BaseEntity.from_one({})
 
     assert 'Data is missing in JSON:API response' in str(exc_info.value)
+
+
+def test_to_dict():
+    entity = MyEntity(1)
+    assert entity.to_dict() == {'data': {'type': 'dictionary', 'id': 1}}
+
+    entity.attributes.update({'name': 'foo'})
+    assert entity.to_dict() == {'data': {
+        'attributes': {'name': 'foo'},
+        'type': 'dictionary',
+        'id': 1,
+    }}
+
+    entity.relationships.update({'slate_addon': {}})
+    assert entity.to_dict() == {'data': {
+        'attributes': {'name': 'foo'},
+        'relationships': {'slate_addon': {}},
+        'type': 'dictionary',
+        'id': 1,
+    }}
+
+    entity.object_meta.update({'a': 'b'})
+    assert entity.to_dict() == {'data': {
+        'attributes': {'name': 'foo'},
+        'relationships': {'slate_addon': {}},
+        'type': 'dictionary',
+        'id': 1,
+        'meta': {'a': 'b'},
+    }}
+
+    entity.meta.update({'c': 'f'})
+    assert entity.to_dict() == {
+        'data': {
+            'attributes': {'name': 'foo'},
+            'relationships': {'slate_addon': {}},
+            'type': 'dictionary',
+            'id': 1,
+            'meta': {'a': 'b'},
+        },
+        'meta': {'c': 'f'},
+    }
+
+    entity.included.append({'x': 'y'})
+    assert entity.to_dict() == {
+        'data': {
+            'attributes': {'name': 'foo'},
+            'relationships': {'slate_addon': {}},
+            'type': 'dictionary',
+            'id': 1,
+            'meta': {'a': 'b'},
+        },
+        'meta': {'c': 'f'},
+        'included': [
+            {'x': 'y'}
+        ]
+    }
