@@ -23,6 +23,9 @@ Features
   i.e. ``entity['id']`` is the same as ``entity.id``.
 * Implement ``airslate.entities.base.BaseEntity.to_dict()`` to convert entities
   to a dictionary.
+* Implement ``airslate.entities.base.BaseEntity.__getstate__()`` as well as
+  ``airslate.entities.base.BaseEntity.__setstate__()`` to provide ability to persist
+  and load entities state.
 
 
 Breaking Changes

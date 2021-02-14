@@ -184,6 +184,19 @@ class BaseEntity(metaclass=ABCMeta):
 
         return entities
 
+    def __getstate__(self):
+        """Play nice with pickle."""
+        return self.to_dict()
+
+    def __setstate__(self, obj):
+        """Play nice with pickle."""
+        self.attributes = path(obj, 'data.attributes', {})
+        self.attributes['id'] = path(obj, 'data.id')
+        self.relationships = path(obj, 'data.relationships', {})
+        self.included = path(obj, 'included', [])
+        self.meta = path(obj, 'meta', {})
+        self.object_meta = path(obj, 'data.meta', {})
+
     def to_dict(self):
         """Convert this entity to a dictionary."""
         attributes = self.attributes.copy()

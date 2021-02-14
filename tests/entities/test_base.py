@@ -5,6 +5,8 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+import pickle
+
 import pytest
 
 from airslate.entities.base import filter_included, BaseEntity
@@ -113,6 +115,44 @@ def test_to_dict():
             {'x': 'y'}
         ]
     }
+
+
+def test_set_state():
+    state = {
+        'data': {
+            'attributes': {'name': 'foo'},
+            'relationships': {'slate_addon': {}},
+            'type': 'dictionary',
+            'id': 117,
+            'meta': {'a': 'b'},
+        },
+        'meta': {'c': 'f'},
+        'included': [
+            {'x': 'y'}
+        ]
+    }
+
+    entity = MyEntity(8)
+    entity.__setstate__(state)
+
+    assert entity.attributes == {'id': 117, 'name': 'foo'}
+    assert entity.relationships == {'slate_addon': {}}
+    assert entity.type == 'dictionary'
+    assert entity.id == 117
+    assert entity.object_meta == {'a': 'b'}
+    assert entity.meta == {'c': 'f'}
+    assert entity.included == [{'x': 'y'}]
+
+
+def test_get_state():
+    entity = MyEntity(42)
+    entity.attributes.update({'abc': 'def'})
+
+    serialized = pickle.dumps(entity)
+    deserialized = pickle.loads(serialized)
+
+    assert deserialized.id == 42
+    assert deserialized.abc == 'def'
 
 
 def test_get_invalid_attr():
