@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Flow API resource module."""
+"""Flows API resource module."""
 
 from airslate.entities.documents import Document
 from . import BaseResource

@@ -19,7 +19,7 @@ Get supported documents for a given Flow
        headers={'Organization-Id': org_id}
    )
 
-   documents = client.flow.documents.collection(flow_id, include='fields')
+   documents = client.flows.documents.collection(flow_id, include='fields')
 
    for document in documents:
        print(document)

@@ -7,6 +7,7 @@
 
 """Addons API resource module."""
 
+from airslate.entities.addons import SlateAddonFile
 from . import BaseResource
 
 
@@ -29,3 +30,25 @@ class Addons(BaseResource):
         }
 
         return self.client.post(url, data, headers=headers, full_response=True)
+
+
+class SlateAddonFiles(BaseResource):
+    """Represent Slate Addon Files resource."""
+
+    def get(self, file_id):
+        """Get the requested Slate Addon File."""
+        url = self.resolve_endpoint(
+            f'slate-addon-files/{file_id}'
+        )
+
+        response = self.client.get(url, full_response=True)
+        return SlateAddonFile.from_one(response)
+
+    def download(self, file_id):
+        """Download contents of the requested Slate Addon File."""
+        url = self.resolve_endpoint(
+            f'slate-addon-files/{file_id}/download'
+        )
+
+        headers = {'Accept': '*/*'}
+        return self.client.get(url, headers=headers, stream=True)

@@ -23,7 +23,7 @@ def test_empty_collection_response(client):
         json={'data': {}}
     )
 
-    resp = client.slate.tags.collection(flow_id)
+    resp = client.slates.tags.collection(flow_id)
     headers = responses.calls[0].request.headers
 
     # There is no 'Content-Type' for GET requests
@@ -57,7 +57,7 @@ def test_assign(client):
     )
 
     tags = Assign(['a_tag'])
-    resp = client.slate.tags.assign(flow_id, packet_id, tags)
+    resp = client.slates.tags.assign(flow_id, packet_id, tags)
 
     assert isinstance(resp, list)
     assert len(resp) == 1

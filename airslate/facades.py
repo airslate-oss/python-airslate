@@ -9,41 +9,65 @@
 
 Classes:
 
-    Flow
-    Slate
+    Addons
+    Flows
+    Slates
 
 """
 
-from .resources import flow, slate
+from .resources import flows, slates, addons
 
 
-class Flow:  # pylint: disable=too-few-public-methods
-    """Represents Flow API."""
+class Addons:
+    """Represents Addons API."""
 
     def __init__(self, client):
-        """Initialize Flow instance."""
+        """Initialize Flows instance."""
+        self._client = client
+        self._files = None
+        self._addons = None
+
+    def auth(self, org_id, client_id, client_secret):
+        """Get access token for an Addons installed in an Organization."""
+        if self._addons is None:
+            self._addons = addons.Addons(self._client)
+        return self._addons.access_token(org_id, client_id, client_secret)
+
+    @property
+    def files(self):
+        """Getter for :class:`addons.SlateAddonFiles` instance."""
+        if self._files is None:
+            self._files = addons.SlateAddonFiles(self._client)
+        return self._files
+
+
+class Flows:  # pylint: disable=too-few-public-methods
+    """Represents Flows API."""
+
+    def __init__(self, client):
+        """Initialize Flows instance."""
         self._client = client
         self._documents = None
 
     @property
     def documents(self):
-        """Getter for :class:`flow.Documents` instance."""
+        """Getter for :class:`flows.Documents` instance."""
         if self._documents is None:
-            self._documents = flow.Documents(self._client)
+            self._documents = flows.Documents(self._client)
         return self._documents
 
 
-class Slate:  # pylint: disable=too-few-public-methods
-    """Represents Slate API."""
+class Slates:  # pylint: disable=too-few-public-methods
+    """Represents Slates API."""
 
     def __init__(self, client):
-        """Initialize Slate instance."""
+        """Initialize Slates instance."""
         self._client = client
         self._tags = None
 
     @property
     def tags(self):
-        """Getter for :class:`slate.Tags` instance."""
+        """Getter for :class:`slates.Tags` instance."""
         if self._tags is None:
-            self._tags = slate.Tags(self._client)
+            self._tags = slates.Tags(self._client)
         return self._tags

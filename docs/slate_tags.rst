@@ -22,7 +22,7 @@ Get all Slates tags for a given Flow
        headers={'Organization-Id': org_id}
    )
 
-   tags = client.slate.tags.collection(flow_id)
+   tags = client.slates.tags.collection(flow_id)
    print(tags)
 
 Output
@@ -52,7 +52,7 @@ Assign tags to a given Slate
    )
 
    request_data = Assign(names=['bookkeeping', 'contacts', 'internal'])
-   tags = client.slate.tags.assign(
+   tags = client.slates.tags.assign(
        flow_id,
        slate_id,
        request_data,

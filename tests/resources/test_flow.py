@@ -20,7 +20,7 @@ def test_empty_collection_response(client):
         json={'data': {}}
     )
 
-    resp = client.flow.documents.collection(flow_id, include='fields')
+    resp = client.flows.documents.collection(flow_id, include='fields')
     headers = responses.calls[0].request.headers
 
     # There is no 'Content-Type' for GET requests
