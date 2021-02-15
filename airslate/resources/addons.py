@@ -5,14 +5,14 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Addons module for airslate package."""
+"""Addons API resource module."""
 
-from airslate.entities.documents import Document
+from airslate.entities.addons import SlateAddonFile
 from . import BaseResource
 
 
 class Addons(BaseResource):
-    """Represent Addons resource."""
+    """Represent Addons API resource."""
 
     def access_token(self, org_id: str, client_id: str, client_secret: str):
         """Get access token for an Addon installed in an Organization."""
@@ -32,14 +32,23 @@ class Addons(BaseResource):
         return self.client.post(url, data, headers=headers, full_response=True)
 
 
-class FlowDocuments(BaseResource):
-    """Represent Flow Documents resource."""
+class SlateAddonFiles(BaseResource):
+    """Represent Slate Addon Files resource."""
 
-    def collection(self, flow_id, **options):
-        """Get supported Documents for a given Flow."""
+    def get(self, file_id):
+        """Get the requested Slate Addon File."""
         url = self.resolve_endpoint(
-            f'addons/slates/{flow_id}/documents'
+            f'slate-addon-files/{file_id}'
         )
 
-        response = self.client.get(url, full_response=True, **options)
-        return Document.from_collection(response)
+        response = self.client.get(url, full_response=True)
+        return SlateAddonFile.from_one(response)
+
+    def download(self, file_id):
+        """Download contents of the requested Slate Addon File."""
+        url = self.resolve_endpoint(
+            f'slate-addon-files/{file_id}/download'
+        )
+
+        headers = {'Accept': '*/*'}
+        return self.client.get(url, headers=headers, stream=True)

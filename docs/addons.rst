@@ -13,7 +13,7 @@ Get access token for an installed Addon
 
    client = Client()
 
-   identity = client.addons.access_token(
+   identity = client.addons.auth(
        org_id='057C5000-0000-0000-0000D981',
        client_id='32C2A810-0000-0000-000044D8',
        client_secret='b21877f468f839821b9c6744ee2b6941',

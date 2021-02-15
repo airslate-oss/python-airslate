@@ -20,7 +20,7 @@ Download contents of the requested file
    )
 
    local_filename = 'example.json'
-   stream = client.slate_addon_files.download(file_id)
+   stream = client.addons.files.download(file_id)
 
    # With the following streaming code, the Python memory usage is
    # restricted regardless of the size of the downloaded file:
@@ -33,7 +33,8 @@ Download contents of the requested file
 
    To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
-Get the requested slate addon file
+
+Get the requested Slate Addon file
 ----------------------------------
 
 
@@ -50,7 +51,7 @@ Get the requested slate addon file
        headers={'Organization-Id': org_id}
    )
 
-   file = client.slate_addon_files.get(file_id)
+   file = client.addons.files.get(file_id)
    print(file)
    print(file.name, file.size)
    print(file.object_meta['download_url'])

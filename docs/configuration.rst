@@ -2,6 +2,7 @@
 Configuration
 =============
 
+
 Client Options
 ==============
 
@@ -23,6 +24,7 @@ For example:
 
    # per-request
    client.post('/v1/addon-token', {}, timeout=10.0)
+
 
 Available options
 -----------------
