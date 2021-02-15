@@ -3,6 +3,10 @@ API Index
 =========
 
 
+Resources API
+=============
+
+
 Addons API
 ----------
 
