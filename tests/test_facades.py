@@ -6,10 +6,9 @@
 # the LICENSE file that was distributed with this source code.
 
 from airslate.facades import Flow, Slate
-from airslate.resources.addons import FlowDocuments
-from airslate.resources.slate import Tags
+from airslate.resources import flow, slate
 
 
 def test_getters(client):
-    assert isinstance(Flow(client).documents, FlowDocuments)
-    assert isinstance(Slate(client).tags, Tags)
+    assert isinstance(Flow(client).documents, flow.Documents)
+    assert isinstance(Slate(client).tags, slate.Tags)

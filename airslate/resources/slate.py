@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-"""Provides Flow related classes and functionality."""
+"""Slate API resource module."""
 
 from airslate.entities.tags import Tag
 from airslate.models.tags import Assign

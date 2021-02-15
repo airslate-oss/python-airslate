@@ -30,9 +30,9 @@ from airslate.exceptions import MissingData, TypeMismatch, RelationNotExist
 class BaseEntity(metaclass=ABCMeta):
     """Base entity class."""
 
-    def __init__(self, uid):
+    def __init__(self, entity_id):
         """Initialize current entity."""
-        self.attributes = {'id': uid}
+        self.attributes = {'id': entity_id}
         self.relationships = {}
         self.included = []
         self.meta = {}
@@ -117,7 +117,7 @@ class BaseEntity(metaclass=ABCMeta):
         relations = [e for e in self.included if (e['id'], e['type']) in ids]
 
         if len(relations) == 0:
-            result = map(lambda r: cls(r[0]), ids)
+            result = map(lambda x: cls(entity_id=x[0]), ids)
             return list(result)
 
         return cls.from_collection({'data': relations})
@@ -133,7 +133,7 @@ class BaseEntity(metaclass=ABCMeta):
         if 'data' not in obj:
             raise MissingData()
 
-        entity = cls(uid=None)
+        entity = cls(entity_id=None)
         if path(obj, 'data.type', '') != entity.type:
             raise TypeMismatch()
 
@@ -167,7 +167,7 @@ class BaseEntity(metaclass=ABCMeta):
 
         entities = []
         for item in data:
-            entity = cls(uid=None)
+            entity = cls(entity_id=None)
 
             if path(item, 'type', '') != entity.type:
                 raise TypeMismatch()
