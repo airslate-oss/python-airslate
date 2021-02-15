@@ -2,6 +2,7 @@
 API Index
 =========
 
+
 Addons API
 ----------
 
@@ -9,10 +10,12 @@ Addons API
 * ``client.addons.files.get()`` - get the requested Slate Addon File
 * ``client.addons.files.download()`` - download contents of the requested Slate Addon File
 
+
 Flows API
 ---------
 
 * ``client.flows.documents.collection()`` - get supported documents for a given Flow
+
 
 Slates API
 ----------

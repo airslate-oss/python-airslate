@@ -35,8 +35,8 @@ Breaking Changes
 ^^^^^^^^^^^^^^^^
 
 * Moved ``client.addons.access_token()`` ``client.addons.auth()`` facade.
-* Moved ``client.flow_documents`` to ``client.flows.documents()`` facade.
 * Moved ``client.slate_addon_files`` to ``client.addons.files()`` facade.
+* Moved ``client.flow_documents`` to ``client.flows.documents()`` facade.
 * ``BaseEntity.set_attributes()`` from ``airslate.entities.base`` module has been
   removed. Users are recommended to use ``entity.attributes.update(dict)``.
 * ``BaseEntity.original_included`` from ``airslate.entities.base`` module has been

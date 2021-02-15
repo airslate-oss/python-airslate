@@ -6,8 +6,9 @@ Flow Tags
 
    To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
-Get all Slates tags for a given Flow
-------------------------------------
+
+Get all Slate tags for a given Flow
+-----------------------------------
 
 .. code-block:: python
 
@@ -32,6 +33,7 @@ Output
     [<Tag: id=0A231100-0000-0000-0000943B, type=flow_tags>,
      <Tag: id=FFD92100-0000-0000-0000943B, type=flow_tags>,
      <Tag: id=D1533100-0000-0000-0000943B, type=flow_tags>]
+
 
 Assign tags to a given Slate
 ----------------------------
