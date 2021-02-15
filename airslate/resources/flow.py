@@ -12,7 +12,7 @@ from . import BaseResource
 
 
 class Documents(BaseResource):
-    """Represent Flow Documents resource."""
+    """Represent Flow Documents API resource."""
 
     def collection(self, flow_id, **options):
         """Get supported Documents for a given Flow."""

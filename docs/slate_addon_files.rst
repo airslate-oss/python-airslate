@@ -33,7 +33,7 @@ Download contents of the requested file
 
    To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
-Get the requested slate addon file
+Get the requested Slate Addon file
 ----------------------------------
 
 

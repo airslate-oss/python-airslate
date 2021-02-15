@@ -6,8 +6,8 @@ Flow Tags
 
    To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
-Get tags for a given Flow
--------------------------
+Get all Slates tags for a given Flow
+------------------------------------
 
 .. code-block:: python
 
@@ -22,7 +22,7 @@ Get tags for a given Flow
        headers={'Organization-Id': org_id}
    )
 
-   tags = client.flow.tags.collection(flow_id)
+   tags = client.slate.tags.collection(flow_id)
    print(tags)
 
 Output
@@ -33,8 +33,8 @@ Output
      <Tag: id=FFD92100-0000-0000-0000943B, type=flow_tags>,
      <Tag: id=D1533100-0000-0000-0000943B, type=flow_tags>]
 
-Assign tags to a given Flow
----------------------------
+Assign tags to a given Slate
+----------------------------
 
 .. code-block:: python
 
@@ -44,17 +44,18 @@ Assign tags to a given Flow
 
    org_id = '057C5000-0000-0000-0000D981'
    flow_id = '04415300-0000-0000-0000BA29'
-   packet_id = 'D38EA300-0000-0000-0000C9C1'
+   slate_id = 'D38EA300-0000-0000-0000C9C1'
 
    client = Client(
        token=os.getenv('API_TOKEN'),
        headers={'Organization-Id': org_id}
    )
 
-   tags = client.flow.tags.assign(
+   request_data = Assign(names=['bookkeeping', 'contacts', 'internal'])
+   tags = client.slate.tags.assign(
        flow_id,
-       packet_id,
-       Assign(names=['bookkeeping', 'contacts', 'internal']),
+       slate_id,
+       request_data,
    )
 
    for tag in tags:

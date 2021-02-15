@@ -13,10 +13,10 @@ from . import BaseResource
 
 
 class Tags(BaseResource):
-    """Represent Tags resource."""
+    """Represent Tags API resource."""
 
     def collection(self, flow_id, **options):
-        """Get tags for a given Flow."""
+        """Get all Slates tags for a given Flow."""
         url = self.resolve_endpoint(
             f'flows/{flow_id}/packets/tags'
         )
@@ -24,10 +24,10 @@ class Tags(BaseResource):
         response = self.client.get(url, full_response=True, **options)
         return Tag.from_collection(response)
 
-    def assign(self, flow_id, packet_id, assign: Assign):
-        """Assign tags to a given Flow."""
+    def assign(self, flow_id, slate_id, assign: Assign):
+        """Assign tags to a given Slate."""
         url = self.resolve_endpoint(
-            f'flows/{flow_id}/packets/{packet_id}/tags'
+            f'flows/{flow_id}/packets/{slate_id}/tags'
         )
 
         data = assign.to_dict()

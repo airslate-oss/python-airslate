@@ -11,7 +11,7 @@ from . import BaseResource
 
 
 class Addons(BaseResource):
-    """Represent Addons resource."""
+    """Represent Addons API resource."""
 
     def access_token(self, org_id: str, client_id: str, client_secret: str):
         """Get access token for an Addon installed in an Organization."""
