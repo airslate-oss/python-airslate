@@ -13,11 +13,11 @@ Features
 * Provided ability to assign tags to a given Flow.
 * Introduced ``airslate.exceptions.NotFoundError`` to raise from client
   when the server can not find the requested resource.
-* Introduced ``airslate.flow`` module to better organize Flow API:
+* Introduced ``airslate.facades`` facade module to provide an easy to access API resources:
 
   * ``client.flow.documents.collection()`` - get supported documents for a given Flow
-  * ``client.flow.tags.assign()`` - assign tags to a given Flow
-  * ``client.flow.tags.collection()`` - get tags for a given Flow
+  * ``client.slate.tags.assign()`` - assign tags to a given Slate
+  * ``client.slate.tags.collection()`` - get all Slates tags for a given Flow
 
 * Entity attributes are now accessible via dot notation,
   i.e. ``entity['id']`` is the same as ``entity.id``.
