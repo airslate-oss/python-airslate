@@ -16,11 +16,11 @@ Features
 * Introduced ``airslate.facades`` facade module to provide an easy to access API resources:
 
   * ``client.addons.auth()`` - get access token for an Addon installed in an Organization
-  * ``client.addons.files.get()`` - get the requested Slate Addons File
-  * ``client.addons.files.download()`` - download contents of the requested Slate Addons File
+  * ``client.addons.files.get()`` - get the requested Slate Addon File
+  * ``client.addons.files.download()`` - download contents of the requested Slate Addon File
   * ``client.flows.documents.collection()`` - get supported documents for a given Flow
   * ``client.slates.tags.assign()`` - assign tags to a given Slate
-  * ``client.slates.tags.collection()`` - get all Slates tags for a given Flow
+  * ``client.slates.tags.collection()`` - get all Slate tags for a given Flow
 
 * Entity attributes are now accessible via dot notation,
   i.e. ``entity['id']`` is the same as ``entity.id``.

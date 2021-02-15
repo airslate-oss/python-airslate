@@ -28,7 +28,7 @@ class Addons:
         self._addons = None
 
     def auth(self, org_id, client_id, client_secret):
-        """Get access token for an Addons installed in an Organization."""
+        """Get access token for an Addon installed in an Organization."""
         if self._addons is None:
             self._addons = addons.Addons(self._client)
         return self._addons.access_token(org_id, client_id, client_secret)

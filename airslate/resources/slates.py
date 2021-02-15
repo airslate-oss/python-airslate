@@ -16,7 +16,7 @@ class Tags(BaseResource):
     """Represent Tags API resource."""
 
     def collection(self, flow_id, **options):
-        """Get all Slates tags for a given Flow."""
+        """Get all Slate tags for a given Flow."""
         url = self.resolve_endpoint(
             f'flows/{flow_id}/packets/tags'
         )
