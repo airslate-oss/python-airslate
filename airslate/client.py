@@ -142,13 +142,13 @@ class Client:
 
     def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""
-        return self._create(path, data, 'post', **options)
+        return self._create('post', path, data, **options)
 
     def patch(self, path, data, **options):
         """Parses PATCH request options and dispatches a request."""
-        return self._create(path, data, 'patch', **options)
+        return self._create('patch', path, data, **options)
 
-    def _create(self, path, data, method, **options):
+    def _create(self, method, path, data, **options):
         """Internal helper to send POST/PUT/PATCH requests."""
         # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
