@@ -47,6 +47,13 @@ Breaking Changes
   removed.
 
 
+Bug Fixes
+^^^^^^^^^
+
+* Fixed ``included`` parsing for ``BaseEntity.from_one`` and ``BaseEntity.from_collection``
+  when call ``filter_included``.
+
+
 Trivial/Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
