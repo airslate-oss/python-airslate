@@ -7,14 +7,18 @@
 
 """The base module for Documents request models."""
 
+from typing import Optional, List
+
 from airslate.entities.fields import Field
 from .base import BaseModel
+
+Fields = Optional[List[Field]]
 
 
 class UpdateFields(BaseModel):
     """Represents Update Fields request model."""
 
-    def __init__(self, data: list[Field] = None):
+    def __init__(self, data: Fields = None):
         """Initialize Tags model."""
         super().__init__(data)
 
