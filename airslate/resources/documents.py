@@ -16,13 +16,13 @@ from . import BaseResource
 class Documents(BaseResource):
     """Represent Documents resource."""
 
-    def fields(self, document_id):
+    def fields(self, document_id, **options):
         """Get Fields for a given Document."""
         url = self.resolve_endpoint(
             f'documents/{document_id}/fields'
         )
 
-        response = self.client.get(url, full_response=True)
+        response = self.client.get(url, full_response=True, **options)
         return Field.from_collection(response)
 
     def update_fields(self, document_id, fields: UpdateFields):
