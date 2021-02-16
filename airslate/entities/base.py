@@ -134,7 +134,7 @@ class BaseEntity(metaclass=ABCMeta):
             raise MissingData()
 
         entity = cls(entity_id=None)
-        if path(obj, 'data.type', '') != entity.type:
+        if path(obj, 'data.type') != entity.type:
             raise TypeMismatch()
 
         entity.__setstate__({
