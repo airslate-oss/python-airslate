@@ -20,6 +20,9 @@ from .utils import default_headers
 class Client:
     """airSlate API client class."""
 
+    # pylint: disable=too-many-instance-attributes
+    # Eight is reasonable in this case.
+
     DEFAULT_OPTIONS = {
         # API endpoint base URL to connect to.
         'base_url': 'https://api.airslate.com',
