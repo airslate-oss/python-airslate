@@ -122,7 +122,6 @@ KEYWORDS = [
 # Classifiers: available ones listed at https://pypi.org/classifiers
 CLASSIFIERS = [
     'Development Status :: 3 - Alpha',
-    'Environment :: Console',
     'Intended Audience :: Developers',
     'Natural Language :: English',
 
@@ -156,15 +155,15 @@ EXTRAS_REQUIRE = {
         'pytest>=6.2.2',  # Our tests framework
         'pytest-cov>=2.11.1',  # Pytest plugin for measuring coverage
         'responses>=0.12.0',  # Mocking out the requests Python library
-        "pylint==2.6.0",  # Python code static checker
-        "flake8>=3.8.4",  # The modular source code checker
+        'pylint==2.6.0',  # Python code static checker
+        'flake8>=3.8.4',  # The modular source code checker
     ],
     # Dependencies that are required to develop package
     'develop': [
-        "twine>=3.3.0",  # Publishing packages on PyPI
-        "setuptools>=53.0.0",  # Build and install packages
-        "wheel>=0.36.2",  # A built-package format for Python
-        "check-wheel-contents>=0.2.0",  # Check wheels have the right contents
+        'twine>=3.3.0',  # Publishing packages on PyPI
+        'setuptools>=53.0.0',  # Build and install packages
+        'wheel>=0.36.2',  # A built-package format for Python
+        'check-wheel-contents>=0.2.0',  # Check wheels have the right contents
     ]
 }
 
