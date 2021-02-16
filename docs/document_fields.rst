@@ -37,7 +37,7 @@ Update Fields for a given Document
    })
 
    document = client.documents.update_fields(
-       document_id=Config.DOCUMENT_ID,
+       document_id=document_id,
        fields=UpdateFields(data=[field])
    )
 
