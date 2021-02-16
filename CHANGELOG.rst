@@ -10,7 +10,8 @@ releases, in reverse chronological order.
 Features
 ^^^^^^^^
 
-* Provided ability to assign tags to a given Flow.
+* Provided ability to get and assign Tags for a given Slate.
+* Provided ability to get and update Fields for a given Document.
 * Introduced ``airslate.exceptions.NotFoundError`` to raise from client
   when the server can not find the requested resource.
 * Introduced ``airslate.facades`` facade module to provide an easy to access API resources:
@@ -18,9 +19,11 @@ Features
   * ``client.addons.auth()`` - get access token for an Addon installed in an Organization
   * ``client.addons.files.get()`` - get the requested Slate Addon File
   * ``client.addons.files.download()`` - download contents of the requested Slate Addon File
-  * ``client.flows.documents.collection()`` - get supported documents for a given Flow
-  * ``client.slates.tags.assign()`` - assign tags to a given Slate
-  * ``client.slates.tags.collection()`` - get all Slate tags for a given Flow
+  * ``client.documents.fields()`` - get Fields for a given Document
+  * ``client.documents.update_fields()`` - update Fields for a given Document
+  * ``client.flows.documents.collection()`` - get supported Documents for a given Flow
+  * ``client.slates.tags.assign()`` - assign Tags to a given Slate
+  * ``client.slates.tags.collection()`` - get all Slate Tags for a given Flow
 
 * Entity attributes are now accessible via dot notation,
   i.e. ``entity['id']`` is the same as ``entity.id``.
