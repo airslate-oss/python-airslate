@@ -110,6 +110,7 @@ def get_version_string():
     return version_string
 
 
+# What does this project relate to.
 KEYWORDS = [
     'airslate',
     'crm',
@@ -140,7 +141,7 @@ CLASSIFIERS = [
 # Dependencies that are downloaded by pip on installation and why.
 INSTALL_REQUIRES = [
     'requests>=2.20.0,==2.*',  # Interact with airSlate HTTP API
-    'urllib3>=1.21.1,<1.27',   # Our internal HTTP client
+    'urllib3>=1.21.1,<1.27',  # Our internal HTTP client
 
 ]
 
@@ -153,16 +154,17 @@ EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
     'testing': [
         'pytest>=6.2.2',  # Our tests framework
-        'pytest-cov>=2.11.1',  #
-        'responses>=0.12.0'  # Mocking out the requests Python library
-    ],
-    'develop': [
-        "check-wheel-contents>=0.2.0",  # Check wheels have the right contents
+        'pytest-cov>=2.11.1',  # Pytest plugin for measuring coverage
+        'responses>=0.12.0',  # Mocking out the requests Python library
         "pylint==2.6.0",  # Python code static checker
         "flake8>=3.8.4",  # The modular source code checker
+    ],
+    # Dependencies that are required to develop package
+    'develop': [
         "twine>=3.3.0",  # Publishing packages on PyPI
         "setuptools>=53.0.0",  # Build and install packages
         "wheel>=0.36.2",  # A built-package format for Python
+        "check-wheel-contents>=0.2.0",  # Check wheels have the right contents
     ]
 }
 
