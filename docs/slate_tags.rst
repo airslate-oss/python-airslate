@@ -4,7 +4,7 @@ Flow Tags
 
 .. note::
 
-   To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
+   To obtain ``token`` refer to ``airslate.addons.auth()`` method.
 
 
 Get all Slate tags for a given Flow
