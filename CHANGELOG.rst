@@ -32,6 +32,7 @@ Features
 * Implement ``airslate.entities.base.BaseEntity.__getstate__()`` as well as
   ``airslate.entities.base.BaseEntity.__setstate__()`` to provide ability to persist
   and load entities state.
+* Implement ``airslate.client.Client.patch()`` to send ``PATCH`` requests.
 
 
 Breaking Changes
