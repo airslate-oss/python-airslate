@@ -10,12 +10,13 @@
 Classes:
 
     Addons
+    Documents
     Flows
     Slates
 
 """
 
-from .resources import flows, slates, addons
+from .resources import flows, slates, addons, documents
 
 
 class Addons:
@@ -39,6 +40,22 @@ class Addons:
         if self._files is None:
             self._files = addons.SlateAddonFiles(self._client)
         return self._files
+
+
+class Documents:  # pylint: disable=too-few-public-methods
+    """Represents Documents API."""
+
+    def __init__(self, client):
+        """Initialize Documents instance."""
+        self._client = client
+        self._documents = None
+
+    @property
+    def documents(self):
+        """Getter for :class:`documents.Documents` instance."""
+        if self._documents is None:
+            self._documents = documents.Documents(self._client)
+        return self._documents
 
 
 class Flows:  # pylint: disable=too-few-public-methods

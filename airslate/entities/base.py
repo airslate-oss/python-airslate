@@ -134,7 +134,7 @@ class BaseEntity(metaclass=ABCMeta):
             raise MissingData()
 
         entity = cls(entity_id=None)
-        if path(obj, 'data.type', '') != entity.type:
+        if path(obj, 'data.type') != entity.type:
             raise TypeMismatch()
 
         entity.__setstate__({
@@ -240,8 +240,10 @@ def filter_included(relationships, included):
         return data if isinstance(data, list) else [data]
 
     def simplify(relation):
-        return ((d['type'], d['id']) for i in relation for d in
-                normalize(path(relation, f'{i}.data')))
+        return ((d['type'], d['id'])
+                for i in relation
+                for d in normalize(path(relation, f'{i}.data'))
+                if 'type' in d)
 
     r_set = set(simplify(relationships))
 

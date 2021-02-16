@@ -60,20 +60,6 @@ def test_domain_exception_custom_message():
     assert 'Hello, World!' == str(exc_info.value)
 
 
-def test_invalid_type_error():
-    with pytest.raises(exceptions.InvalidTypeError) as exc_info:
-        raise exceptions.InvalidTypeError()
-
-    assert 'Inappropriate argument type' == str(exc_info.value)
-
-
-def test_invalid_type_error_custom_message():
-    with pytest.raises(exceptions.InvalidTypeError) as exc_info:
-        raise exceptions.InvalidTypeError('Hello, World!')
-
-    assert 'Hello, World!' == str(exc_info.value)
-
-
 @responses.activate
 def test_notfound(client):
     responses.add(

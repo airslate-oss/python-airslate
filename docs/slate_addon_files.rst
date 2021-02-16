@@ -3,6 +3,11 @@ Slate Addon Files
 =================
 
 
+.. note::
+
+   To obtain ``token`` refer to ``airslate.addons.auth()`` method.
+
+
 Download contents of the requested file
 ---------------------------------------
 
@@ -29,14 +34,9 @@ Download contents of the requested file
            for chunk in r.iter_content(chunk_size=512):
                f.write(chunk)
 
-.. note::
-
-   To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
-
 
 Get the requested Slate Addon file
 ----------------------------------
-
 
 .. code-block:: python
 
@@ -58,10 +58,6 @@ Get the requested Slate Addon file
 
    addon = file.slate_addon
    print(addon)
-
-.. note::
-
-   To obtain ``token`` refer to ``airslate.addons.access_token()`` method.
 
 .. raw:: html
 

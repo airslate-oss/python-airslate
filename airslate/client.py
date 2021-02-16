@@ -13,12 +13,15 @@ import requests
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
-from .facades import Flows, Slates, Addons
+from .facades import Flows, Slates, Addons, Documents
 from .utils import default_headers
 
 
 class Client:
     """airSlate API client class."""
+
+    # pylint: disable=too-many-instance-attributes
+    # Eight is reasonable in this case.
 
     DEFAULT_OPTIONS = {
         # API endpoint base URL to connect to.
@@ -83,6 +86,7 @@ class Client:
 
         # Initialize each resource facade and injecting client object into it
         self.addons = Addons(self)
+        self.documents = Documents(self).documents
         self.flows = Flows(self)
         self.slates = Slates(self)
 
@@ -138,6 +142,14 @@ class Client:
 
     def post(self, path, data, **options):
         """Parses POST request options and dispatches a request."""
+        return self._create('post', path, data, **options)
+
+    def patch(self, path, data, **options):
+        """Parses PATCH request options and dispatches a request."""
+        return self._create('patch', path, data, **options)
+
+    def _create(self, method, path, data, **options):
+        """Internal helper to send POST/PUT/PATCH requests."""
         # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
 
@@ -147,7 +159,7 @@ class Client:
         # Values in the ``options['headers']`` takes precedence.
         headers = merge(default_headers(), options.pop('headers', {}))
 
-        return self.request('post', path, data=body, headers=headers,
+        return self.request(method, path, data=body, headers=headers,
                             **options)
 
     def get(self, path, query=None, **options):

@@ -15,6 +15,13 @@ Addons API
 * ``client.addons.files.download()`` - download contents of the requested Slate Addon File
 
 
+Documents API
+-------------
+
+* ``client.documents.fields()`` - get Fields for a given Document
+* ``client.documents.update_fields()`` - update Fields for a given Document
+
+
 Flows API
 ---------
 

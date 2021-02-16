@@ -16,7 +16,7 @@ class Tags(BaseResource):
     """Represent Tags API resource."""
 
     def collection(self, flow_id, **options):
-        """Get all Slate tags for a given Flow."""
+        """Get all Slate Tags for a given Flow."""
         url = self.resolve_endpoint(
             f'flows/{flow_id}/packets/tags'
         )
@@ -25,7 +25,7 @@ class Tags(BaseResource):
         return Tag.from_collection(response)
 
     def assign(self, flow_id, slate_id, assign: Assign):
-        """Assign tags to a given Slate."""
+        """Assign Tags to a given Slate."""
         url = self.resolve_endpoint(
             f'flows/{flow_id}/packets/{slate_id}/tags'
         )
