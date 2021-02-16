@@ -167,15 +167,6 @@ class InternalServerError(ApiError):
         )
 
 
-class InvalidTypeError(BaseError):
-    """Inappropriate argument type.."""
-    def __init__(self, message=None):
-        if message is None:
-            message = 'Inappropriate argument type'
-
-        super().__init__(message)
-
-
 class DomainError(BaseError):
     """Base domain error for airslate package."""
 
