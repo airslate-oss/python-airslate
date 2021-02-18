@@ -121,7 +121,7 @@ KEYWORDS = [
 
 # Classifiers: available ones listed at https://pypi.org/classifiers
 CLASSIFIERS = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Natural Language :: English',
 
