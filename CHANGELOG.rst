@@ -4,6 +4,13 @@ Changelog
 This file contains a brief summary of new features and dependency changes or
 releases, in reverse chronological order.
 
+0.4.0a1 (2021-XX-XX)
+--------------------
+
+
+----
+
+
 0.3.0a1 (2021-02-18)
 --------------------
 
@@ -38,7 +45,7 @@ Features
 Breaking Changes
 ^^^^^^^^^^^^^^^^
 
-* Moved ``client.addons.access_token()`` ``client.addons.auth()`` facade.
+* Moved ``client.addons.access_token()`` to ``client.addons.auth()`` facade.
 * Moved ``client.slate_addon_files`` to ``client.addons.files()`` facade.
 * Moved ``client.flow_documents`` to ``client.flows.documents()`` facade.
 * ``BaseEntity.set_attributes()`` from ``airslate.entities.base`` module has been
