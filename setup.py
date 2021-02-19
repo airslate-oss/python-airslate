@@ -155,7 +155,7 @@ EXTRAS_REQUIRE = {
         'pytest>=6.2.2',  # Our tests framework
         'pytest-cov>=2.11.1',  # Pytest plugin for measuring coverage
         'responses>=0.12.0',  # Mocking out the requests Python library
-        'pylint==2.6.0',  # Python code static checker
+        'pylint>=2.6.0,!=2.6.1',  # Python code static checker
         'flake8>=3.8.4',  # The modular source code checker
     ],
     # Dependencies that are required to develop package
