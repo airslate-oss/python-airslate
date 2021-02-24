@@ -8,7 +8,7 @@
 codecov:
   notify:
     # will no delay sending notifications until all ci is finished
-    require_ci_to_pass: no
+    require_ci_to_pass: yes
 
 coverage:
   precision: 2
