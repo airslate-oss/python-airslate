@@ -5,9 +5,6 @@
         <a href="https://github.com/airslate-oss/python-airslate/actions?workflow=CI">
             <img src="https://github.com/airslate-oss/python-airslate/workflows/CI/badge.svg?branch=master" alt="CI Status" />
         </a>
-        <a href="https://codecov.io/github/airslate-oss/python-airslate">
-            <img src="https://codecov.io/github/airslate-oss/python-airslate/branch/master/graph/badge.svg" alt="Test Coverage" />
-        </a>
     </p>
 
 .. teaser-begin
