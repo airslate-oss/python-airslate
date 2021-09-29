@@ -69,11 +69,7 @@ class BaseEntity(metaclass=ABCMeta):
 
     def __repr__(self):
         """Provide an easy to read description of the current entity."""
-        return '<%s: id=%s, type=%s>' % (
-            self.__class__.__name__,
-            self.id,
-            self.type,
-        )
+        return f'<{self.__class__.__name__}: id={self.id}, type={self.type}>'
 
     def has_one(self, cls, relation_name):
         """Create an instance of the related entity.

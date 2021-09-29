@@ -38,4 +38,4 @@ class BaseResource(metaclass=ABCMeta):
         >>> self.resolve_endpoint('addons/slates/0/documents')
         /v1/addons/slates/0/documents
         """
-        return '/%s/%s' % (self.api_version, path.lstrip('/'))
+        return f"/{self.api_version}/{path.lstrip('/')}"
