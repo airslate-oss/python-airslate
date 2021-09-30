@@ -11,16 +11,6 @@ from setuptools import setup, find_packages
 import re
 
 
-def locate_package_directory():
-    """Identify a directory of the package and its associated files."""
-    try:
-        return path.abspath(path.dirname(__file__))
-    except Exception as path_error:
-        message = ('The directory in which the package and its '
-                   'associated files are stored could not be located.')
-        raise RuntimeError(message) from path_error
-
-
 def read_file(filepath):
     """Read content from a UTF-8 encoded text file."""
     with codecs.open(filepath, 'rb', 'utf-8') as file_handle:
@@ -28,7 +18,7 @@ def read_file(filepath):
 
 
 PKG_NAME = 'airslate'
-PKG_DIR = locate_package_directory()
+PKG_DIR = path.abspath(path.dirname(__file__))
 META_PATH = path.join(PKG_DIR, PKG_NAME, '__init__.py')
 META_CONTENTS = read_file(META_PATH)
 
@@ -37,39 +27,37 @@ def load_long_description():
     """Load long description from file README.rst."""
     def changes():
         changelog = path.join(PKG_DIR, 'CHANGELOG.rst')
-        pat = r"(\d+.\d.\d \(.*?\)\r?\n.*?)\r?\n\r?\n\r?\n----\r?\n\r?\n\r?\n"
+        pat = r"(\d+.\d+.\d+ \(.*?\)\r?\n.*?)\r?\n\r?\n\r?\n----\r?\n\r?\n\r?\n"  # noqa: E501
         result = re.search(pat, read_file(changelog), re.S)
 
-        if result:
-            return result.group(1)
-        else:
-            return ''
+        return result.group(1) if result else ''
 
     try:
-        read_me = path.join(PKG_DIR, 'README.rst')
-        authors = path.join(PKG_DIR, 'AUTHORS.rst')
-
-        title = f"{PKG_NAME}: {find_meta('description')}\n"
-        head = '=' * len(title) + '\n'
+        title = f"{PKG_NAME}: {find_meta('description')}"
+        head = '=' * len(title)
 
         contents = (
-            head
-            + format(title.strip(' .'))
-            + head
-            + read_file(read_me).split('.. teaser-begin')[1]
-            + "\n\n"
-            + "Release Information\n"
-            + "===================\n\n"
-            + changes()
-            + "\n\n`Full changelog "
-            + f"<{find_meta('url')}/blob/master/CHANGELOG.rst>`_.\n\n"
-            + read_file(authors)
+            head,
+            format(title.strip(' .')),
+            head,
+            read_file(path.join(PKG_DIR, 'README.rst')).split(
+                '.. teaser-begin'
+            )[1],
+            '',
+            'Release Information',
+            '===================\n',
+            changes(),
+            '',
+            f"`Full changelog <{find_meta('url')}/blob/master/CHANGELOG.rst>`_.",  # noqa: E501
+            '',
+            '',
+            read_file(path.join(PKG_DIR, 'AUTHORS.rst')),
         )
 
-        return contents
-    except Exception as read_error:
+        return '\n'.join(contents)
+    except (RuntimeError, FileNotFoundError) as read_error:
         message = 'Long description could not be read from README.rst'
-        raise RuntimeError(message) from read_error
+        raise RuntimeError(f'{message}: {read_error}') from read_error
 
 
 def is_canonical_version(version):
@@ -144,10 +132,12 @@ INSTALL_REQUIRES = [
 
 ]
 
+DEPENDENCY_LINKS = []
+
 # List additional groups of dependencies here (e.g. testing dependencies).
 # You can install these using the following syntax, for example:
 #
-#    $ pip install -e .[develop,testing]
+#    $ pip install -e .[testing,docs,develop]
 #
 EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
@@ -158,19 +148,26 @@ EXTRAS_REQUIRE = {
         'pylint>=2.6.0,!=2.6.1',  # Python code static checker
         'flake8>=3.8.4',  # The modular source code checker
     ],
-    # Dependencies that are required to develop package
-    'develop': [
-        'twine>=3.3.0',  # Publishing packages on PyPI
-        'setuptools>=53.0.0',  # Build and install packages
-        'wheel>=0.36.2',  # A built-package format for Python
-        'check-wheel-contents>=0.2.0',  # Check wheels have the right contents
-    ]
+    # Dependencies that are required to build documentation
+    'docs': [],
 }
+
+# Dependencies that are required to develop package
+DEVELOP_REQUIRE = [
+    'twine>=3.3.0',  # Publishing packages on PyPI
+    'setuptools>=53.0.0',  # Build and install packages
+    'wheel>=0.36.2',  # A built-package format for Python
+    'check-wheel-contents>=0.2.0',  # Check wheels have the right contents
+]
+
+EXTRAS_REQUIRE['develop'] = \
+    DEVELOP_REQUIRE + EXTRAS_REQUIRE['testing'] + EXTRAS_REQUIRE['docs']
 
 # Project's URLs
 PROJECT_URLS = {
-    'Bug Tracker': 'https://github.com/airslate-oss/python-airslate/issues',
-    'Source Code': 'https://github.com/airslate-oss/python-airslate',
+    'Changelog': f"{find_meta('url')}/blob/master/CHANGELOG.rst",
+    'Bug Tracker': f"{find_meta('url')}/issues",
+    'Source Code': find_meta('url'),
 }
 
 if __name__ == '__main__':
@@ -189,11 +186,12 @@ if __name__ == '__main__':
         url=find_meta('url'),
         project_urls=PROJECT_URLS,
         classifiers=CLASSIFIERS,
-        packages=find_packages(exclude=['examples']),
+        packages=find_packages(exclude=['tests.*', 'tests']),
         platforms='any',
         include_package_data=True,
         zip_safe=False,
         python_requires='>=3.7, <4',
         install_requires=INSTALL_REQUIRES,
+        dependency_links=DEPENDENCY_LINKS,
         extras_require=EXTRAS_REQUIRE,
     )

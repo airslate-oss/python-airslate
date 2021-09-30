@@ -7,6 +7,20 @@ releases, in reverse chronological order.
 0.4.0b1 (2021-XX-XX)
 --------------------
 
+Improvements
+^^^^^^^^^^^^
+
+* Changed additional groups of dependencies declared in ``setup.py`` so that
+  ``develop`` is superset now for ``testing`` and ``docs``.
+
+
+Bug Fixes
+^^^^^^^^^
+
+* Don't include ``tests`` package in wheel. Previously ``pip install airslate``
+  used to install a top-level package ``tests``. This was fixed.
+* Fixed package description.
+
 
 ----
 
