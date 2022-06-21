@@ -45,9 +45,10 @@ def test_internal_server_error(status, client):
 
     assert exc_info.value.status == status
 
+
 @responses.activate
 @pytest.mark.parametrize('status', [500, 503, 504])
-def test_internal_server_error(status, client):
+def test_retry_error(status, client):
     responses.add(
         POST,
         f'{client.base_url}/v1/addon-token',
@@ -63,7 +64,7 @@ def test_internal_server_error(status, client):
             timeout=0.1,
         )
 
-    assert exc_info.value.status == None
+    assert exc_info.value.status == 503
 
 
 def test_domain_exception_default_message():
