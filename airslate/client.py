@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate, Inc.
+# Copyright (c) 2021-2022 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -10,6 +10,7 @@
 import json
 
 import requests
+import urllib3
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
@@ -125,6 +126,10 @@ class Client:
             raise exceptions.RetryApiError(
                 message='Exceeded API Rate Limit',
                 response=retry_exc.response
+            )
+        except urllib3.exceptions.MaxRetryError as max_retry_exc:
+            raise exceptions.RetryApiError(
+                message='Exceeded API Rate Limit',
             )
         except requests.exceptions.ConnectionError as conn_exc:
             message = ('A connection attempt failed because the ' +
