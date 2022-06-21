@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate, Inc.
+# Copyright (c) 2021-2022 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -29,7 +29,11 @@ REQUIREMENTS = requirements-dev.txt
 PYTEST_FLAGS ?= --color=yes -v
 FLAKE8_FLAGS ?= --show-source --statistics
 
-VENV_ROOT = .venv
+ifneq ($(VIRTUAL_ENV),)
+	VENV_ROOT = $(VIRTUAL_ENV)
+else
+	VENV_ROOT = .venv
+endif
 
 # PYTHON will used to create venv
 ifeq ($(OS),Windows_NT)

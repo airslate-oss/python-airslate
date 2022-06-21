@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate, Inc.
+# Copyright (c) 2021-2022 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -26,7 +26,7 @@ def test_unauthorized(client):
 
 
 @responses.activate
-@pytest.mark.parametrize('status', [500, 503, 505])
+@pytest.mark.parametrize('status', [505])
 def test_internal_server_error(status, client):
     responses.add(
         POST,
@@ -44,6 +44,27 @@ def test_internal_server_error(status, client):
         )
 
     assert exc_info.value.status == status
+
+
+@responses.activate
+@pytest.mark.parametrize('status', [500, 503, 504])
+def test_retry_error(status, client):
+    responses.add(
+        POST,
+        f'{client.base_url}/v1/addon-token',
+        status=status,
+        body='{}',
+    )
+
+    with pytest.raises(exceptions.RetryApiError) as exc_info:
+        client.post(
+            '/v1/addon-token',
+            {},
+            max_retries=1,
+            timeout=0.1,
+        )
+
+    assert exc_info.value.status == 503
 
 
 def test_domain_exception_default_message():
