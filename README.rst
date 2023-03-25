@@ -2,8 +2,8 @@
 
     <h1 align="center"><code>airslate</code></h1>
     <p align="center">
-        <a href="https://github.com/airslate-oss/python-airslate/actions?workflow=CI">
-            <img src="https://github.com/airslate-oss/python-airslate/workflows/CI/badge.svg?branch=master" alt="CI Status" />
+        <a href="https://github.com/airslate-oss/python-airslate/actions/workflows/ci.yml">
+            <img src="https://github.com/airslate-oss/python-airslate/actions/workflows/ci.yml/badge.svg" alt="Unit Tests" />
         </a>
     </p>
 
