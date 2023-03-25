@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate, Inc.
+# Copyright (c) 2021-2023 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -74,11 +74,11 @@ def factory(max_retries=3, backoff_factor=1.0):
     Creates a session object that can be used by multiple
     :class:`airslate.client.Client` instances.
     """
-    session = Session()
 
     retry_strategy = create_retry(max_retries, backoff_factor)
     adapter = HTTPAdapter(max_retries=retry_strategy)
 
+    session = Session()
     session.mount('http://', adapter)
     session.mount('https://', adapter)
 
