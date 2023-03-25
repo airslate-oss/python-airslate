@@ -1,15 +1,13 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate, Inc.
+# Copyright (c) 2021-2023 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-import pytest
 import responses
 from responses import POST
 
-from airslate import exceptions
 from airslate.client import Client
 from airslate.utils import default_headers
 
