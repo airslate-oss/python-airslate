@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021-2022 airSlate, Inc.
+# Copyright (c) 2021-2023 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -8,14 +8,14 @@
 include default.mk
 
 define mk-venv-link
-	@if [ -n "$(WORKON_HOME)" ]; then \
-		echo $(ROOT_DIR) >  $(VENV_ROOT)/.project; \
+	@if [ -n "$(WORKON_HOME)" ] ; then \
+		echo $(ROOT_DIR) > $(VENV_ROOT)/.project; \
 		if [ ! -d $(WORKON_HOME)/$(PKG_NAME) -a ! -L $(WORKON_HOME)/$(PKG_NAME) ]; \
 		then \
 			ln -s $(ROOT_DIR)/$(VENV_ROOT) $(WORKON_HOME)/$(PKG_NAME); \
 			echo ; \
 			echo Since you use virtualenvwrapper, we created a symlink; \
-			echo "so you can also use "workon $(PKG_NAME)" to activate the venv."; \
+			echo "so you can also use \"workon $(PKG_NAME)\" to activate the venv."; \
 			echo ; \
 		fi; \
 	fi
@@ -30,6 +30,9 @@ define rm-venv-link
 	fi
 endef
 
+requirements/%.txt: requirements/%.in $(VENV_BIN)
+	$(VENV_BIN)/pip-compile --allow-unsafe --generate-hashes --output-file=$@ $<
+
 ## Public targets
 
 $(VENV_PYTHON): $(VENV_ROOT)
@@ -37,7 +40,7 @@ $(VENV_PYTHON): $(VENV_ROOT)
 
 $(VENV_ROOT):
 	@echo $(CS)Creating a Python environment $(VENV_ROOT)$(CE)
-	$(PYTHON) -m venv --prompt $(PKG_NAME) $(VENV_ROOT)
+	$(VIRTUALENV) --prompt $(PKG_NAME) $(VENV_ROOT)
 	@echo
 	@echo Done.
 	@echo
@@ -51,20 +54,25 @@ $(VENV_ROOT):
 
 .PHONY: init
 init: $(VENV_PYTHON)
-	@echo $(CS)Installing dev requirements$(CE)
-	$(VENV_PYTHON) -m pip install --upgrade pip setuptools wheel
-	$(VENV_PIP) install --upgrade -r $(REQUIREMENTS)
+	@echo $(CS)Set up virtualenv$(CE)
+	$(VENV_PIP) install --progress-bar=off --upgrade pip pip-tools
+	@echo
 
 .PHONY: install
-install: init
-	@echo $(CS)Installing $(PKG_NAME)$(CE)
+install: $(REQUIREMENTS)
+	@echo $(CS)Installing $(PKG_NAME) and all its dependencies$(CE)
+	$(VENV_BIN)/pip-sync $^
 	$(VENV_PIP) install --upgrade --editable .
-
+	@echo
 
 .PHONY: uninstall
 uninstall:
 	@echo $(CS)Uninstalling $(PKG_NAME)$(CE)
 	- $(VENV_PIP) uninstall --yes $(PKG_NAME) &2>/dev/null
+
+	@echo Verifying...
+	cd .. && ! $(VENV_PYTHON) -m $(PKG_NAME) --version &2>/dev/null
+
 	@echo Done.
 	@echo
 
