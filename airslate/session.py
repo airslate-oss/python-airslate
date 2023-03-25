@@ -42,13 +42,13 @@ def create_retry(max_retries=3, backoff_factor=1.0):
 
     max_retries = abs(int(max_retries))
 
-    retry_kwargs = dict(
-        total=max_retries,
-        read=max_retries,
-        connect=max_retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=status_forcelist,
-    )
+    retry_kwargs = {
+        'total': max_retries,
+        'read': max_retries,
+        'connect': max_retries,
+        'backoff_factor': backoff_factor,
+        'status_forcelist': status_forcelist
+    }
 
     # urllib3 1.26.0 started issuing a DeprecationWarning for using the
     # 'method_whitelist' init parameter of Retry and announced its removal in
