@@ -1,0 +1,41 @@
+# This file is part of the airslate.
+#
+# Copyright (c) 2021-2023 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      # These should always correspond to pull requests, so ignore them for
+      # the push trigger and let them be triggered by the pull_request
+      # trigger, avoiding running the workflow twice.  This is a minor
+      # optimization so there's no need to ensure this is comprehensive.
+      - 'dependabot/**'
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    name: Build & verify package
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: make init
+
+      - name: Testing package distribution and installation
+        run: make test-dist
