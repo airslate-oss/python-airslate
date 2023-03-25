@@ -6,10 +6,10 @@
 # the LICENSE file that was distributed with this source code.
 
 check-wheel-contents
+coverage[toml]
 flake8
 pylint
 pytest
-pytest-cov
 responses
 twine
 wheel

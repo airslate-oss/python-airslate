@@ -28,7 +28,6 @@ else
 	PYTEST_FLAGS ?= --color=no
 endif
 
-HEADER_EXTRA =
 COV          =
 REQUIREMENTS = requirements/requirements.txt requirements/requirements-dev.txt
 
