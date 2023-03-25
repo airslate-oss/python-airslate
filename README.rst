@@ -26,7 +26,7 @@ Project Information
 ``airslate`` is released under the `Apache Licence 2.0 <https://choosealicense.com/licenses/apache-2.0/>`_,
 the code lives on `GitHub <https://github.com/airslate-oss/python-airslate>`_,
 and the latest release on `PyPI <https://pypi.org/project/airslate/>`_.
-It’s rigorously tested on Python 3.7+.
+It’s rigorously tested on Python 3.8+.
 
 If you'd like to contribute to ``airslate`` you're most welcome!
 
