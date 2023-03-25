@@ -4,6 +4,28 @@ Changelog
 This file contains a brief summary of new features and dependency changes or
 releases, in reverse chronological order.
 
+0.5.0b1 (2023-XX-XX)
+--------------------
+
+Improvements
+^^^^^^^^^^^^
+
+* Overhauled ``setup.py`` to improve parsing of changelog and better detection
+  of current package version.
+
+
+Trivial/Internal Changes
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Streamlined ``setup.py`` code to reduce duplication and improve maintainability.
+* Revamped requirements files to ensure better reproducibility of builds.
+* Updated dependency versions and added more precise version constraints where
+  applicable to prevent unexpected package updates during builds.
+
+
+----
+
+
 0.4.0b1 (2023-03-25)
 --------------------
 
