@@ -14,7 +14,7 @@
 This Python client library has been designed to quickly and easily implement
 the airSlate REST API. It offers a simple and elegant way to interact with
 airSlate API resources within your Python applications. Sign up for our API here:
-https://developers.airslate.com
+https://docs.airslate.io
 
 .. teaser-end
 
