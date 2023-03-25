@@ -148,9 +148,9 @@ EXTRAS_REQUIRE = {
     'testing': [
         'pytest>=6.2.2',  # Our tests framework
         'pytest-cov>=2.11.1',  # Pytest plugin for measuring coverage
-        'responses>=0.12.0',  # Mocking out the requests Python library
-        'pylint>=2.6.0,!=2.6.1',  # Python code static checker
-        'flake8>=3.8.4',  # The modular source code checker
+        'responses>=0.23.0',  # Mocking out the requests Python library
+        'pylint>=2.16.0',  # Python code static checker
+        'flake8>=6.0.0',  # The modular source code checker
     ],
     # Dependencies that are required to build documentation
     'docs': [],
@@ -158,10 +158,10 @@ EXTRAS_REQUIRE = {
 
 # Dependencies that are required to develop package
 DEVELOP_REQUIRE = [
-    'twine>=3.3.0',  # Publishing packages on PyPI
-    'setuptools>=53.0.0',  # Build and install packages
-    'wheel>=0.36.2',  # A built-package format for Python
-    'check-wheel-contents>=0.2.0',  # Check wheels have the right contents
+    'twine>=4.0.0',  # Publishing packages on PyPI
+    'setuptools>=65.70.0',  # Build and install packages
+    'wheel>=0.40.0',  # A built-package format for Python
+    'check-wheel-contents>=0.4.0',  # Check wheels have the right contents
 ]
 
 EXTRAS_REQUIRE['develop'] = \
