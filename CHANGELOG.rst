@@ -7,6 +7,17 @@ releases, in reverse chronological order.
 0.5.0b1 (2023-XX-XX)
 --------------------
 
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+* Dropped support for Python 3.7 due to end-of-life status.
+  Python 3.7 reached its end-of-life date in June 2023, which means it will no
+  longer receive bug fixes or security updates from the Python development team.
+  As a result, we have removed support for Python 3.7 in order to ensure the
+  ongoing security and stability of our package. Users who require Python 3.7
+  can continue to use older package versions that support it.
+
+
 Improvements
 ^^^^^^^^^^^^
 
