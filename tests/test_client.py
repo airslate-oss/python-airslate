@@ -27,8 +27,8 @@ def test_default_headers(client):
 
     assert headers['key'] == 'value'
     assert headers['User-Agent'] == default_headers()['user-agent']
-    assert headers['Accept'] == 'application/vnd.api+json, application/json'
-    assert headers['Content-Type'] == 'application/vnd.api+json'
+    assert headers['Accept'] == 'application/json'
+    assert headers['Content-Type'] == 'application/json; charset=utf-8'
 
 
 @responses.activate
@@ -72,69 +72,35 @@ def test_auth_header():
 
 
 @responses.activate
-def test_full_response(client):
-    url = f'{client.base_url}/v1/test'
+def test_collection_response(client):
+    url = f'{client.base_url}/v1/organizations'
     response_data = {
         'data': {},
         'meta': {},
     }
+
     responses.add(POST, url, status=200, json=response_data)
+    response = client.post('/v1/organizations', {})
 
-    client.options['full_response'] = True
-    response = client.post('/v1/test', {})
-
-    assert response == response_data
-
-
-@responses.activate
-def test_data_response(client):
-    url = f'{client.base_url}/v1/test'
-    response_data = {
-        'data': {
-            'type': 'test'
-        },
-        'meta': {},
-    }
-    responses.add(POST, url, status=200, json=response_data)
-
-    client.options['full_response'] = False
-    response = client.post('/v1/test', {})
-
-    assert response == response_data['data']
-
-
-@responses.activate
-def test_missed_data_response(client):
-    url = f'{client.base_url}/v1/test'
-    response_data = {
-        'meta': {},
-    }
-    responses.add(POST, url, status=200, json=response_data)
-
-    client.options['full_response'] = False
-
-    with pytest.raises(exceptions.MissingData) as exc_info:
-        client.post('/v1/test', {})
-
-    assert 'Data is missing in JSON:API response' in str(exc_info.value)
+    assert response.json() == response_data
 
 
 def test_custom_options():
     client = Client()
     assert client.options == {
-        'base_url': 'https://api.airslate.com',
+        'base_url': 'https://api.airslate.io',
         'max_retries': 3,
         'timeout': 5.0,
-        'full_response': False,
+        'version': 'v2'
     }
 
     client = Client(foo='1', bar='2', baz='3')
     assert client.options == {
         'bar': '2',
-        'base_url': 'https://api.airslate.com',
+        'base_url': 'https://api.airslate.io',
         'baz': '3',
         'foo': '1',
-        'full_response': False,
         'max_retries': 3,
         'timeout': 5.0,
+        'version': 'v2'
     }

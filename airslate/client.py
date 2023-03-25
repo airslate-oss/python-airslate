@@ -25,7 +25,7 @@ class Client:
 
     DEFAULT_OPTIONS = {
         # API endpoint base URL to connect to.
-        'base_url': 'https://api.airslate.com',
+        'base_url': 'https://api.airslate.io',
 
         # The time stop waiting for a response after a given number of seconds.
         # It is not a time limit on the entire response download; rather, an
@@ -40,20 +40,13 @@ class Client:
         # delay.
         'max_retries': 3,
 
-        # Return the entire JSON response or just ``data`` section. Note, this
-        # option should only be modified for direct calls of the client's
-        # methods (e.g. ``client.get()``, ``client.post()``, etc). Resource
-        # classes can depend on the default value of this option.
-        'full_response': False,
+        # Used API version.
+        'version': 'v2',
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
 
     QUERY_OPTIONS = {
-        # Example:
-        # '/v1/addons/slates/{flow_id}/documents?include=fields'
-        'include',
-
         # Example:
         # '/v1/{resource}?page=3'
         'page',
@@ -104,17 +97,7 @@ class Client:
             if 500 <= response.status_code < 600:
                 raise exceptions.InternalServerError(response=response)
 
-            if 'stream' in options and options['stream']:
-                return response
-
-            response_data = response.json()
-            if options['full_response']:
-                return response_data
-
-            if 'data' not in response_data:
-                raise exceptions.MissingData()
-
-            return response_data['data']
+            return response
         except (MaxRetryError, requests.exceptions.RetryError) as retry_exc:
             status = None
             response = None
