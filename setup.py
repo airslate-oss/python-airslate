@@ -51,6 +51,8 @@ def load_long_description():
                 '.. teaser-begin'
             )[1],
             '',
+            read_file(path.join(PKG_DIR, 'CONTRIBUTING.rst')),
+            '',
             'Release Information',
             '===================\n',
             changes(),
