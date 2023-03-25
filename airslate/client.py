@@ -70,7 +70,7 @@ class Client:
         'timeout',
     }
 
-    ALL_OPTIONS = (CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS)
+    ALL_OPTIONS = CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS
 
     def __init__(self, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
