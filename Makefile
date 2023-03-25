@@ -78,7 +78,7 @@ uninstall:
 
 .PHONY: clean
 clean:
-	@echo $(CS)Remove build and tests artefacts and directories$(CE)
+	@echo $(CS)Remove build, tests artefacts and directories$(CE)
 
 	$(RM) -r $(VENV_ROOT)
 	$(call rm-venv-link)
@@ -90,18 +90,13 @@ clean:
 
 .PHONY: check-dist
 check-dist: $(VENV_PYTHON)
-	@echo $(CS)Check distribution files$(HEADER_EXTRA)$(CE)
+	@echo $(CS)Check distribution files$(CE)
 	$(VENV_BIN)/twine check ./dist/*
 	$(VENV_BIN)/check-wheel-contents ./dist/*.whl
 	@echo
 
-.PHONY: test-ccov
-test-ccov: COV=--cov=./$(PKG_NAME) --cov=./tests --cov-report=xml --cov-report=html
-test-ccov: HEADER_EXTRA=' (with coverage)'
-test-ccov: test
-
 .PHONY: test-all
-test-all: uninstall clean install test test-dist lint
+test-all: install test ccov test-dist lint
 
 .PHONY: test-dist
 test-dist: test-sdist test-wheel
@@ -135,9 +130,18 @@ test-wheel: $(VENV_PYTHON) wheel
 
 .PHONY: test
 test: $(VENV_PYTHON)
-	@echo $(CS)Running tests$(HEADER_EXTRA)$(CE)
-	export PYTHONDONTWRITEBYTECODE=1
-	$(VENV_BIN)/py.test $(PYTEST_FLAGS) $(COV) ./$(PKG_NAME) ./tests
+	@echo $(CS)Running tests$(CE)
+	$(VENV_BIN)/coverage erase
+	$(VENV_BIN)/coverage run -m pytest $(PYTEST_FLAGS) ./$(PKG_NAME) ./tests
+	@echo
+
+.PHONY: ccov
+ccov: $(VENV_PYTHON)
+	@echo $(CS)Combine coverage reports$(CE)
+	$(VENV_BIN)/coverage combine
+	$(VENV_BIN)/coverage report
+	$(VENV_BIN)/coverage html
+	$(VENV_BIN)/coverage xml
 	@echo
 
 .PHONY: lint
@@ -182,12 +186,12 @@ help:
 	@echo '  upload:       Upload $(PKG_NAME) distribution to the repository (w/o tests)'
 	@echo '  clean:        Remove build and tests artefacts and directories'
 	@echo '  check-dist:   Check integrity of the distribution files and validate package'
-	@echo '  test:         Run unit tests'
+	@echo '  test:         Run unit tests with coverage'
+	@echo '  ccov:         Combine coverage reports'
 	@echo '  test-dist:    Testing package distribution and installation'
 	@echo '  test-sdist:   Testing source distribution and installation'
 	@echo '  test-wheel:   Testing built distribution and installation'
 	@echo '  test-all:     Test everything'
-	@echo '  test-ccov:    Run unit tests with coverage'
 	@echo '  lint:         Lint the code'
 	@echo
 	@echo 'Virtualenv:'

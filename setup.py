@@ -146,11 +146,11 @@ DEPENDENCY_LINKS = []
 EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
     'testing': [
-        'pytest>=6.2.2',  # Our tests framework
-        'pytest-cov>=2.11.1',  # Pytest plugin for measuring coverage
-        'responses>=0.23.0',  # Mocking out the requests Python library
-        'pylint>=2.16.0',  # Python code static checker
+        'coverage[toml]>=6.0',  # Code coverage measurement for Python
         'flake8>=6.0.0',  # The modular source code checker
+        'pylint>=2.16.0',  # Python code static checker
+        'pytest>=6.2.2',  # Our tests framework
+        'responses>=0.23.0',  # Mocking out the requests Python library
     ],
     # Dependencies that are required to build documentation
     'docs': [],

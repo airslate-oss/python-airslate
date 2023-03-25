@@ -40,6 +40,7 @@ Trivial/Internal Changes
 * Revamped requirements files to ensure better reproducibility of builds.
 * Updated dependency versions and added more precise version constraints where
   applicable to prevent unexpected package updates during builds.
+* Change coverage collection technics and tests run thanks to ``coverage``.
 
 
 ----

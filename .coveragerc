@@ -1,13 +1,29 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021 airSlate, Inc.
+# Copyright (c) 2021-2023 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+[report]
+precision = 2
+show_missing = True
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml
+
 [run]
+branch = True
+parallel = True
+data_file = coverage.db
 # A list of file name patterns, the files to leave
 # out of measurement or reporting.
 omit =
-    tests/*
-    .venv/*
+    */tests/*
+    */.venv/*
+    */migrations/*
+    */site-packages/*
+    */__pycache__/*
