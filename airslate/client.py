@@ -10,8 +10,9 @@
 import json
 
 import requests
-from urllib3.exceptions import MaxRetryError
 from asdicts.dict import merge, intersect_keys
+from requests.models import Response
+from urllib3.exceptions import MaxRetryError
 
 from . import exceptions, session
 from .utils import default_headers
@@ -77,7 +78,7 @@ class Client:
 
         self._init_statuses()
 
-    def request(self, method: str, path: str, **options):
+    def request(self, method: str, path: str, **options) -> Response:
         """Dispatches a request to the airSlate API."""
         options = self._merge_options(options)
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
@@ -126,15 +127,15 @@ class Client:
                 response=req_exc.response
             )
 
-    def post(self, path, data, **options):
+    def post(self, path, data, **options) -> Response:
         """Parses POST request options and dispatches a request."""
         return self._create('post', path, data, **options)
 
-    def patch(self, path, data, **options):
+    def patch(self, path, data, **options) -> Response:
         """Parses PATCH request options and dispatches a request."""
         return self._create('patch', path, data, **options)
 
-    def _create(self, method, path, data, **options):
+    def _create(self, method, path, data, **options) -> Response:
         """Internal helper to send POST/PUT/PATCH requests."""
         # Select all unknown options.
         parameter_options = self._parse_parameter_options(options)
@@ -148,7 +149,7 @@ class Client:
         return self.request(method, path, data=body, headers=headers,
                             **options)
 
-    def get(self, path, query=None, **options):
+    def get(self, path, query=None, **options) -> Response:
         """Parses GET request options and dispatches a request."""
         # Select query string options.
         query_options = self._parse_query_options(options)
