@@ -6,7 +6,8 @@
 # the LICENSE file that was distributed with this source code.
 
 # Include all files matching any of the listed patterns.
-include AUTHORS.rst README.rst CHANGELOG.rst LICENSE
+include AUTHORS.rst CHANGELOG.rst CONTRIBUTING.rst LICENSE README.rst
+graft .github
 
 # The contents of the directory tree tests will first be added to the sdist.
 # Many OS distributions prefers provide an ability run the tests
@@ -17,10 +18,19 @@ recursive-include tests *.py
 # from the sdist.
 global-exclude *.py[cod]
 
+# Exclude stuff for local development
+exclude .coveragerc .pylintrc Makefile default.mk requirements/*.in
+
+# Include requirements.txt for reproducible tests
+include requirements/*.txt
+
 # Documentation
 include docs/Makefile docs/docutils.conf
 recursive-include docs *.png
 recursive-include docs *.svg
 recursive-include docs *.py
 recursive-include docs *.rst
+
 prune docs/_build
+
+exclude docs/_static/.gitkeep
