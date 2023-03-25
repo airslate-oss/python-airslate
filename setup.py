@@ -1,6 +1,6 @@
 # This file is part of the airslate.
 #
-# Copyright (c) 2021-2022 airSlate, Inc.
+# Copyright (c) 2021-2023 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -48,7 +48,7 @@ def load_long_description():
             '===================\n',
             changes(),
             '',
-            f"`Full changelog <{find_meta('url')}/blob/master/CHANGELOG.rst>`_.",  # noqa: E501
+            f"`Full changelog <{find_meta('url')}/blob/main/CHANGELOG.rst>`_.",
             '',
             '',
             read_file(path.join(PKG_DIR, 'AUTHORS.rst')),
@@ -166,7 +166,7 @@ EXTRAS_REQUIRE['develop'] = \
 
 # Project's URLs
 PROJECT_URLS = {
-    'Changelog': f"{find_meta('url')}/blob/master/CHANGELOG.rst",
+    'Changelog': f"{find_meta('url')}/blob/main/CHANGELOG.rst",
     'Bug Tracker': f"{find_meta('url')}/issues",
     'Source Code': find_meta('url'),
 }
