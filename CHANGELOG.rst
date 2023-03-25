@@ -10,6 +10,14 @@ releases, in reverse chronological order.
 Breaking Changes
 ^^^^^^^^^^^^^^^^
 
+* Refocused project from working solely on Bots API to working with the broader
+  airSlate API. The project has shifted its focus from working exclusively on
+  the Bots API to encompass the full range of functionality available through
+  the airSlate API. This change will enable us to better support the needs of
+  our users and provide a more comprehensive solution for their workflow
+  automation needs. We will continue to maintain and update our Bots API
+  functionality, but with a renewed emphasis on integration with the wider
+  airSlate ecosystem.
 * Dropped support for Python 3.7 due to end-of-life status.
   Python 3.7 reached its end-of-life date in June 2023, which means it will no
   longer receive bug fixes or security updates from the Python development team.
