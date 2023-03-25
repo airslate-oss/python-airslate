@@ -14,7 +14,6 @@ from urllib3.exceptions import MaxRetryError
 from asdicts.dict import merge, intersect_keys
 
 from . import exceptions, session
-from .facades import Flows, Slates, Addons, Documents
 from .utils import default_headers
 
 
@@ -85,11 +84,8 @@ class Client:
 
         self._init_statuses()
 
-        # Initialize each resource facade and injecting client object into it
-        self.addons = Addons(self)
-        self.documents = Documents(self).documents
-        self.flows = Flows(self)
-        self.slates = Slates(self)
+        # TODO: Initialize each resource facade and injecting client object
+        #       into it
 
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
