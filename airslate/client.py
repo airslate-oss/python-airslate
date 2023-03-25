@@ -84,9 +84,6 @@ class Client:
 
         self._init_statuses()
 
-        # TODO: Initialize each resource facade and injecting client object
-        #       into it
-
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
         options = self._merge_options(options)
