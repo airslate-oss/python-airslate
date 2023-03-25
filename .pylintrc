@@ -25,7 +25,3 @@ logging-format-style=old
 redefining-builtins-modules=requests.exceptions
 
 [MESSAGES CONTROL]
-
-# TODO: remove E1136 after pylint implement typing.Optional[X]
-# See: https://github.com/PyCQA/pylint/issues/3882
-disable=E1136
