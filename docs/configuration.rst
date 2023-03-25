@@ -23,21 +23,18 @@ For example:
    client.options['timeout'] = 10.0
 
    # per-request
-   client.post('/v1/addon-token', {}, timeout=10.0)
+   client.get('/v1/organizations', timeout=10.0)
 
 
 Available options
 -----------------
 
-- ``base_url`` (default: "https://api.airslate.com"): API endpoint base URL to connect to.
+- ``base_url`` (default: "https://api.airslate.io"): API endpoint base URL to connect to.
 - ``timeout`` (default: 5.0): The time stop waiting for a response after a given number of seconds.
   It is not a time limit on the entire response download; rather, an exception is raised if the
   server has not issued a response for ``timeout`` seconds (more precisely, if no bytes have been
   received on the underlying socket for ``timeout`` seconds).
-- ``full_response`` (default: False): Return the entire JSON response or just ``data`` section.
-  This option should only be modified for direct calls of the client's methods
-  (e.g. ``client.get()``, ``client.post()``, etc). Resource classes can depend on the default
-  value of this option.
+- ``version`` (default: v1): Used API version.
 
 The following options can be set only globally:
 
