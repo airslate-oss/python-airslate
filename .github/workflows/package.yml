@@ -37,5 +37,8 @@ jobs:
       - name: Install dependencies
         run: make init
 
+      - name: Install dependencies
+        run: make install
+
       - name: Testing package distribution and installation
         run: make test-dist
