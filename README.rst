@@ -5,6 +5,9 @@
         <a href="https://github.com/airslate-oss/python-airslate/actions/workflows/ci.yml">
             <img src="https://github.com/airslate-oss/python-airslate/actions/workflows/ci.yml/badge.svg" alt="Unit Tests" />
         </a>
+        <a href="https://codecov.io/gh/airslate-oss/python-airslate">
+            <img src="https://codecov.io/gh/airslate-oss/python-airslate/branch/main/graph/badge.svg?token=VfJBqryPYK" alt="Coverage Status" />
+        </a>
     </p>
 
 .. teaser-begin
