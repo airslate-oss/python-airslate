@@ -15,12 +15,11 @@ from airslate.utils import default_headers
 @responses.activate
 def test_default_headers(client):
     client.headers['key'] = 'value'
-    client.options['full_response'] = True
-    url = f'{client.base_url}/v1/addon-token'
+    url = f'{client.base_url}/v1/organizations'
 
     responses.add(POST, url, status=200, body='{}')
 
-    client.post('/v1/addon-token', {})
+    client.post('/v1/organizations', {})
     headers = responses.calls[0].request.headers
 
     assert headers['key'] == 'value'
@@ -31,11 +30,10 @@ def test_default_headers(client):
 
 @responses.activate
 def test_request_headers(client):
-    url = f'{client.base_url}/v1/addon-token'
+    url = f'{client.base_url}/v1/organizations'
     responses.add(POST, url, status=200, body='{}')
 
-    client.options['full_response'] = True
-    client.post('/v1/addon-token', {}, headers={
+    client.post('/v1/organizations', {}, headers={
         'User-Agent': 'Test',
         'Content-Type': 'text/plain;charset=UTF-8'
     })
@@ -50,12 +48,11 @@ def test_request_headers(client):
 def test_overriding_headers(client):
     client.headers['key1'] = 'value1'
     client.headers['key2'] = 'value2'
-    client.options['full_response'] = True
 
-    url = f'{client.base_url}/v1/addon-token'
+    url = f'{client.base_url}/v1/organizations'
     responses.add(POST, url, status=200, body='{}')
 
-    client.post('/v1/addon-token', {}, headers={'key1': 'value3'})
+    client.post('/v1/organizations', {}, headers={'key1': 'value3'})
     headers = responses.calls[0].request.headers
 
     assert headers['key1'] == 'value3'
