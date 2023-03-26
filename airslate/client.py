@@ -43,7 +43,7 @@ class Client:
         'max_retries': 3,
 
         # Used API version.
-        'version': 'v2',
+        'version': 'v1',
     }
 
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
