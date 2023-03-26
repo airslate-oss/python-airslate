@@ -10,16 +10,6 @@
 This module tracks the version of the package as well as the base
 package info used by various functions within airslate package.
 
-Misc variables:
-
-    __copyright__
-    __version__
-    __license__
-    __author__
-    __author_email__
-    __url__
-    __description__
-
 """
 
 __copyright__ = 'Copyright (c) 2021-2023 airSlate, Inc.'
