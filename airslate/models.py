@@ -19,6 +19,7 @@ Classes:
 from abc import ABCMeta
 from dataclasses import asdict, dataclass
 from datetime import datetime
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -29,23 +30,23 @@ class BaseModel(metaclass=ABCMeta):
         """Play nice with pickle."""
         return self.to_dict()
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Convert this entity to a dictionary."""
-        return {k: str(v) for k, v in asdict(self).items()}
+        return dict(asdict(self).items())
 
 
-@dataclass(frozen=True)
+@dataclass(repr=False, frozen=True)
 class Organization(BaseModel):  # pylint: disable=too-many-instance-attributes
     """Represent an organization in the airSlate API."""
 
     id: str  # pylint: disable=invalid-name
     name: str
     subdomain: str
-    category: str | None
-    size: str | None
     status: str
     created_at: datetime
     updated_at: datetime
+    category: Optional[str] = None
+    size: Optional[str] = None
 
     def __repr__(self):
         """Provide an easy-to-read description of the current instance."""
