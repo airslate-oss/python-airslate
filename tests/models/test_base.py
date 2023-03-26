@@ -6,6 +6,7 @@
 # the LICENSE file that was distributed with this source code.
 
 from dataclasses import dataclass
+from typing import Optional
 
 from airslate.models import BaseModel
 
@@ -14,10 +15,14 @@ from airslate.models import BaseModel
 class FooBar(BaseModel):
     id: str
     name: str
+    size: Optional[str] = None
 
 
 def test_to_dict():
-    model = FooBar(id='5FFE553A-2200-0000-0000D981', name='test')
-    expected = {'id': '5FFE553A-2200-0000-0000D981', 'name': 'test'}
+    model = FooBar(id='5FFE553A', name='test')
+    expected = {'id': '5FFE553A', 'name': 'test', 'size': None}
+    assert model.to_dict() == expected
 
+    model = FooBar(id='5FFE553A', name='test', size='XL')
+    expected = {'id': '5FFE553A', 'name': 'test', 'size': 'XL'}
     assert model.to_dict() == expected
