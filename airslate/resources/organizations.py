@@ -7,6 +7,8 @@
 
 """Organizations API resource module."""
 
+from typing import List
+
 from airslate.exceptions import MissingData
 from airslate.models import Organization
 from airslate.schemas import OrganizationSchema
@@ -16,7 +18,7 @@ from . import BaseResource
 class Organizations(BaseResource):
     """Represent Organizations API resource."""
 
-    def collection(self, **options) -> list[Organization]:
+    def collection(self, **options) -> List[Organization]:
         """Get a list of all Organizations that the current user belongs to."""
         url = self.resolve_endpoint('organizations')
         response = self.client.get(url, **options)
