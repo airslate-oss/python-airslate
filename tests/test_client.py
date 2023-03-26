@@ -86,7 +86,7 @@ def test_custom_options():
         'base_url': 'https://api.airslate.io',
         'max_retries': 3,
         'timeout': 5.0,
-        'version': 'v2'
+        'version': 'v1'
     }
 
     client = Client(foo='1', bar='2', baz='3')
@@ -97,5 +97,5 @@ def test_custom_options():
         'foo': '1',
         'max_retries': 3,
         'timeout': 5.0,
-        'version': 'v2'
+        'version': 'v1'
     }
