@@ -13,6 +13,10 @@ classes within airslate package.
 """
 
 from abc import ABCMeta
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from airslate.client import Client
 
 
 # pylint: disable=too-few-public-methods
@@ -21,7 +25,7 @@ class BaseResource(metaclass=ABCMeta):
 
     API_VERSION = 'v1'
 
-    def __init__(self, client, api_version=None):
+    def __init__(self, client: 'Client', api_version=None):
         """A :class:`BaseResource` base object for airslate resources."""
         self.client = client
         self.api_version = api_version or BaseResource.API_VERSION
