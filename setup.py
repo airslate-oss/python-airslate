@@ -134,6 +134,7 @@ CLASSIFIERS = [
 # Dependencies that are downloaded by pip on installation and why.
 INSTALL_REQUIRES = [
     'asdicts>=1.1.0',  # Missed utilities for working with Python dictionaries
+    'marshmallow>=3.19.0',  # Complex data (de)serialization
     'requests>=2.20.0,==2.*',  # Interact with airSlate HTTP API
     'urllib3>=1.21.1,<1.27',  # Our internal HTTP client
 

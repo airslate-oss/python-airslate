@@ -15,6 +15,7 @@ from requests.models import Response
 from urllib3.exceptions import MaxRetryError
 
 from . import exceptions, session
+from .resources.organizations import Organizations
 from .utils import default_headers
 
 
@@ -78,6 +79,10 @@ class Client:
 
         self._init_statuses()
 
+        # Initialize each resource facade and injecting client object into it
+        self.organizations = Organizations(
+            self, api_version=self.options['version'])
+
     def request(self, method: str, path: str, **options) -> Response:
         """Dispatches a request to the airSlate API."""
         options = self._merge_options(options)
@@ -87,18 +92,18 @@ class Client:
         request_options = self._parse_request_options(options)
 
         try:
-            response = getattr(self.session, method)(url, **request_options)
+            with self.session as _session:
+                response = getattr(_session, method)(url, **request_options)
+                if response.status_code in self.statuses:
+                    raise self.statuses[response.status_code](
+                        response=response
+                    )
 
-            if response.status_code in self.statuses:
-                raise self.statuses[response.status_code](
-                    response=response
-                )
+                # Any unhandled 5xx is a server error
+                if 500 <= response.status_code < 600:
+                    raise exceptions.InternalServerError(response=response)
 
-            # Any unhandled 5xx is a server error
-            if 500 <= response.status_code < 600:
-                raise exceptions.InternalServerError(response=response)
-
-            return response
+                return response
         except (MaxRetryError, requests.exceptions.RetryError) as retry_exc:
             status = None
             response = None
