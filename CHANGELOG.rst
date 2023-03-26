@@ -26,6 +26,12 @@ Breaking Changes
   can continue to use older package versions that support it.
 
 
+Features
+^^^^^^^^
+
+* Provided resource class to work with Organizations API.
+
+
 Improvements
 ^^^^^^^^^^^^
 

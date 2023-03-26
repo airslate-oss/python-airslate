@@ -17,6 +17,8 @@ from urllib3.util.retry import Retry
 def create_retry(max_retries=3, backoff_factor=1.0):
     """Create default HTTP adapter based on retry policy."""
 
+    # Response codes that generally indicate transient network failures
+    # and merit client retries,
     status_forcelist = frozenset({
         408,  # Request Timeout
         429,  # Too Many Requests
@@ -46,6 +48,7 @@ def create_retry(max_retries=3, backoff_factor=1.0):
         'total': max_retries,
         'read': max_retries,
         'connect': max_retries,
+        'redirect': max_retries,
         'backoff_factor': backoff_factor,
         'status_forcelist': status_forcelist
     }
