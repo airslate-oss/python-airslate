@@ -35,7 +35,7 @@ class BaseModel(metaclass=ABCMeta):
 
 
 @dataclass(frozen=True)
-class Organization(BaseModel):
+class Organization(BaseModel):  # pylint: disable=too-many-instance-attributes
     """Represent an organization in the airSlate API."""
 
     id: str  # pylint: disable=invalid-name

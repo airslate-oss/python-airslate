@@ -7,10 +7,10 @@
 
 """Organizations API resource module."""
 
-from . import BaseResource
-from airslate.schemas import OrganizationSchema
 from airslate.exceptions import MissingData
 from airslate.models import Organization
+from airslate.schemas import OrganizationSchema
+from . import BaseResource
 
 
 class Organizations(BaseResource):
