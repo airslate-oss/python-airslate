@@ -49,9 +49,15 @@ class Client:
     CLIENT_OPTIONS = set(DEFAULT_OPTIONS.keys())
 
     QUERY_OPTIONS = {
+        # Page number of the data array you need to view.
         # Example:
         # '/v1/{resource}?page=3'
         'page',
+
+        # Number of elements per page.
+        # Example:
+        # '/v1/{resource}?per_page=15'
+        'per_page',
     }
 
     REQUEST_OPTIONS = {
