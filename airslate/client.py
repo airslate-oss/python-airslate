@@ -14,7 +14,7 @@ from asdicts.dict import merge, intersect_keys
 from requests.models import Response
 from urllib3.exceptions import MaxRetryError
 
-from . import exceptions, session
+from . import exceptions, sessions
 from .resources.organizations import Organizations
 from .utils import default_headers
 
@@ -66,16 +66,15 @@ class Client:
 
     ALL_OPTIONS = CLIENT_OPTIONS | QUERY_OPTIONS | REQUEST_OPTIONS
 
-    def __init__(self, **options):
+    def __init__(self, session=None, auth=None, **options):
         """A :class:`Client` object for interacting with airSlate's API."""
         self.options = merge(self.DEFAULT_OPTIONS, options)
+        self.auth = auth
+
         self.headers = options.pop('headers', {})
-        self.session = session.factory(
+        self.session = session or sessions.factory(
             max_retries=self.options['max_retries'],
         )
-
-        if 'token' in options:
-            self.headers['Authorization'] = f'Bearer {options.pop("token")}'
 
         self._init_statuses()
 
@@ -93,7 +92,15 @@ class Client:
 
         try:
             with self.session as _session:
-                response = getattr(_session, method)(url, **request_options)
+                curr = _session if _session.auth is None else _session.auth
+
+                if 'headers' in request_options and request_options['headers']:
+                    curr.headers.update(request_options['headers'])
+                    del request_options['headers']
+
+                response = getattr(curr, method)(
+                    url, auth=self.auth, **request_options)
+
                 if response.status_code in self.statuses:
                     raise self.statuses[response.status_code](
                         response=response
@@ -256,3 +263,12 @@ class Client:
         new options object.
         """
         return merge(self.options, *objects)
+
+    @classmethod
+    def jwt_session(cls, client_id, user_id, key, **kwargs):
+        """Create an airSlate Client instance with OAuth credentials.
+
+        Constructs an airSlate Client with OAuth Grant Type JWT Bearer Flow
+        using ``client_id``, ``user_id`` and ``key``.
+        """
+        return cls(sessions.JWTSession(client_id, user_id, key, **kwargs))

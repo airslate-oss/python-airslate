@@ -8,9 +8,12 @@
 """Session module for airslate package."""
 
 import warnings
+from datetime import datetime, timedelta
 
+import jwt
 from requests import Session
 from requests.adapters import HTTPAdapter
+from requests_oauthlib import OAuth2Session
 from urllib3.util.retry import Retry
 
 
@@ -86,3 +89,90 @@ def factory(max_retries=3, backoff_factor=1.0):
     session.mount('https://', adapter)
 
     return session
+
+
+class JWTSession(Session):
+    """Session class to implement OAuth Grant Type JWT Bearer Flow."""
+
+    token_url = 'https://oauth.airslate.com/public/oauth/token'
+
+    DEFAULT_SCOPE = [
+        'openid',
+        'email',
+        'profile',
+        'enterprise',
+        'user-client-link',
+        'oauth-user-tokens',
+    ]
+
+    def __init__(self, client_id, user_id, key, **kwargs):
+        super().__init__()
+        self.client_id = client_id
+        self.user_id = user_id
+        self.key = key
+
+        scope = kwargs.get('scope', self.DEFAULT_SCOPE)
+        self.scope = ' '.join(scope) if isinstance(scope, list) else scope
+
+        self.headers.update(kwargs.get('headers', {}))
+
+        retry_strategy = create_retry(
+            kwargs.get('max_retries', 3),
+            kwargs.get('backoff_factor', 1.0)
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+
+        self.mount('https://', adapter)
+        self.mount('http://', adapter)
+
+        self.auth = OAuth2Session(
+            client_id=self.client_id,
+            token=self.get_token(),
+            token_updater=self.update_token,
+        )
+
+    def update_token(self, token):
+        """Update token storage on automatic token refresh.
+
+        This helper function will be used as a call back for
+        :class:`requests_oauthlib.OAuth2Session`.
+        """
+        self.auth.token = token
+
+    def get_token(self):
+        """Automatic token retrieve using OAuth Grant Type JWT Bearer Flow."""
+        now = datetime.utcnow()
+
+        payload = {
+            'aud': self.client_id,
+            'sub': self.user_id,
+            'iss': 'oauth.airslate.com',
+            'iat': now,
+            'exp': now + timedelta(minutes=10),
+            'scope': self.scope,
+        }
+
+        headers = {
+            'alg': 'RS256',
+            'typ': 'JWT',
+        }
+
+        jwt_token = jwt.encode(
+            payload=payload,
+            key=self.key,
+            algorithm='RS256',
+            headers=headers,
+        )
+
+        response = self.request(
+            'POST',
+            self.token_url,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
+            data={
+                'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion': jwt_token,
+            },
+        )
+
+        response.raise_for_status()
+        return response.json()

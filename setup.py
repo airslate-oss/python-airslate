@@ -133,9 +133,12 @@ CLASSIFIERS = [
 
 # Dependencies that are downloaded by pip on installation and why.
 INSTALL_REQUIRES = [
+    'PyJWT>=2.6.0',  # JSON Web Token implementation in Python
     'asdicts>=1.1.0',  # Missed utilities for working with Python dictionaries
+    'cryptography>=39.0.0',  # Cryptographic recipes and primitives
     'marshmallow>=3.19.0',  # Complex data (de)serialization
     'requests>=2.20.0,==2.*',  # Interact with airSlate HTTP API
+    'requests_oauthlib>=1.3.1',  # OAuthlib authentication support for Requests
     'urllib3>=1.21.1,<1.27',  # Our internal HTTP client
 
 ]

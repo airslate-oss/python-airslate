@@ -27,3 +27,6 @@ __pycache__
 
 # Ignore codecoverage stuff.
 coverage.*
+
+# OAuth keys for testing puproses.
+oauth-*.key
