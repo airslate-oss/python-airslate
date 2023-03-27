@@ -210,15 +210,23 @@ class Client:
         options = self._merge_options(options)
         return intersect_keys(options, self.ALL_OPTIONS, invert=True)
 
-    def _parse_query_options(self, options):
+    def _parse_query_options(self, options: dict) -> dict:
         """Select query string options out of the provided options object.
+
+        :param options: Dictionary of query string options.
+        :type options: dict
+        :return: Returns a dictionary of query string options filtered by the
+            pre-defined :attr:`QUERY_OPTIONS`.
+        :rtype: dict
+
+        Usage:
 
         >>> self._parse_query_options({})
         {}
         >>> self._parse_query_options({'foo': 'bar'})
         {}
-        >>> self._parse_query_options({'include': 'fields'})
-        {'include': 'fields'}
+        >>> self._parse_query_options({'per_page': 15})
+        {'per_page': 15}
         """
         options = self._merge_options(options)
         return intersect_keys(options, self.QUERY_OPTIONS)
