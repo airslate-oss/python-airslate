@@ -121,13 +121,12 @@ class Client:
 
             return response
         except (MaxRetryError, requests.exceptions.RetryError) as retry_exc:
-            status = None
+            status = 503
             response = None
 
             if hasattr(retry_exc, 'response') and retry_exc.response:
                 response = retry_exc.response
-            else:
-                status = 503
+                status = response.status_code
 
             raise exceptions.RetryApiError(
                 message='Exceeded API Rate Limit',
