@@ -72,7 +72,7 @@ class Client:
         self.auth = auth
 
         self.headers = options.pop('headers', {})
-        self.session = session or sessions.factory(
+        self.session = session or sessions.RetrySession(
             max_retries=self.options['max_retries'],
         )
 
