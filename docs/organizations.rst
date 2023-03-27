@@ -14,8 +14,8 @@ Get a list of all Organizations that the current user belongs to.
 
 
    client = Client.jwt_session(
-       client_id='00000000-00000-00000-00000-000000000000',
-       user_id='00000000-00000-00000-00000-000000000000',
+       client_id='00000000-0000-0000-0000-000000000000',
+       user_id='00000000-0000-0000-0000-000000000000',
        key=Path('oauth-private.key').read_bytes(),
    )
 
