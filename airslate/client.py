@@ -96,27 +96,30 @@ class Client:
         # Select and formats options to be passed to the request
         request_options = self._parse_request_options(options)
 
+        # Select proper session implementation
+        current_session = (self.session if self.session.auth is None
+                           else self.session.auth)
+
         try:
-            with self.session as _session:
-                curr = _session if _session.auth is None else _session.auth
+            if 'headers' in request_options and request_options['headers']:
+                current_session.headers.update(request_options['headers'])
+                del request_options['headers']
 
-                if 'headers' in request_options and request_options['headers']:
-                    curr.headers.update(request_options['headers'])
-                    del request_options['headers']
-
-                response = getattr(curr, method)(
+            # Ensure SSL connection is closed after finished using session.
+            with current_session as session:
+                response = getattr(session, method)(
                     url, auth=self.auth, **request_options)
 
-                if response.status_code in self.statuses:
-                    raise self.statuses[response.status_code](
-                        response=response
-                    )
+            if response.status_code in self.statuses:
+                raise self.statuses[response.status_code](
+                    response=response
+                )
 
-                # Any unhandled 5xx is a server error
-                if 500 <= response.status_code < 600:
-                    raise exceptions.InternalServerError(response=response)
+            # Any unhandled 5xx is a server error
+            if 500 <= response.status_code < 600:
+                raise exceptions.InternalServerError(response=response)
 
-                return response
+            return response
         except (MaxRetryError, requests.exceptions.RetryError) as retry_exc:
             status = None
             response = None
@@ -212,6 +215,11 @@ class Client:
 
     def _parse_query_options(self, options: dict) -> dict:
         """Select query string options out of the provided options object.
+
+        This function selects query string options from the provided `options`
+        object based on the pre-defined :attr:`QUERY_OPTIONS` dictionary.
+         It returns a new dictionary containing only the key-value pairs that
+         match the keys in :attr:`QUERY_OPTIONS`.
 
         :param options: Dictionary of query string options.
         :type options: dict

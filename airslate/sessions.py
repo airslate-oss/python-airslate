@@ -178,15 +178,16 @@ class JWTSession(Session, RetryMixin):
             headers=headers,
         )
 
-        response = self.request(
-            'POST',
-            self.token_url,
-            headers={'Content-Type': 'application/x-www-form-urlencoded'},
-            data={
-                'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                'assertion': jwt_token,
-            },
-        )
+        # Ensure SSL connection is closed after finished using session.
+        with self as session:
+            grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+
+            response = session.request(
+                'POST',
+                self.token_url,
+                headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                data={'grant_type': grant_type, 'assertion': jwt_token},
+            )
 
         response.raise_for_status()
         return response.json()
