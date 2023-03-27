@@ -60,13 +60,6 @@ def test_overriding_headers(client):
 
 
 @responses.activate
-def test_auth_header():
-    client = Client(token='secret')
-
-    assert client.headers['Authorization'] == 'Bearer secret'
-
-
-@responses.activate
 def test_collection_response(client):
     url = f'{client.base_url}/v1/organizations'
     response_data = {

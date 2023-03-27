@@ -9,10 +9,15 @@ Get a list of all Organizations that the current user belongs to.
 
 .. code-block:: python
 
-   import os
+   from pathlib import Path
    from airslate.client import Client
 
-   client = Client(token=os.getenv('API_TOKEN'))
+
+   client = Client.jwt_session(
+       client_id='00000000-00000-00000-00000-000000000000',
+       user_id='00000000-00000-00000-00000-000000000000',
+       key=Path('oauth-private.key').read_bytes(),
+   )
 
    organizations = client.organizations.collection()
    for org in organizations:
