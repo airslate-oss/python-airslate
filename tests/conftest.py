@@ -5,9 +5,17 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+from pathlib import Path
+
 import pytest
 
 from airslate.client import Client
+
+
+@pytest.fixture
+def private_key():
+    """Return the private 2048-bit RSA key for testing purposes."""
+    return Path(__file__).parent.joinpath('rsa_private.pem').read_bytes()
 
 
 class TestClient(Client):

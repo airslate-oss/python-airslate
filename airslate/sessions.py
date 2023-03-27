@@ -105,7 +105,7 @@ class JWTSession(Session):
         'oauth-user-tokens',
     ]
 
-    def __init__(self, client_id, user_id, key, **kwargs):
+    def __init__(self, client_id: str, user_id: str, key: bytes, **kwargs):
         super().__init__()
         self.client_id = client_id
         self.user_id = user_id

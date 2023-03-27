@@ -16,13 +16,13 @@ from airslate import exceptions
 def test_unauthorized(client):
     responses.add(
         POST,
-        f'{client.base_url}/v1/addon-token',
+        f'{client.base_url}/v1/organizations',
         status=401,
         body='{}'
     )
 
     with pytest.raises(exceptions.Unauthorized):
-        client.post('/v1/addon-token', {})
+        client.post('/v1/organizations', {})
 
 
 @responses.activate
@@ -30,14 +30,14 @@ def test_unauthorized(client):
 def test_internal_server_error(status, client):
     responses.add(
         POST,
-        f'{client.base_url}/v1/addon-token',
+        f'{client.base_url}/v1/organizations',
         status=status,
         body='{}',
     )
 
     with pytest.raises(exceptions.InternalServerError) as exc_info:
         client.post(
-            '/v1/addon-token',
+            '/v1/organizations',
             {},
             max_retries=1,
             timeout=0.1,
@@ -51,14 +51,14 @@ def test_internal_server_error(status, client):
 def test_retry_error(status, client):
     responses.add(
         POST,
-        f'{client.base_url}/v1/addon-token',
+        f'{client.base_url}/v1/organizations',
         status=status,
         body='{}',
     )
 
     with pytest.raises(exceptions.RetryApiError) as exc_info:
         client.post(
-            '/v1/addon-token',
+            '/v1/organizations',
             {},
             max_retries=1,
             timeout=0.1,
