@@ -134,9 +134,9 @@ class Client:
                 status=status,
             )
         except requests.exceptions.ConnectionError as conn_exc:
-            message = ('A connection attempt failed because the ' +
-                       'connected party did not properly respond ' +
-                       'after a period of time, or established connection ' +
+            message = ('A connection attempt failed because the '
+                       'connected party did not properly respond '
+                       'after a period of time, or established connection '
                        'failed because connected host has failed to respond.')
             raise exceptions.InternalServerError(
                 message=message,
