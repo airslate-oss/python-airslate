@@ -201,7 +201,7 @@ class JWTSession(Session, RetryMixin):
             except (MaxRetryError, RetryError) as retry_exc:
                 raise ApiError(
                     status=503,
-                    message=str(retry_exc).removeprefix('None: '),
+                    message=str(retry_exc).lstrip('None: '),
                 ) from retry_exc
 
         try:
