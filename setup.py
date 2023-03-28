@@ -154,6 +154,7 @@ EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
     'testing': [
         'coverage[toml]>=6.0',  # Code coverage measurement for Python
+        'factory_boy>=3.2.0',  # A versatile test fixtures replacement
         'flake8>=6.0.0',  # The modular source code checker
         'pylint>=2.16.0',  # Python code static checker
         'pytest>=6.2.2',  # Our tests framework
