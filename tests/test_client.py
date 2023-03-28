@@ -92,3 +92,45 @@ def test_custom_options():
         'timeout': 5.0,
         'version': 'v1'
     }
+
+
+def test_parse_parameter_options():
+    client = Client()
+
+    assert {} == client._parse_parameter_options({})
+    assert {'foo': 'bar'} == client._parse_parameter_options({'foo': 'bar'})
+    assert {} == client._parse_parameter_options({'timeout': 1.0})
+
+
+def test_parse_query_options():
+    client = Client()
+
+    assert {} == client._parse_query_options({})
+    assert {} == client._parse_query_options({'foo': 'bar'})
+
+    expected = {'per_page': 15}
+    assert expected == client._parse_query_options({'per_page': 15})
+
+
+def test_parse_request_options():
+    client = Client()
+
+    assert {'headers': {}, 'timeout': 5.0} == client._parse_request_options({})
+
+    expected = {'headers': {}, 'timeout': 10.0}
+    assert expected == client._parse_request_options({'timeout': 10.0})
+
+    expected = {'headers': {}, 'params': {'a': 'true'}, 'timeout': 5.0}
+    assert expected == client._parse_request_options({'params': {'a': 'true'}})
+
+    expected = {'headers': {}, 'params': {'foo': 'true'}, 'timeout': 5.0}
+    assert expected == client._parse_request_options({'params': {'foo': True}})
+
+    expected = {'headers': {}, 'params': {'foo': 'null'}, 'timeout': 5.0}
+    assert expected == client._parse_request_options({'params': {'foo': None}})
+
+    expected = {'data': '{"foo": "bar"}', 'headers': {}, 'timeout': 5.0}
+    assert expected == client._parse_request_options({'data': {'foo': 'bar'}})
+
+    expected = {'headers': {'a': 'b'}, 'timeout': 5.0}
+    assert expected == client._parse_request_options({'headers': {'a': 'b'}})

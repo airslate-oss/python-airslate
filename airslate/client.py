@@ -197,10 +197,19 @@ class Client:
             if isinstance(cls, type) and issubclass(cls, exceptions.ApiError):
                 self.statuses[cls().status] = cls
 
-    def _parse_parameter_options(self, options):
+    def _parse_parameter_options(self, options: dict) -> dict:
         """Select all unknown options.
 
-        Select all unknown options (not query string, API, or request options).
+        This function takes a dictionary of options as input and returns a new
+        dictionary containing only the unknown options. Unknown options are
+        those that are not part of the client, query, or request options.
+
+        :param options: A dictionary of options.
+        :type options: dict
+        :return: Returns a dictionary containing only the unknown options.
+        :rtype: dict
+
+        Usage:
 
         >>> self._parse_parameter_options({})
         {}
@@ -238,26 +247,40 @@ class Client:
         options = self._merge_options(options)
         return intersect_keys(options, self.QUERY_OPTIONS)
 
-    def _parse_request_options(self, options):
+    def _parse_request_options(self, options: dict) -> dict:
         """Select request options out of the provided options object.
 
-        Select and formats options to be passed to the 'requests' library's
-        request methods.
+        This function takes a dictionary options as a parameter and returns a
+        dictionary containing selected and formatted request options, which
+        will be passed to the `requests library for performing an HTTP request.
+
+        :param options: A dictionary of options to be passed to the 'requests'
+            library's request methods.
+        :type options: dict
+        :return: Returns a dictionary of selected and formatted request options
+        :rtype: dict
+
+        Usage:
 
         >>> self._parse_request_options({})
-        {'timeout': 5.0, 'headers': {}}
+        {'headers': {}, 'timeout': 5.0}
         >>> self._parse_request_options({'timeout': 10.0})
-        {'timeout': 10.0, 'headers': {}}
+        {'headers': {}, 'timeout': 10.0}
         >>> self._parse_request_options({'params': {'foo': True}})
-        {'timeout': 5.0, 'params': {'foo': 'true'}, 'headers': {}}
+        {'headers': {}, 'params': {'foo': 'true'}, 'timeout': 5.0}
         >>> self._parse_request_options({'data': {'foo': 'bar'}})
-        {'timeout': 5.0, 'data': '{"foo": "bar"}', 'headers': {}}
+        {'data': '{"foo": "bar"}', 'headers': {}, 'timeout': 5.0}
         >>> self._parse_request_options({'headers': {'x-header': 'value'}})
-        {'timeout': 5.0, 'headers': {'x-header': 'value'}}
+        {'headers': {'x-header': 'value'}, 'timeout': 5.0}
         """
+        # Merge options with default options
         options = self._merge_options(options)
+
+        # Select request options keys from the provided options object
         request_options = intersect_keys(options, self.REQUEST_OPTIONS)
 
+        # If 'params' is in request_options, format the params values to be
+        # JSON serializable
         if 'params' in request_options:
             params = request_options['params']
             for key in params:
@@ -266,11 +289,12 @@ class Client:
                 if isinstance(params[key], bool) or params[key] is None:
                     params[key] = json.dumps(params[key])
 
+        # If 'data' is in request_options, serialize it to JSON, since
+        # requests library doesn't do it automatically
         if 'data' in request_options:
-            # Serialize ``options['data']`` to JSON, requests doesn't do this
-            # automatically.
             request_options['data'] = json.dumps(request_options['data'])
 
+        # Update headers with request options and return the updated dictionary
         headers = self.headers.copy()
         headers.update(request_options.get('headers', {}))
         request_options['headers'] = headers
