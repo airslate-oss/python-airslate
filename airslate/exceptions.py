@@ -7,6 +7,10 @@
 
 """Standard exception hierarchy for airslate package."""
 
+from typing import Optional
+
+from requests.models import Response
+
 
 class BaseError(Exception):
     """Base class for all errors in airslate package."""
@@ -15,67 +19,82 @@ class BaseError(Exception):
 class ApiError(BaseError):
     """Base class for errors in API endpoints."""
 
-    def __init__(self, message=None, status=None, response=None):
-        super().__init__(message)
-
-        self.status = status
-        self.response = response
-        self.errors = dict(())
+    def __init__(
+            self,
+            message: Optional[str] = None,
+            status: Optional[int] = None,
+            response: Optional[Response] = None
+    ):
+        errors = []
+        reason = None
+        request_id = None
 
         try:
             if response is not None:
+                reason = response.reason
+                if status is None:
+                    status = response.status_code
+
                 json = response.json()
 
                 # The case for:
                 #     {
-                #         "errors": [ { ... }, { ... } ]
+                #         "request_id": "be1ac55e-46b4-4f31-b862-9accac42bba4",
+                #         "errors": [
+                #             { ...  }
+                #         ]
+                #     }
+                #
+                if 'request_id' in json:
+                    request_id = json['request_id']
+
+                # The case for:
+                #     {
+                #         "errors": [
+                #             { "message": "..." },
+                #             { "message": "..." },
+                #             { "message": "..." }
+                #         ]
                 #     }
                 #
                 if 'errors' in json:
-                    self.errors = json['errors']
-                    messages = []
-                    for error in json['errors']:
-                        # The case for:
-                        #     {
-                        #         "errors": [
-                        #             {
-                        #                 "title": "",
-                        #                 "code": "",
-                        #                 "source": "",
-                        #             }
-                        #         ]
-                        #     }
-                        #
-                        if 'title' in error:
-                            messages.append(error['title'])
-                        # The case for:
-                        #     {
-                        #         "errors": [
-                        #             {
-                        #                 "status": "",
-                        #                 "detail": "",
-                        #             }
-                        #         ]
-                        #     }
-                        #
-                        elif 'detail' in error:
-                            messages.append(error['detail'])
+                    errors = json['errors']
 
-                    message = message + ': ' + '; '.join(messages)
                 # The case for:
                 #     {
-                #         "title": "",
-                #         "code": "",
-                #         "source": "",
+                #         "error": "...",
+                #         "error_description": "...",
+                #         "hint": "...",
+                #         "message": "...",
                 #     }
                 #
-                elif 'title' in json:
-                    self.errors = json
-                    message = message + ': ' + json['title']
+                if 'message' in json:
+                    if len(errors) == 0:
+                        errors = [{'message': json['message']}]
+                    if message is None:
+                        message = json['message']
         except ValueError:
             pass
 
+        super().__init__(message or reason)
+
+        # The error message returned by the API.
         self.message = message
+
+        # The reason for the error returned by the API.
+        self.reason = reason
+
+        # The HTTP status code returned by the API.
+        self.status = status
+
+        # The unique identifier for the API request.
+        self.request_id = request_id
+
+        # The original response object returned by the API.
+        self.response = response
+
+        # A list of error dictionaries returned by the API.
+        self.errors = errors
 
 
 class BadRequest(ApiError):
@@ -84,7 +103,7 @@ class BadRequest(ApiError):
     Raise if the client sends something to the server cannot handle.
     """
 
-    def __init__(self, response=None):
+    def __init__(self, response: Optional[Response] = None):
         super().__init__(
             message='Bad Request',
             status=400,
@@ -99,7 +118,7 @@ class Unauthorized(ApiError):
     authentication credentials for the target resource.
     """
 
-    def __init__(self, response=None):
+    def __init__(self, response: Optional[Response] = None):
         super().__init__(
             message='Unauthorized',
             status=401,
@@ -110,7 +129,7 @@ class Unauthorized(ApiError):
 class NotFoundError(ApiError):
     """Error raised when the server can not find the requested resource."""
 
-    def __init__(self, response=None):
+    def __init__(self, response: Optional[Response] = None):
         super().__init__(
             message='Not Found',
             status=404,
@@ -121,7 +140,12 @@ class NotFoundError(ApiError):
 class RetryApiError(ApiError):
     """Base class for retryable errors."""
 
-    def __init__(self, message=None, status=None, response=None):
+    def __init__(
+            self,
+            message: Optional[str] = None,
+            status: Optional[int] = None,
+            response: Optional[Response] = None
+    ):
         super().__init__(
             message=message,
             status=status,
@@ -135,7 +159,11 @@ class InternalServerError(ApiError):
     The server has encountered a situation it doesn't know how to handle.
     """
 
-    def __init__(self, message=None, response=None):
+    def __init__(
+            self,
+            message: Optional[str] = None,
+            response: Optional[Response] = None
+    ):
         status = 500
         if response is not None:
             status = response.status_code

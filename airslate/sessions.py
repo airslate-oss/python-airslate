@@ -13,8 +13,11 @@ from datetime import datetime, timedelta
 import jwt
 from requests import Session
 from requests.adapters import HTTPAdapter
+from requests.exceptions import HTTPError
 from requests_oauthlib import OAuth2Session
 from urllib3.util.retry import Retry
+
+from .exceptions import ApiError
 
 
 class RetryMixin:  # pylint: disable=too-few-public-methods
@@ -189,5 +192,8 @@ class JWTSession(Session, RetryMixin):
                 data={'grant_type': grant_type, 'assertion': jwt_token},
             )
 
-        response.raise_for_status()
-        return response.json()
+        try:
+            response.raise_for_status()
+            return response.json()
+        except HTTPError as exc:
+            raise ApiError(response=response) from exc

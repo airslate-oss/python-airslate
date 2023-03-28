@@ -8,11 +8,12 @@
 import pytest
 import responses
 from requests.adapters import HTTPAdapter
-from requests.exceptions import HTTPError
+from requests.models import Response
 from responses import POST
 from urllib3.util.retry import Retry
 
 from airslate import sessions
+from airslate.exceptions import ApiError
 
 
 def test_retry_default_params():
@@ -124,11 +125,16 @@ def test_jwt_get_token_bad_request(private_key):
         }
     )
 
-    with pytest.raises(HTTPError) as exc_info:
+    with pytest.raises(ApiError) as exc_info:
         _ = sessions.JWTSession(
             client_id='00000000-0000-0000-0000-000000000000',
             user_id='11111111-1111-1111-1111-111111111111',
             key=private_key,
         )
 
-    assert '400 Client Error: Bad Request for url:' in str(exc_info.value)
+    assert 'Error message' == str(exc_info.value)
+    assert 'Error message' == exc_info.value.message
+    assert 400 == exc_info.value.status
+    assert 'Bad Request' == exc_info.value.reason
+    assert [{'message': 'Error message'}] == exc_info.value.errors
+    assert isinstance(exc_info.value.response, Response)
