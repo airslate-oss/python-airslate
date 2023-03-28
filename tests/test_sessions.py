@@ -138,3 +138,23 @@ def test_jwt_get_token_bad_request(private_key):
     assert 'Bad Request' == exc_info.value.reason
     assert [{'message': 'Error message'}] == exc_info.value.errors
     assert isinstance(exc_info.value.response, Response)
+
+
+@responses.activate
+def test_exception_when_get_token(private_key):
+    responses.add(
+        POST,
+        'https://oauth.airslate.com/public/oauth/token',
+        status=500,
+        json={'message': 'Error message'}
+    )
+
+    with pytest.raises(ApiError) as exc_info:
+        _ = sessions.JWTSession(
+            client_id='00000000-0000-0000-0000-000000000000',
+            user_id='11111111-1111-1111-1111-111111111111',
+            key=private_key,
+        )
+
+    assert 'Max retries exceeded with url:' in str(exc_info.value)
+    assert 503 == exc_info.value.status

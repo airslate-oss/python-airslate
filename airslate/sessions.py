@@ -13,11 +13,13 @@ from datetime import datetime, timedelta
 import jwt
 from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.exceptions import HTTPError
+from requests.exceptions import RetryError, RequestException
 from requests_oauthlib import OAuth2Session
+from urllib3.exceptions import MaxRetryError
 from urllib3.util.retry import Retry
 
 from .exceptions import ApiError
+from .utils import default_user_agent
 
 
 class RetryMixin:  # pylint: disable=too-few-public-methods
@@ -184,16 +186,26 @@ class JWTSession(Session, RetryMixin):
         # Ensure SSL connection is closed after finished using session.
         with self as session:
             grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+            data = {'grant_type': grant_type, 'assertion': jwt_token}
 
-            response = session.request(
-                'POST',
-                self.token_url,
-                headers={'Content-Type': 'application/x-www-form-urlencoded'},
-                data={'grant_type': grant_type, 'assertion': jwt_token},
-            )
+            headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+            headers.update({'User-Agent': default_user_agent()})
+
+            try:
+                response = session.request(
+                    'POST',
+                    self.token_url,
+                    headers=headers,
+                    data=data,
+                )
+            except (MaxRetryError, RetryError) as retry_exc:
+                raise ApiError(
+                    status=503,
+                    message=str(retry_exc).removeprefix('None: '),
+                ) from retry_exc
 
         try:
             response.raise_for_status()
             return response.json()
-        except HTTPError as exc:
+        except RequestException as exc:
             raise ApiError(response=response) from exc
