@@ -94,17 +94,13 @@ def test_custom_options():
     }
 
 
-def test_parse_parameter_options():
-    client = Client()
-
+def test_parse_parameter_options(client):
     assert {} == client._parse_parameter_options({})
     assert {'foo': 'bar'} == client._parse_parameter_options({'foo': 'bar'})
     assert {} == client._parse_parameter_options({'timeout': 1.0})
 
 
-def test_parse_query_options():
-    client = Client()
-
+def test_parse_query_options(client):
     assert {} == client._parse_query_options({})
     assert {} == client._parse_query_options({'foo': 'bar'})
 
@@ -112,9 +108,7 @@ def test_parse_query_options():
     assert expected == client._parse_query_options({'per_page': 15})
 
 
-def test_parse_request_options():
-    client = Client()
-
+def test_parse_request_options(client):
     assert {'headers': {}, 'timeout': 5.0} == client._parse_request_options({})
 
     expected = {'headers': {}, 'timeout': 10.0}

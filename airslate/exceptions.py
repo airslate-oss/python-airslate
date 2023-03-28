@@ -192,7 +192,7 @@ class MissingData(DomainError):
     """Error raised when ``data`` is missing in JSON:API response."""
 
     def __init__(self):
-        super().__init__('Data is missing in JSON:API response')
+        super().__init__("API server response is missing the 'data' key")
 
 
 class TypeMismatch(DomainError):
