@@ -171,26 +171,25 @@ class JWTSession(Session, RetryMixin):
             'scope': self.scope,
         }
 
-        headers = {
-            'alg': 'RS256',
-            'typ': 'JWT',
-        }
-
         jwt_token = jwt.encode(
             payload=payload,
             key=self.key,
             algorithm='RS256',
-            headers=headers,
+            headers={'alg': 'RS256', 'typ': 'JWT'},
         )
+
+        data = {
+            'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion': jwt_token,
+        }
+
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': default_user_agent(),
+        }
 
         # Ensure SSL connection is closed after finished using session.
         with self as session:
-            grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer'
-            data = {'grant_type': grant_type, 'assertion': jwt_token}
-
-            headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-            headers.update({'User-Agent': default_user_agent()})
-
             try:
                 response = session.request(
                     'POST',
@@ -198,14 +197,12 @@ class JWTSession(Session, RetryMixin):
                     headers=headers,
                     data=data,
                 )
+                response.raise_for_status()
+                return response.json()
             except (MaxRetryError, RetryError) as retry_exc:
                 raise ApiError(
                     status=503,
                     message=str(retry_exc).lstrip('None: '),
                 ) from retry_exc
-
-        try:
-            response.raise_for_status()
-            return response.json()
-        except RequestException as exc:
-            raise ApiError(response=response) from exc
+            except RequestException as exc:
+                raise ApiError(response=response) from exc
