@@ -10,8 +10,14 @@
 from typing import List
 
 from airslate.exceptions import MissingData
-from airslate.models import Organization
-from airslate.schemas import OrganizationSchema
+from airslate.models import (
+    Organization,
+    OrganizationSettings
+)
+from airslate.schemas import (
+    OrganizationSchema,
+    OrganizationSettingSchema,
+)
 from . import BaseResource
 
 
@@ -29,3 +35,12 @@ class Organizations(BaseResource):
             raise MissingData()
 
         return [schema.load(p) for p in response_data['data']]
+
+    def settings(self, org_id: str, **kwargs) -> OrganizationSettings:
+        """Retrieve the settings of the Organization."""
+        url = self.resolve_endpoint(f'organizations/{org_id}/settings')
+        response = self.client.get(url, **kwargs)
+
+        schema = OrganizationSettingSchema()
+        response_data = response.json()
+        return schema.load(response_data)

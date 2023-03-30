@@ -19,7 +19,7 @@ Classes:
 from abc import ABCMeta
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 
 @dataclass(frozen=True)
@@ -51,3 +51,31 @@ class Organization(BaseModel):  # pylint: disable=too-many-instance-attributes
     def __repr__(self):
         """Provide an easy-to-read description of the current instance."""
         return f'<Organization: id={self.id}>'
+
+
+@dataclass(repr=False, frozen=True)
+class OrganizationSettings(BaseModel):
+    """Represent an organization settings in the airSlate API."""
+
+    id: str  # pylint: disable=invalid-name
+    settings: dict
+
+    def __repr__(self):
+        """Provide an easy-to-read description of the current instance."""
+        return f'<OrganizationSettings: id={self.id}>'
+
+
+@dataclass(repr=False, frozen=True)
+class OrganizationSettingsContent(BaseModel):
+    """Represent an organization settings contents in the airSlate API."""
+
+    allow_recipient_registration: bool
+    attach_completion_certificate: bool
+    require_electronic_signature_consent: bool
+    allow_reusable_flow: bool
+    verified_domains: List[str]
+
+    def __repr__(self):
+        """Provide an easy-to-read description of the current instance."""
+        attrs = [k + ': ' + str(v) for k, v in self.__dict__.items()]
+        return f'<OrganizationSettingsContent: {", ".join(attrs)}>'
