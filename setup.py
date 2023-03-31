@@ -158,6 +158,7 @@ EXTRAS_REQUIRE = {
         'flake8>=6.0.0',  # The modular source code checker
         'pylint>=2.16.0',  # Python code static checker
         'pytest>=6.2.2',  # Our tests framework
+        'pytest-mock>=3.10.0',  # Thin-wrapper around the mock package
         'responses>=0.23.0',  # Mocking out the requests Python library
     ],
     # Dependencies that are required to build documentation
