@@ -8,11 +8,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from airslate.models import BaseModel
+from airslate import models
 
 
 @dataclass(frozen=True)
-class FooBar(BaseModel):
+class FooBar(models.BaseModel):
     id: str
     name: str
     size: Optional[str] = None
@@ -26,3 +26,4 @@ def test_to_dict():
     model = FooBar(id='5FFE553A', name='test', size='XL')
     expected = {'id': '5FFE553A', 'name': 'test', 'size': 'XL'}
     assert model.to_dict() == expected
+    assert model.to_dict() == model.__getstate__()
