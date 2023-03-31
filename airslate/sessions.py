@@ -184,6 +184,7 @@ class JWTSession(Session, RetryMixin):
         }
 
         headers = {
+            'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
             'User-Agent': default_user_agent(),
         }
