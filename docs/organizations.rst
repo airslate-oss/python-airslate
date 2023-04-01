@@ -2,6 +2,40 @@
 Organizations
 =============
 
+Get Organization settings
+-------------------------
+
+Retrieve the settings of the Organization.
+
+.. code-block:: python
+
+   from pathlib import Path
+   from airslate.client import Client
+
+
+   client = Client.jwt_session(
+       client_id='00000000-0000-0000-0000-000000000000',
+       user_id='00000000-0000-0000-0000-000000000000',
+       key=Path('oauth-private.key').read_bytes(),
+   )
+
+   settings = client.organizations.settings('5FFE553A-2200-0000-0000D981')
+   print(settings)
+   print(settings.to_dict())
+
+Output
+
+.. code-block::
+
+    <OrganizationSettings: id=5FFE553A-2200-0000-0000D981>
+    {'id': '5FFE553A-2200-0000-0000D981',
+     'settings': {
+         'allow_recipient_registration': True,
+         'attach_completion_certificate': True,
+         'require_electronic_signature_consent': False,
+         'allow_reusable_flow': True,
+         'verified_domains': ['airslate.com', 'dochub.com']}}
+
 Get a list of Organizations
 ---------------------------
 
@@ -35,35 +69,3 @@ Get a list of all Organizations that the current user belongs to.
 
     <Organization: id=5FFE553A-2200-0000-0000D982>
     {'id': '5FFE553A-2200-0000-0000D982', 'name': 'MyOrg', 'subdomain': 'myorg', 'category': 'WHOLESALE_TRADE', 'size': '1001-2000', 'status': 'FINISHED', 'created_at': '2019-07-31T14:36:21Z', 'updated_at': '2023-03-09T03:59:09Z'
-
-
-
-Get Organization settings
--------------------------
-
-Retrieve the settings of the Organization.
-
-.. code-block:: python
-
-   from pathlib import Path
-   from airslate.client import Client
-
-
-   client = Client.jwt_session(
-       client_id='00000000-0000-0000-0000-000000000000',
-       user_id='00000000-0000-0000-0000-000000000000',
-       key=Path('oauth-private.key').read_bytes(),
-   )
-
-   settings = client.organizations.settings('5FFE553A-2200-0000-0000D981')
-   print(settings)
-   print(settings.to_dict())
-
-.. raw:: html
-
-   <details><summary>Output</summary>
-
-.. code-block::
-
-    <OrganizationSettings: id=5FFE553A-2200-0000-0000D981>
-    {'id': '5FFE553A-2200-0000-0000D981', 'settings': {'allow_recipient_registration': True, 'attach_completion_certificate': True, 'require_electronic_signature_consent': False, 'allow_reusable_flow': True, 'verified_domains': ['airslate.com', 'dochub.com']}}
