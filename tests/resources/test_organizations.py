@@ -50,3 +50,35 @@ def test_bad_collection_400(client):
 
     expected = "API server response is missing the 'data' key"
     assert expected == str(exc_info.value)
+
+
+@responses.activate
+def test_settings(client):
+    org_id = '5FFE553A-2200-0000-0000D981'
+    expected = {
+        'id': org_id,
+        'settings': {
+            'allow_recipient_registration': True,
+            'attach_completion_certificate': True,
+            'require_electronic_signature_consent': False,
+            'allow_reusable_flow': True,
+            'verified_domains': [
+                'airslate.com',
+                'dochub.com',
+            ],
+        }
+    }
+
+    url = f'{client.base_url}/v1/organizations/{org_id}/settings'
+    responses.add(GET, url, status=200, json=expected)
+
+    settings = client.organizations.settings(org_id)
+
+    actual = json.dumps(
+        settings,
+        sort_keys=True,
+        default=lambda o: o.to_dict()
+    )
+
+    expected = json.dumps(expected, sort_keys=True)
+    assert actual == expected
