@@ -211,11 +211,12 @@ class Client:
 
         Usage:
 
-        >>> self._parse_parameter_options({})
+        >>> client = Client()
+        >>> client._parse_parameter_options({})
         {}
-        >>> self._parse_parameter_options({'foo': 'bar'})
+        >>> client._parse_parameter_options({'foo': 'bar'})
         {'foo': 'bar'}
-        >>> self._parse_parameter_options({'timeout': 1.0})
+        >>> client._parse_parameter_options({'timeout': 1.0})
         {}
         """
         options = self._merge_options(options)
@@ -237,11 +238,12 @@ class Client:
 
         Usage:
 
-        >>> self._parse_query_options({})
+        >>> client = Client()
+        >>> client._parse_query_options({})
         {}
-        >>> self._parse_query_options({'foo': 'bar'})
+        >>> client._parse_query_options({'foo': 'bar'})
         {}
-        >>> self._parse_query_options({'per_page': 15})
+        >>> client._parse_query_options({'per_page': 15})
         {'per_page': 15}
         """
         options = self._merge_options(options)
@@ -262,16 +264,17 @@ class Client:
 
         Usage:
 
-        >>> self._parse_request_options({})
-        {'headers': {}, 'timeout': 5.0}
-        >>> self._parse_request_options({'timeout': 10.0})
-        {'headers': {}, 'timeout': 10.0}
-        >>> self._parse_request_options({'params': {'foo': True}})
-        {'headers': {}, 'params': {'foo': 'true'}, 'timeout': 5.0}
-        >>> self._parse_request_options({'data': {'foo': 'bar'}})
-        {'data': '{"foo": "bar"}', 'headers': {}, 'timeout': 5.0}
-        >>> self._parse_request_options({'headers': {'x-header': 'value'}})
-        {'headers': {'x-header': 'value'}, 'timeout': 5.0}
+        >>> client = Client()
+        >>> client._parse_request_options({})
+        {'timeout': 5.0, 'headers': {}}
+        >>> client._parse_request_options({'timeout': 10.0})
+        {'timeout': 10.0, 'headers': {}}
+        >>> client._parse_request_options({'params': {'foo': True}})
+        {'timeout': 5.0, 'params': {'foo': 'true'}, 'headers': {}}
+        >>> client._parse_request_options({'data': {'foo': 'bar'}})
+        {'timeout': 5.0, 'data': '{"foo": "bar"}', 'headers': {}}
+        >>> client._parse_request_options({'headers': {'x-header': 'value'}})
+        {'timeout': 5.0, 'headers': {'x-header': 'value'}}
         """
         # Merge options with default options
         options = self._merge_options(options)

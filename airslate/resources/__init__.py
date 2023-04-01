@@ -33,9 +33,11 @@ class BaseResource(metaclass=ABCMeta):
     def resolve_endpoint(self, path: str) -> str:
         """Resolve resource endpoint taking into account API version.
 
-        >>> self.resolve_endpoint('/foo')
-        /v1/foo
-        >>> self.resolve_endpoint('foo/bar/0/baz')
-        /v1/foo/bar/0/baz
+        >>> from airslate.client import Client
+        >>> resource = BaseResource(Client())
+        >>> resource.resolve_endpoint('/foo')
+        '/v1/foo'
+        >>> resource.resolve_endpoint('foo/bar/0/baz')
+        '/v1/foo/bar/0/baz'
         """
         return f"/{self.api_version}/{path.lstrip('/')}"
