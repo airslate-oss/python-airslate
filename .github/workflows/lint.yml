@@ -34,11 +34,27 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup pip cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: make init
 
       - name: Install dependencies
         run: make install
+
+      - name: Setup pylint cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pylint
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pylint-
 
       - name: Code linting
         run: make lint
