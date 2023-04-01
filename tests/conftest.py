@@ -21,7 +21,7 @@ def private_key():
 class TestClient(Client):
     def __init__(self):
         super(TestClient, self).__init__(
-            base_url='http://airslate.localhost',
+            base_url='http://localhost.localdomain',
         )
 
     @property
