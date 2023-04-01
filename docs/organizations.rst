@@ -37,6 +37,7 @@ Get a list of all Organizations that the current user belongs to.
     {'id': '5FFE553A-2200-0000-0000D982', 'name': 'MyOrg', 'subdomain': 'myorg', 'category': 'WHOLESALE_TRADE', 'size': '1001-2000', 'status': 'FINISHED', 'created_at': '2019-07-31T14:36:21Z', 'updated_at': '2023-03-09T03:59:09Z'
 
 
+
 Get Organization settings
 -------------------------
 
