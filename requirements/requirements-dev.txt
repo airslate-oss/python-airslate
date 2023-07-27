@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --output-file=requirements/requirements-dev.txt requirements/requirements-dev.in
 #
-astroid==2.15.4 \
-    --hash=sha256:a1b8543ef9d36ea777194bc9b17f5f8678d2c56ee6a45b2c2f17eec96f242347 \
-    --hash=sha256:c81e1c7fbac615037744d067a9bb5f9aeb655edf59b63ee8b59585475d6f80d8
+astroid==2.15.6 \
+    --hash=sha256:389656ca57b6108f939cf5d2f9a2a825a3be50ba9d589670f393236e0a03b91c \
+    --hash=sha256:903f024859b7c7687d7a7f3a3f73b17301f8e42dfd9cc9df9d4418172d3e2dbd
     # via pylint
 attrs==22.2.0 \
     --hash=sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836 \
@@ -440,9 +440,9 @@ pygments==2.15.0 \
     # via
     #   readme-renderer
     #   rich
-pylint==2.17.4 \
-    --hash=sha256:5dcf1d9e19f41f38e4e85d10f511e5b9c35e1aa74251bf95cdd8cb23584e2db1 \
-    --hash=sha256:7a1145fb08c251bdb5cca11739722ce64a63db479283d10ce718b2460e54123c
+pylint==2.17.5 \
+    --hash=sha256:73995fb8216d3bed149c8d51bba25b2c52a8251a2c8ac846ec668ce38fab5413 \
+    --hash=sha256:f7b601cbc06fef7e62a754e2b41294c2aa31f1cb659624b9a85bcba29eaf8252
     # via -r requirements/requirements-dev.in
 pytest==7.4.0 \
     --hash=sha256:78bf16451a2eb8c7a2ea98e32dc119fd2aa758f1d5d66dbf0a59d69a3969df32 \
